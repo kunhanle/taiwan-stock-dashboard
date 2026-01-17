@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taiwan Stock Market Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React & Libraries (CDNJs) -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin
+        src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.0/Recharts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-row-hover:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { slate: { 850: '#151e32' } } }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="root">
+        <div class="h-screen flex items-center justify-center text-slate-500">
+            Initializing Dashboard...
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // Recharts setup
+        let RechartsObj = window.Recharts;
+        if (RechartsObj && RechartsObj.default) RechartsObj = RechartsObj.default;
+
+        const {
+            LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+            AreaChart, Area, BarChart, Bar, Cell, ReferenceLine
+        } = RechartsObj || {};
+
+        // --- API ---
+        const fetchMarketData = async () => {
+            try {
+                const response = await axios.get('/api/market-stats');
+                if (Array.isArray(response.data)) {
+                    return { history: response.data, distribution: null };
+                }
+                return response.data;
+            } catch (error) {
+                console.error("Failed to fetch market data", error);
+                return { history: [], distribution: null };
+            }
+        };
+
+        const fetchCategoryStats = async (selectedDate = null) => {
+            try {
+                const url = selectedDate
+                    ? `/api/category-stats?date=${selectedDate}`
+                    : '/api/category-stats';
+                const response = await axios.get(url);
+                return response.data;
+            } catch (error) {
+                console.error("Failed to fetch category stats", error);
+                return null;
+            }
+        };
+
+        const fetchCategoryDetails = async (categoryName) => {
+            try {
+                const response = await axios.get(`/api/category-details/${encodeURIComponent(categoryName)}`);
+                return response.data;
+            } catch (error) {
+                console.error("Failed to fetch category details", error);
+                return null;
+            }
+        };
+
+        // --- Components ---
+        const CustomTooltip = ({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+                return (
+                    <div className="glass-panel p-3 rounded-lg border border-slate-700 text-sm">
+                        <p className="font-bold text-slate-200 mb-1">{label}</p>
+                        {payload.map((entry, index) => (
+                            <div key={index} className="flex items-center gap-2" style={{ color: entry.color }}>
+                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                                <span>{entry.name}: {entry.value}</span>
+                            </div>
+                        ))}
+                    </div>
+                );
+            }
+            return null;
+        };
+
+        const HighLowChart = ({ data }) => {
+            if (!RechartsObj) return null;
+            return (
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                            <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(str) => str.slice(5)} minTickGap={30} />
+                            <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend wrapperStyle={{ paddingTop: '10px' }} />
+                            <Line type="monotone" dataKey="new_high_52w" name="Within 5% of 52w High" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="new_low_52w" name="Within 5% of 52w Low" stroke="#22c55e" strokeWidth={2} dot={false} activeDot={{ r: 6 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        const MAShadedChart = ({ data, keyAbove, keyBelow, title1, title2, colorAbove, colorBelow }) => {
+            if (!RechartsObj) return null;
+            return (
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id={`grad${keyAbove}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={colorAbove} stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor={colorAbove} stopOpacity={0} />
+                                </linearGradient>
+                                <linearGradient id={`grad${keyBelow}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={colorBelow} stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor={colorBelow} stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                            <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(str) => str.slice(5)} minTickGap={30} />
+                            <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend wrapperStyle={{ paddingTop: '10px' }} />
+                            <Area type="monotone" dataKey={keyAbove} name={title1} stroke={colorAbove} fill={`url(#grad${keyAbove})`} strokeWidth={2} />
+                            <Area type="monotone" dataKey={keyBelow} name={title2} stroke={colorBelow} fill={`url(#grad${keyBelow})`} strokeWidth={2} />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        const DistributionChart = ({ data, date }) => {
+            if (!RechartsObj) return null;
+            return (
+                <div className="h-[300px] w-full">
+                    <div className="text-right text-xs text-slate-400 mb-2">Likely Date: {date}</div>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                            <XAxis dataKey="bin" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                            <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                            <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} content={<CustomTooltip />} />
+                            <Bar dataKey="count" name="Stock Count" fill="#facc15" radius={[4, 4, 0, 0]}>
+                                {data.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.value < 0 ? '#ef4444' : (entry.value > 0 ? '#22c55e' : '#94a3b8')} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        const MaintenanceRatioChart = ({ data }) => {
+            if (!RechartsObj) return null;
+            return (
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                            <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(str) => str.slice(5)} minTickGap={30} />
+                            <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
+                            <Tooltip
+                                content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <div className="glass-panel p-3 rounded-lg border border-slate-700 text-sm">
+                                                <p className="font-bold text-slate-200 mb-1">{label}</p>
+                                                <div className="flex items-center gap-2" style={{ color: payload[0].color }}>
+                                                    <span>{payload[0].name}: {(payload[0].value * 100).toFixed(2)}%</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                            <Legend wrapperStyle={{ paddingTop: '10px' }} />
+                            <ReferenceLine y={1.30} stroke="red" strokeDasharray="3 3" label={{ position: 'right', value: '130% Risk', fill: 'red', fontSize: 12 }} />
+                            <Line type="monotone" dataKey="maintenance_ratio" name="融資維持率" stroke="#38bdf8" strokeWidth={2} dot={false} activeDot={{ r: 6 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        const WVFChart = ({ data }) => {
+            if (!RechartsObj) return null;
+            return (
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                            <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(str) => str.slice(5)} minTickGap={30} />
+                            <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend wrapperStyle={{ paddingTop: '10px' }} />
+                            <Line type="monotone" dataKey="wvf" name="Williams Vix Fix (WVF)" stroke="#a855f7" strokeWidth={2} dot={false} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="wvf_upper" name="Upper Band (BB)" stroke="#fbbf24" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // --- Category Components ---
+
+        const CategoryTable = ({ data, title, columns, onSelect }) => (
+            <div className="glass-panel rounded-2xl p-6 h-full">
+                <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                    <i data-lucide="list" className="w-5 h-5 text-blue-400"></i>
+                    {title}
+                </h3>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-400">
+                        <thead className="text-xs uppercase bg-slate-800/50 text-slate-300">
+                            <tr>
+                                <th className="px-4 py-3 rounded-tl-lg">Category</th>
+                                <th className="px-4 py-3 text-right rounded-tr-lg">{columns.valueLabel}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((row, idx) => (
+                                <tr key={idx} onClick={() => onSelect(row.name)} className="border-b border-slate-700/50 table-row-hover transition-colors">
+                                    <td className="px-4 py-3 font-medium text-blue-300">{row.name}</td>
+                                    <td className="px-4 py-3 text-right text-slate-200 font-mono">
+                                        {columns.renderValue(row)}
+                                    </td>
+                                </tr>
+                            ))}
+                            {data.length === 0 && (
+                                <tr><td colSpan="2" className="px-4 py-3 text-center text-slate-500">No data available</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+
+        const CandlestickChart = ({ data, stockId, stockName }) => {
+            const chartRef = useRef(null);
+
+            useEffect(() => {
+                if (!chartRef.current || !data || data.length === 0) return;
+
+                // Calculate max volume for consistent scaling
+                const volumes = data.map(d => d.volume || 0);
+                const maxVol = Math.max(...volumes, 1); // Avoid 0
+
+                const options = {
+                    series: [
+                        {
+                            name: 'Price',
+                            type: 'candlestick',
+                            data: data.map(d => ({
+                                x: d.date,
+                                y: [d.open, d.high, d.low, d.close]
+                            }))
+                        },
+                        {
+                            name: 'Volume',
+                            type: 'bar',
+                            data: data.map(d => ({
+                                x: d.date,
+                                y: d.volume
+                            }))
+                        }
+                    ],
+                    chart: {
+                        id: `chart-${stockId}`,
+                        type: 'candlestick',
+                        height: 400,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    colors: ['#2E93fA', '#60a5fa'],
+                    title: {
+                        text: `${stockId} - ${stockName}`,
+                        align: 'left',
+                        style: {
+                            color: '#e2e8f0',
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    xaxis: {
+                        type: 'category',
+                        tickAmount: 10,
+                        labels: {
+                            style: { colors: '#94a3b8' },
+                            formatter: function (val) {
+                                if (typeof val === 'string' && val.length > 5) {
+                                    return val.slice(5);
+                                }
+                                return val;
+                            }
+                        },
+                        axisBorder: { color: '#334155' },
+                        axisTicks: { color: '#334155' }
+                    },
+                    yaxis: [
+                        {
+                            seriesName: 'Price',
+                            tooltip: { enabled: true },
+                            labels: {
+                                style: { colors: '#94a3b8' },
+                                formatter: (val) => val?.toFixed(2) || ''
+                            }
+                        },
+                        {
+                            seriesName: 'Volume',
+                            opposite: true,
+                            min: 0,
+                            max: maxVol * 3, // Scale volume to lower ~33%
+                            tickAmount: 2,
+                            forceNiceScale: false,
+                            labels: {
+                                show: false
+                            }
+                        }
+                    ],
+                    grid: {
+                        borderColor: '#334155',
+                        strokeDashArray: 3
+                    },
+                    plotOptions: {
+                        candlestick: {
+                            colors: {
+                                upward: '#ef4444',
+                                downward: '#22c55e'
+                            }
+                        },
+                        bar: {
+                            columnWidth: '50%'
+                        }
+                    },
+                    tooltip: {
+                        shared: false,
+                        intersect: true,
+                        custom: function ({ seriesIndex, dataPointIndex, w }) {
+                            const d = data[dataPointIndex];
+                            // With category axis, ensure we get data correctly
+                            if (!d) return '';
+
+                            if (seriesIndex === 0) {
+                                // Candlestick tooltip
+                                return `<div class="px-3 py-2 bg-slate-800 border border-slate-700 rounded text-xs">
+                                    <div class="font-bold mb-1">${d.date}</div>
+                                    <div>Open: ${d.open.toFixed(2)}</div>
+                                    <div>High: ${d.high.toFixed(2)}</div>
+                                    <div>Low: ${d.low.toFixed(2)}</div>
+                                    <div>Close: ${d.close.toFixed(2)}</div>
+                                </div>`;
+                            } else {
+                                // Volume tooltip
+                                return `<div class="px-3 py-2 bg-slate-800 border border-slate-700 rounded text-xs">
+                                    <div class="font-bold mb-1">${d.date}</div>
+                                    <div>Volume: ${(d.volume / 1000).toFixed(0)}K</div>
+                                </div>`;
+                            }
+                        }
+                    },
+                    theme: { mode: 'dark' }
+                };
+
+                const chart = new ApexCharts(chartRef.current, options);
+                chart.render();
+
+                return () => chart.destroy();
+            }, [data, stockId, stockName]);
+
+            return <div ref={chartRef} className="w-full"></div>;
+        };
+
+        const CategoryDetailView = ({ category, onBack }) => {
+            const [details, setDetails] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                fetchCategoryDetails(category).then(data => {
+                    setDetails(data);
+                    setLoading(false);
+                });
+            }, [category]);
+
+            return (
+                <div className="space-y-6 animate-fade-in">
+                    <button onClick={onBack} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors mb-4">
+                        <i data-lucide="arrow-left" className="w-5 h-5"></i> Back to Dashboard
+                    </button>
+
+                    <div className="glass-panel p-6 rounded-2xl mb-6">
+                        <h2 className="text-2xl font-bold text-white mb-2">{category} Category Analysis</h2>
+                        <p className="text-slate-400">1-Year Historical Performance for Stocks in this Category</p>
+                    </div>
+
+                    {loading ? (
+                        <div className="text-center py-20 text-slate-500 animate-pulse">Loading charts...</div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {details &&
+                                details.stocks &&
+                                Object.entries(details.stocks).map(([stockId, stockInfo]) => (
+                                    <div key={stockId} className="glass-panel p-4 rounded-xl">
+                                        <CandlestickChart
+                                            data={stockInfo.data}
+                                            stockId={stockId}
+                                            stockName={stockInfo.name}
+                                        />
+                                    </div>
+                                ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --- Level Analysis Components ---
+        const LevelCandlestickChart = ({ data, levels, stockId, stockName }) => {
+            const chartRef = useRef(null);
+
+            useEffect(() => {
+                if (!chartRef.current || !data || data.length === 0) return;
+
+                // --- X-AXIS ZOOM LOGIC: Show last ~3 months (65 trading days) ---
+                const recentData = data.slice(-65);
+
+                const volumes = recentData.map(d => d.volume || 0);
+                const maxVol = Math.max(...volumes, 1);
+                const lastClose = recentData[recentData.length - 1].close;
+
+                // Color Logic
+                const levelColors = ['#4ade80', '#facc15', '#a855f7', '#ef4444']; // High-Low: Light Green, Yellow, Purple, Red
+                const sortedLevels = [...levels].sort((a, b) => b - a); // Descending
+
+                // Title Color
+                let titleColor = '#e2e8f0'; // Default White
+                if (sortedLevels.length >= 3) {
+                    if (lastClose < sortedLevels[2]) {
+                        titleColor = '#a855f7'; // Purple
+                    } else if (lastClose < sortedLevels[1]) {
+                        titleColor = '#3b82f6'; // Blue
+                    }
+                }
+
+                // --- Y-AXIS SCALING LOGIC: Include ALL levels ---
+                const priceHighs = recentData.map(d => d.high);
+                const priceLows = recentData.map(d => d.low);
+                const allValues = [...priceHighs, ...priceLows, ...levels];
+                const minY = Math.min(...allValues) * 0.95; // 5% buffer
+                const maxY = Math.max(...allValues) * 1.05;
+
+                const options = {
+                    series: [
+                        {
+                            name: 'Price',
+                            type: 'candlestick',
+                            data: recentData.map(d => ({
+                                x: d.date,
+                                y: [d.open, d.high, d.low, d.close]
+                            }))
+                        },
+                        {
+                            name: 'Volume',
+                            type: 'bar',
+                            data: recentData.map(d => ({
+                                x: d.date,
+                                y: d.volume
+                            }))
+                        }
+                    ],
+                    chart: {
+                        id: `level-chart-${stockId}`,
+                        type: 'candlestick',
+                        height: 350,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    colors: ['#2E93fA', '#60a5fa'],
+                    title: {
+                        text: `${stockId} ${stockName}`,
+                        align: 'center',
+                        style: {
+                            color: titleColor,
+                            fontSize: '16px',
+                            fontWeight: 700
+                        }
+                    },
+                    annotations: {
+                        yaxis: sortedLevels.map((lvl, idx) => ({
+                            y: lvl,
+                            borderColor: levelColors[idx] || '#cbd5e1',
+                            label: {
+                                borderColor: levelColors[idx] || '#cbd5e1',
+                                style: {
+                                    color: '#fff',
+                                    background: levelColors[idx] || '#cbd5e1',
+                                },
+                                text: `L${idx + 1}: ${lvl}`
+                            }
+                        }))
+                    },
+                    xaxis: {
+                        type: 'category',
+                        tickAmount: 5,
+                        labels: {
+                            style: { colors: '#94a3b8' },
+                            formatter: function (val) {
+                                if (typeof val === 'string' && val.length > 5) return val.slice(5);
+                                return val;
+                            }
+                        }
+                    },
+                    yaxis: [
+                        {
+                            seriesName: 'Price',
+                            min: minY,
+                            max: maxY,
+                            labels: {
+                                style: { colors: '#94a3b8' },
+                                formatter: (val) => val?.toFixed(1)
+                            }
+                        },
+                        {
+                            seriesName: 'Volume',
+                            opposite: true,
+                            min: 0,
+                            max: maxVol * 4,
+                            labels: { show: false }
+                        }
+                    ],
+                    grid: { borderColor: '#334155', strokeDashArray: 3 },
+                    plotOptions: {
+                        candlestick: {
+                            colors: { upward: '#ef4444', downward: '#22c55e' }
+                        },
+                        bar: { columnWidth: '50%' }
+                    },
+                    theme: { mode: 'dark' }
+                };
+
+                const chart = new ApexCharts(chartRef.current, options);
+                chart.render();
+
+                return () => chart.destroy();
+            }, [data, levels, stockId, stockName]);
+
+            return <div ref={chartRef} className="w-full"></div>;
+        };
+
+        const SmaCandlestickChart = ({ data, shortSmaDays, longSmaDays, stockId, stockName, displayMonths = null }) => {
+            const chartRef = useRef(null);
+
+            useEffect(() => {
+                if (!data || data.length === 0) return;
+
+                // 1. Prepare Candlestick Data (OHLC)
+                // Filter out empty data
+                const validData = data.filter(d => d.open !== null && d.close !== null);
+
+                // Calculate SMAs
+                // We need the full history to calculate SMA correctly, then we can slice for display if needed.
+                // However, user requested 1-year chart, matching the data fetching.
+
+                const calculateSMA = (data, period) => {
+                    let sma = [];
+                    for (let i = 0; i < data.length; i++) {
+                        if (i < period - 1) {
+                            sma.push({ x: data[i].date, y: null });
+                            continue;
+                        }
+                        let sum = 0;
+                        for (let j = 0; j < period; j++) {
+                            sum += data[i - j].close;
+                        }
+                        sma.push({ x: data[i].date, y: parseFloat((sum / period).toFixed(2)) });
+                    }
+                    return sma;
+                };
+
+                const shortSmaDatafull = calculateSMA(validData, shortSmaDays);
+                const longSmaDatafull = calculateSMA(validData, longSmaDays);
+
+                // Filter Data for Display if displayMonths is set
+                let displayData = validData;
+                let displayShortSma = shortSmaDatafull;
+                let displayLongSma = longSmaDatafull;
+
+                if (displayMonths) {
+                    const lastDate = new Date(validData[validData.length - 1].date);
+                    const cutoffDate = new Date(lastDate);
+                    cutoffDate.setMonth(cutoffDate.getMonth() - displayMonths);
+
+                    displayData = validData.filter(d => new Date(d.date) >= cutoffDate);
+                    displayShortSma = shortSmaDatafull.filter(d => new Date(d.x) >= cutoffDate);
+                    displayLongSma = longSmaDatafull.filter(d => new Date(d.x) >= cutoffDate);
+                }
+
+
+                // Sanitize ID for ApexCharts (remove dots, spaces)
+                const safeId = `chart-${stockId.replace(/[^a-zA-Z0-9]/g, '_')}-${displayMonths || '12m'}`;
+
+                // formatting date for better tooltip/display if needed, but simple YYYY-MM-DD works well for matching.
+                // For category axis, ensuring x is string.
+                const candlestickSeries = displayData.map(item => ({
+                    x: item.date, // Use string date for category axis
+                    y: [item.open, item.high, item.low, item.close]
+                }));
+
+                const options = {
+                    series: [
+                        { name: 'Price', type: 'candlestick', data: candlestickSeries },
+                        { name: `SMA ${shortSmaDays}`, type: 'line', data: displayShortSma.map(d => ({ x: d.x, y: d.y })) }, // d.x is already date string
+                        { name: `SMA ${longSmaDays}`, type: 'line', data: displayLongSma.map(d => ({ x: d.x, y: d.y })) }
+                    ],
+                    chart: {
+                        id: safeId,
+                        type: 'candlestick',
+                        height: 350,
+                        width: '100%',
+                        background: 'transparent',
+                        toolbar: { show: false },
+                        animations: { enabled: false },
+                        zoom: { enabled: true }
+                    },
+                    title: {
+                        text: `${stockId} ${stockName} (${displayMonths ? displayMonths + ' Months' : '1 Year'})`,
+                        align: 'left',
+                        style: { color: '#e2e8f0', fontSize: '16px' }
+                    },
+                    xaxis: {
+                        type: 'category', // Continuous axis (skips empty dates)
+                        labels: {
+                            style: { colors: '#94a3b8' },
+                            // Reduce label clutter for 1-year chart if needed, but Apex usually handles it.
+                            // We can use a formatter to just show simpler dates if desired.
+                            formatter: function (val) {
+                                if (!val) return '';
+                                const d = new Date(val);
+                                // Return standard date format
+                                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+                            }
+                        },
+                        tickAmount: 10, // Limit number of ticks to avoid crowding
+                        axisBorder: { show: false },
+                        axisTicks: { show: false }
+                    },
+                    yaxis: {
+                        tooltip: { enabled: true },
+                        labels: { style: { colors: '#94a3b8' } },
+                        forceNiceScale: true
+                    },
+                    grid: {
+                        borderColor: '#334155',
+                        strokeDashArray: 4
+                    },
+                    theme: { mode: 'dark' },
+                    stroke: { width: [1, 2, 2] },
+                    colors: ['#2E93fA', '#facc15', '#06b6d4'], // Candle (overridden by plotOptions), Short (Yellow), Long (Cyan)
+                    plotOptions: {
+                        candlestick: {
+                            colors: { upward: '#ef4444', downward: '#22c55e' }
+                        }
+                    }
+                };
+
+                const chart = new ApexCharts(chartRef.current, options);
+                chart.render();
+
+                return () => chart.destroy();
+            }, [data, shortSmaDays, longSmaDays, stockId, stockName, displayMonths]);
+
+            return <div ref={chartRef} className="w-full min-w-0 overflow-hidden"></div>;
+        };
+
+        const LevelAnalysisSection = () => {
+            // Input State
+            const [rows, setRows] = useState([{ id: '', l1: '', l2: '', l3: '' }]);
+            const [removeId, setRemoveId] = useState('');
+            const [analyzedStocks, setAnalyzedStocks] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            useEffect(() => {
+                const loadPreset = async () => {
+                    try {
+                        const res = await axios.get('/api/preset-levels');
+                        if (res.data.content) {
+                            const lines = res.data.content.split('\n');
+                            const newRows = [];
+                            lines.forEach(line => {
+                                const parts = line.split(',');
+                                if (parts.length > 0 && parts[0].trim()) {
+                                    newRows.push({
+                                        id: parts[0].trim(),
+                                        l1: parts[1] || '',
+                                        l2: parts[2] || '',
+                                        l3: parts[3] || ''
+                                    });
+                                }
+                            });
+                            if (newRows.length > 0) setRows(newRows);
+                        }
+                    } catch (e) {
+                        console.error("Failed to load preset levels:", e);
+                    }
+                };
+                loadPreset();
+            }, []);
+
+            const saveToCsv = async (currentRows) => {
+                const content = currentRows
+                    .filter(r => r.id)
+                    .map(r => `${r.id},${r.l1},${r.l2},${r.l3}`)
+                    .join('\n');
+                try {
+                    await axios.post('/api/save-levels', { content });
+                } catch (e) {
+                    console.error("Failed to save levels:", e);
+                }
+            };
+
+            const handleRemoveStock = async () => {
+                if (!removeId) return;
+                const newRows = rows.filter(r => r.id !== removeId);
+                setRows(newRows);
+                setRemoveId('');
+                await saveToCsv(newRows);
+
+                if (analyzedStocks && analyzedStocks[removeId]) {
+                    const newAnalyzed = { ...analyzedStocks };
+                    delete newAnalyzed[removeId];
+                    setAnalyzedStocks(newAnalyzed);
+                }
+            };
+            /* handleFileUpload removed */
+
+
+            const addRow = () => setRows([...rows, { id: '', l1: '', l2: '', l3: '' }]);
+
+            const handleRowChange = (idx, field, val) => {
+                const newRows = [...rows];
+                newRows[idx][field] = val;
+                setRows(newRows);
+            };
+
+
+            const handleAnalyze = async () => {
+                setLoading(true);
+                // First Save
+                await saveToCsv(rows);
+
+                let stockIds = [];
+                let stockLevels = {};
+
+                try {
+                    rows.forEach(r => {
+                        if (r.id) {
+                            stockIds.push(r.id);
+                            const lvls = [r.l1, r.l2, r.l3].map(Number).filter(n => !isNaN(n) && n > 0);
+                            stockLevels[r.id] = lvls;
+                        }
+                    });
+
+                    if (stockIds.length === 0) {
+                        setLoading(false);
+                        return;
+                    }
+
+                    // Fetch Batch Data
+                    const response = await axios.post('/api/batch-stock-data', { stock_ids: stockIds });
+                    const stocksData = response.data.stocks;
+
+                    // Combine Data with Levels
+                    const finalResult = {};
+                    Object.keys(stocksData).forEach(sid => {
+                        finalResult[sid] = {
+                            ...stocksData[sid],
+                            levels: stockLevels[sid] || []
+                        };
+                    });
+
+                    setAnalyzedStocks(finalResult);
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Analysis Failed");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <div className="flex flex-col md:flex-row gap-8">
+                            <div className="flex-1 space-y-4">
+                                <h3 className="text-lg font-semibold text-blue-400 border-b border-slate-700 pb-2">Custom Levels</h3>
+                                <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                                    {rows.map((r, idx) => (
+                                        <div key={idx} className="flex gap-2">
+                                            <input placeholder="ID" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.id} onChange={e => handleRowChange(idx, 'id', e.target.value)} />
+                                            <input placeholder="Lvl 1" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l1} onChange={e => handleRowChange(idx, 'l1', e.target.value)} />
+                                            <input placeholder="Lvl 2" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l2} onChange={e => handleRowChange(idx, 'l2', e.target.value)} />
+                                            <input placeholder="Lvl 3" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l3} onChange={e => handleRowChange(idx, 'l3', e.target.value)} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <button onClick={addRow} className="text-sm text-blue-400 hover:text-blue-300 font-semibold">+ Add Row</button>
+                            </div>
+
+                            <div className="w-full md:w-64 space-y-4">
+                                <h3 className="text-lg font-semibold text-red-400 border-b border-slate-700 pb-2">Remove Stock</h3>
+                                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700 space-y-3">
+                                    <input
+                                        placeholder="Stock ID"
+                                        className="w-full bg-slate-900 text-white p-2 rounded border border-slate-700 focus:border-red-400 transition-colors"
+                                        value={removeId}
+                                        onChange={e => setRemoveId(e.target.value)}
+                                    />
+                                    <button
+                                        onClick={handleRemoveStock}
+                                        className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 py-2 rounded-lg transition-all text-sm font-bold flex justify-center items-center gap-2"
+                                    >
+                                        <i data-lucide="trash-2" className="w-4 h-4"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 pt-4 border-t border-slate-700 flex justify-end">
+                            <button onClick={handleAnalyze} disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="bar-chart-2"></i>}
+                                {loading ? 'Analyzing & Saving...' : 'Save & Analyze'}
+                            </button>
+                        </div>
+                    </div>
+
+
+                    {
+                        analyzedStocks && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {Object.entries(analyzedStocks).map(([sid, info]) => (
+                                    <div key={sid} className="glass-panel p-4 rounded-xl">
+                                        <LevelCandlestickChart
+                                            data={info.data}
+                                            levels={info.levels}
+                                            stockId={sid}
+                                            stockName={info.name}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    }
+                </div >
+            );
+        };
+
+        const SmaAnalysisSection = () => {
+            const [rows, setRows] = useState([{ id: '', short: '', long: '' }]);
+            const [removeId, setRemoveId] = useState('');
+            const [analyzedStocks, setAnalyzedStocks] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            useEffect(() => {
+                const loadPreset = async () => {
+                    try {
+                        const res = await axios.get('/api/preset-sma');
+                        if (res.data.content) {
+                            const lines = res.data.content.split('\n');
+                            const newRows = [];
+                            lines.forEach(line => {
+                                const parts = line.split(',');
+                                if (parts.length > 0 && parts[0].trim()) {
+                                    newRows.push({
+                                        id: parts[0].trim(),
+                                        short: parts[1] || '',
+                                        long: parts[2] || ''
+                                    });
+                                }
+                            });
+                            if (newRows.length > 0) setRows(newRows);
+                        }
+                    } catch (e) { console.error(e); }
+                };
+                loadPreset();
+            }, []);
+
+            const saveToCsv = async (currentRows) => {
+                const content = currentRows
+                    .filter(r => r.id)
+                    .map(r => `${r.id},${r.short},${r.long}`)
+                    .join('\n');
+                try {
+                    await axios.post('/api/save-sma', { content });
+                } catch (e) { console.error(e); }
+            };
+
+            const handleAnalyze = async () => {
+                setLoading(true);
+                await saveToCsv(rows);
+
+                let stockIds = [];
+                let stockSmaParams = {};
+
+                rows.forEach(r => {
+                    if (r.id) {
+                        stockIds.push(r.id);
+                        stockSmaParams[r.id] = {
+                            short: parseInt(r.short) || 20,
+                            long: parseInt(r.long) || 60
+                        };
+                    }
+                });
+
+                if (stockIds.length === 0) {
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    const response = await axios.post('/api/batch-stock-data', { stock_ids: stockIds });
+                    const stocksData = response.data.stocks;
+
+                    const finalResult = {};
+                    Object.keys(stocksData).forEach(sid => {
+                        finalResult[sid] = {
+                            ...stocksData[sid],
+                            smaParams: stockSmaParams[sid]
+                        };
+                    });
+                    setAnalyzedStocks(finalResult);
+                } catch (err) {
+                    console.error(err);
+                    alert("Analysis Failed");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleRemoveStock = async () => {
+                if (!removeId) return;
+                const newRows = rows.filter(r => r.id !== removeId);
+                setRows(newRows);
+                setRemoveId('');
+                await saveToCsv(newRows);
+
+                if (analyzedStocks && analyzedStocks[removeId]) {
+                    const newAnalyzed = { ...analyzedStocks };
+                    delete newAnalyzed[removeId];
+                    setAnalyzedStocks(newAnalyzed);
+                }
+            };
+
+            const handleRowChange = (idx, field, val) => {
+                const newRows = [...rows];
+                newRows[idx][field] = val;
+                setRows(newRows);
+            };
+
+            const addRow = () => setRows([...rows, { id: '', short: '', long: '' }]);
+
+            return (
+                <div className="space-y-6">
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <div className="flex flex-col md:flex-row gap-8">
+                            <div className="flex-1 space-y-4">
+                                <h3 className="text-lg font-semibold text-yellow-400 border-b border-slate-700 pb-2">SMA Setup</h3>
+                                <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                                    {rows.map((r, idx) => (
+                                        <div key={idx} className="flex gap-2">
+                                            <input placeholder="ID" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.id} onChange={e => handleRowChange(idx, 'id', e.target.value)} />
+                                            <input placeholder="Short SMA" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.short} onChange={e => handleRowChange(idx, 'short', e.target.value)} />
+                                            <input placeholder="Long SMA" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.long} onChange={e => handleRowChange(idx, 'long', e.target.value)} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <button onClick={addRow} className="text-sm text-blue-400 hover:text-blue-300 font-semibold">+ Add Row</button>
+                            </div>
+
+                            <div className="w-full md:w-64 space-y-4">
+                                <h3 className="text-lg font-semibold text-red-400 border-b border-slate-700 pb-2">Remove Stock</h3>
+                                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700 space-y-3">
+                                    <input
+                                        placeholder="Stock ID"
+                                        className="w-full bg-slate-900 text-white p-2 rounded border border-slate-700 focus:border-red-400 transition-colors"
+                                        value={removeId}
+                                        onChange={e => setRemoveId(e.target.value)}
+                                    />
+                                    <button onClick={handleRemoveStock} className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 py-2 rounded-lg transition-all text-sm font-bold flex justify-center items-center gap-2">
+                                        <i data-lucide="trash-2" className="w-4 h-4"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 pt-4 border-t border-slate-700 flex justify-end">
+                            <button onClick={handleAnalyze} disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="bar-chart-2"></i>}
+                                {loading ? 'Analyzing & Saving...' : 'Save & Analyze'}
+                            </button>
+                        </div>
+                    </div>
+
+                    {analyzedStocks && (
+                        <div className="flex flex-col gap-8">
+                            {Object.entries(analyzedStocks).map(([sid, info]) => (
+                                <div key={sid} className="glass-panel p-4 rounded-xl">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <SmaCandlestickChart
+                                            data={info.data}
+                                            shortSmaDays={info.smaParams.short}
+                                            longSmaDays={info.smaParams.long}
+                                            stockId={sid}
+                                            stockName={info.name}
+                                        />
+                                        <SmaCandlestickChart
+                                            data={info.data}
+                                            shortSmaDays={info.smaParams.short}
+                                            longSmaDays={info.smaParams.long}
+                                            stockId={sid}
+                                            stockName={info.name}
+                                            displayMonths={3}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+
+        // --- Correlation Analysis Components ---
+        const CorrelationChart = ({ data, series1Name, series2Name, series1Key = 'stock_price', series2Key = 'metal_price', title }) => {
+            const chartRef = useRef(null);
+
+            useEffect(() => {
+                if (!chartRef.current || !data || data.length === 0) return;
+
+                const series1Data = data.map(d => d[series1Key]);
+                const series2Data = data.map(d => d[series2Key]);
+
+                // Calculate constraints for dual y-axis
+                const min1 = Math.min(...series1Data) * 0.95;
+                const max1 = Math.max(...series1Data) * 1.05;
+                const min2 = Math.min(...series2Data) * 0.95;
+                const max2 = Math.max(...series2Data) * 1.05;
+
+                const options = {
+                    series: [
+                        {
+                            name: series1Name,
+                            type: 'line',
+                            data: data.map(d => ({ x: d.date, y: d[series1Key] }))
+                        },
+                        {
+                            name: series2Name,
+                            type: 'line',
+                            data: data.map(d => ({ x: d.date, y: d[series2Key] }))
+                        }
+                    ],
+                    chart: {
+                        id: `chart-${Math.random().toString(36).substr(2, 9)}`,
+                        type: 'line',
+                        height: 400,
+                        background: 'transparent',
+                        toolbar: {
+                            show: true,
+                            tools: { download: false }
+                        }
+                    },
+                    colors: ['#0ea5e9', '#f59e0b'],
+                    stroke: { width: [3, 3], curve: 'smooth' },
+                    title: {
+                        text: title,
+                        align: 'left',
+                        style: { color: '#f8fafc', fontSize: '18px' }
+                    },
+                    xaxis: {
+                        type: 'category',
+                        tickAmount: 10,
+                        labels: {
+                            style: { colors: '#94a3b8' },
+                            formatter: (val) => (typeof val === 'string' && val.length > 5) ? val.slice(5) : val
+                        }
+                    },
+                    yaxis: [
+                        {
+                            seriesName: series1Name,
+                            min: min1,
+                            max: max1,
+                            title: { text: series1Name, style: { color: '#0ea5e9' } },
+                            labels: { style: { colors: '#0ea5e9' }, formatter: (val) => val.toFixed(1) }
+                        },
+                        {
+                            seriesName: series2Name,
+                            opposite: true,
+                            min: min2,
+                            max: max2,
+                            title: { text: series2Name, style: { color: '#f59e0b' } },
+                            labels: { style: { colors: '#f59e0b' }, formatter: (val) => val.toFixed(2) }
+                        }
+                    ],
+                    grid: { borderColor: '#334155', strokeDashArray: 3 },
+                    theme: { mode: 'dark' },
+                    legend: { position: 'top', horizontalAlign: 'right' }
+                };
+
+                const chart = new ApexCharts(chartRef.current, options);
+                chart.render();
+
+                return () => chart.destroy();
+            }, [data, series1Name, series2Name, series1Key, series2Key, title]);
+
+            const handleDownload = async () => {
+                const element = chartRef.current.parentElement;
+                if (!element) return;
+                try {
+                    const canvas = await window.html2canvas(element, { backgroundColor: '#0f172a', scale: 2 });
+                    canvas.toBlob((blob) => {
+                        window.saveAs(blob, `${title.replace(/\s+/g, '_')}.jpg`);
+                    }, 'image/jpeg');
+                } catch (err) { console.error(err); }
+            };
+
+            return (
+                <div className="relative group">
+                    <button onClick={handleDownload} className="absolute top-2 right-12 z-10 bg-slate-800/80 hover:bg-slate-700 p-2 rounded text-slate-300 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
+                        <i data-lucide="download" className="w-4 h-4"></i>
+                    </button>
+                    <div ref={chartRef} className="w-full"></div>
+                </div>
+            );
+        };
+
+        const CorrelationAnalysisSection = () => {
+            const [stockInputs, setStockInputs] = useState(['2002.TW', '2014.TW']);
+            const [metal, setMetal] = useState('Nickel');
+            const [startDate, setStartDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]);
+            const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+            const [results, setResults] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const metals = ['None', 'Aluminium', 'Copper', 'Nickel', 'Lead', 'Zinc', 'Tin', 'Platinum', 'Gold', 'Silver'];
+
+            const handleAddStock = () => setStockInputs([...stockInputs, '']);
+            const handleRemoveStock = (index) => setStockInputs(stockInputs.filter((_, i) => i !== index));
+            const handleStockChange = (index, value) => {
+                const newInputs = [...stockInputs];
+                newInputs[index] = value;
+                setStockInputs(newInputs);
+            };
+
+            const handleAnalyze = async (overrideMetal = null) => {
+                setLoading(true);
+                setResults(null);
+
+                const stockIds = stockInputs.map(s => s.trim()).filter(s => s);
+                if (stockIds.length === 0) {
+                    alert('Please enter at least one stock ID');
+                    setLoading(false);
+                    return;
+                }
+
+                let metalToSend = (overrideMetal !== null) ? overrideMetal : metal;
+                if (metalToSend === 'None') metalToSend = null;
+
+                try {
+                    const response = await axios.post('/api/analyze', {
+                        stock_ids: stockIds,
+                        metal: metalToSend,
+                        start_date: startDate,
+                        end_date: endDate
+                    });
+                    setResults(response.data);
+                } catch (error) {
+                    console.error("Analysis Error:", error);
+                    alert("Analysis failed.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="space-y-8">
+                    {/* Controls */}
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                            {/* Stock IDs */}
+                            <div className="space-y-2 lg:col-span-2">
+                                <label className="text-sm text-slate-400 font-semibold flex justify-between items-center">
+                                    <span>Stock IDs</span>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleAnalyze('None')} className="text-blue-400 text-xs hover:text-blue-300 transition-colors flex items-center gap-1 font-bold border border-blue-500/30 px-2 py-1 rounded">
+                                            <i data-lucide="git-compare" className="w-3 h-3"></i> Compare Stocks
+                                        </button>
+                                        <button onClick={handleAddStock} className="text-emerald-400 text-xs hover:text-emerald-300 transition-colors flex items-center gap-1">
+                                            <i data-lucide="plus-circle" className="w-3 h-3"></i> Add Stock
+                                        </button>
+                                    </div>
+                                </label>
+                                <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                                    {stockInputs.map((input, idx) => (
+                                        <div key={idx} className="flex gap-2 items-center animate-fade-in">
+                                            <input
+                                                type="text"
+                                                value={input}
+                                                onChange={(e) => handleStockChange(idx, e.target.value)}
+                                                className="flex-1 bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none placeholder-slate-600"
+                                                placeholder="e.g. 2002.TW"
+                                            />
+                                            {stockInputs.length > 1 && (
+                                                <button onClick={() => handleRemoveStock(idx)} className="p-2 text-red-500 hover:bg-slate-800/50 rounded-lg transition-colors">
+                                                    <i data-lucide="trash-2" className="w-4 h-4"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm text-slate-400 font-semibold">Metal</label>
+                                <select
+                                    value={metal}
+                                    onChange={(e) => setMetal(e.target.value)}
+                                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                                >
+                                    {metals.map(m => <option key={m} value={m}>{m}</option>)}
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm text-slate-400 font-semibold">Date Range</label>
+                                <div className="flex gap-2">
+                                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-1/2 bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-2.5 text-white text-xs" />
+                                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-1/2 bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-2.5 text-white text-xs" />
+                                </div>
+                            </div>
+
+                            <div className="flex items-end">
+                                <button
+                                    onClick={() => handleAnalyze()}
+                                    disabled={loading}
+                                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="play-circle"></i>}
+                                    {loading ? 'Running...' : 'Run Analysis'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Results Container */}
+                    <div className="space-y-12">
+
+                        {/* Stock vs Metal Results */}
+                        {results && results.stock_results && results.metal_ticker !== 'None' && (
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold text-white border-b border-slate-700 pb-2">Stock vs Metal ({metal})</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                                    {results.stock_results.map((data) => {
+                                        const stockId = data.stock_id;
+                                        if (data.error) return null;
+                                        const correlation = data.correlation || 0;
+                                        const corrColor = correlation > 0.7 ? 'text-emerald-400' : correlation < -0.7 ? 'text-red-400' : 'text-slate-400';
+                                        return (
+                                            <div key={stockId} className="glass-panel p-6 rounded-2xl">
+                                                <div className="flex justify-between items-start mb-4 border-b border-slate-700 pb-4">
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-white">{stockId} <span className="text-slate-500 text-sm">vs</span> {metal}</h3>
+                                                        <div className="mt-1"><span className="text-slate-400 text-sm">Correlation: </span><span className={`text-2xl font-bold ${corrColor}`}>{correlation.toFixed(4)}</span></div>
+                                                    </div>
+                                                </div>
+                                                <CorrelationChart
+                                                    data={data.data}
+                                                    series1Name={`${stockId} Price`} series2Name={`${metal} Price`}
+                                                    series1Key="stock_price" series2Key="metal_price"
+                                                    title={`${stockId} vs ${metal}`}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Stock vs Stock Results */}
+                        {results && results.stock_vs_stock && results.stock_vs_stock.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold text-white border-b border-slate-700 pb-2">Stock Comparison</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                                    {results.stock_vs_stock.map((data, idx) => {
+                                        const correlation = data.correlation;
+                                        const corrColor = correlation > 0.7 ? 'text-emerald-400' : correlation < -0.7 ? 'text-red-400' : 'text-slate-400';
+                                        return (
+                                            <div key={idx} className="glass-panel p-6 rounded-2xl">
+                                                <div className="flex justify-between items-start mb-4 border-b border-slate-700 pb-4">
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-white">{data.stock1} <span className="text-slate-500 text-sm">vs</span> {data.stock2}</h3>
+                                                        <div className="mt-1"><span className="text-slate-400 text-sm">Correlation: </span><span className={`text-2xl font-bold ${corrColor}`}>{correlation.toFixed(4)}</span></div>
+                                                    </div>
+                                                </div>
+                                                <CorrelationChart
+                                                    data={data.data}
+                                                    series1Name={`${data.stock1} Price`} series2Name={`${data.stock2} Price`}
+                                                    series1Key="price1" series2Key="price2"
+                                                    title={`${data.stock1} vs ${data.stock2}`}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const AiSummarySection = () => {
+            const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+            const [model, setModel] = useState("models/gemini-1.5-flash");
+            const [availableModels, setAvailableModels] = useState([]);
+            const [summary, setSummary] = useState("");
+            const [loading, setLoading] = useState(false);
+
+            useEffect(() => {
+                const fetchModels = async () => {
+                    try {
+                        const res = await axios.get('/api/ai-models');
+                        if (res.data.models) {
+                            setAvailableModels(res.data.models);
+                            // Try to set a smart default
+                            const current = res.data.models.find(m => m === model);
+                            if (!current && res.data.models.length > 0) {
+                                const prefer = res.data.models.find(m => m.includes('1.5-flash')) || res.data.models[0];
+                                setModel(prefer);
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Failed to fetch models", e);
+                        setAvailableModels(['models/gemini-1.5-flash', 'models/gemini-pro']);
+                    }
+                };
+                fetchModels();
+            }, []);
+
+            const handleGenerate = async () => {
+                setLoading(true);
+                setSummary("");
+                try {
+                    const res = await axios.post('/api/ai-summary', { date, model });
+                    if (res.data.summary) {
+                        setSummary(res.data.summary);
+                    } else if (res.data.error) {
+                        setSummary("Error: " + res.data.error);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    setSummary("Failed to generate summary. Please check console for details.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="glass-panel p-6 rounded-2xl mb-6 shadow-lg shadow-emerald-900/10 border border-emerald-500/30">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 border-b border-slate-700 pb-4 gap-4">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                            <i data-lucide="bot" className="text-emerald-400 w-6 h-6"></i>
+                            AI Market Summary (Gemini)
+                        </h2>
+                        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <select
+                                value={model}
+                                onChange={e => setModel(e.target.value)}
+                                className="bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500 max-w-[200px]"
+                            >
+                                {availableModels.map(m => <option key={m} value={m}>{m.replace('models/', '')}</option>)}
+                            </select>
+
+                            <input
+                                type="date"
+                                value={date}
+                                onChange={e => setDate(e.target.value)}
+                                className="bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                            />
+                            <button
+                                onClick={handleGenerate}
+                                disabled={loading}
+                                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? <i data-lucide="loader" className="animate-spin w-4 h-4"></i> : <i data-lucide="sparkles" className="w-4 h-4"></i>}
+                                {loading ? "Analyzing..." : "Generate Summary"}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-900/50 rounded-xl p-6 min-h-[100px] text-slate-300 whitespace-pre-wrap leading-relaxed border border-slate-700/50 font-sans text-base">
+                        {loading && (
+                            <div className="flex flex-col items-center justify-center py-8 space-y-3">
+                                <i data-lucide="cpu" className="w-8 h-8 text-emerald-400 animate-pulse"></i>
+                                <span className="text-emerald-400 animate-pulse">Analyzing market data and generating insights...</span>
+                            </div>
+                        )}
+                        {!loading && !summary && (
+                            <div className="flex flex-col items-center justify-center py-8 text-slate-500 space-y-2">
+                                <i data-lucide="search" className="w-8 h-8 opacity-50"></i>
+                                <span className="italic">Select a model and date, then click "Generate Summary".</span>
+                            </div>
+                        )}
+                        {!loading && summary && (
+                            <div className="animate-fade-in">
+                                {summary}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- App ---
+        const App = () => {
+            const [view, setView] = useState("dashboard"); // dashboard | detail
+            const [selectedCategory, setSelectedCategory] = useState(null);
+            const [activeTab, setActiveTab] = useState("market"); // market | category
+
+            // Market Data
+            const [historyData, setHistoryData] = useState([]);
+            const [distData, setDistData] = useState(null);
+
+            // Category Data
+            const [catStats, setCatStats] = useState(null);
+            const [selectedDate, setSelectedDate] = useState(null);
+            const [availableDates, setAvailableDates] = useState([]);
+
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                const loadAll = async () => {
+                    const [mkt, cat] = await Promise.all([fetchMarketData(), fetchCategoryStats()]);
+                    setHistoryData(mkt.history || []);
+                    setDistData(mkt.distribution);
+                    setCatStats(cat);
+                    if (cat && cat.available_dates) {
+                        setAvailableDates(cat.available_dates);
+                    }
+                    setLoading(false);
+                };
+                loadAll();
+            }, []);
+
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [loading, view, activeTab]);
+
+            const recentData = useMemo(() => {
+                if (historyData.length === 0) return [];
+                return historyData.slice(-250);
+            }, [historyData]);
+
+            const handleSelectCategory = (name) => {
+                setSelectedCategory(name);
+                setView("detail");
+                window.scrollTo(0, 0);
+            };
+
+            const handleDateChange = async (dateStr) => {
+                setSelectedDate(dateStr);
+                const cat = await fetchCategoryStats(dateStr);
+                setCatStats(cat);
+            };
+
+            return (
+                <div className="min-h-screen pb-10">
+                    <header className="glass-panel sticky top-0 z-50 mb-8 border-b border-slate-700">
+                        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <i data-lucide="layout-dashboard" className="text-blue-400 w-6 h-6"></i>
+                                <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">
+                                    Taiwan Stock Monitor
+                                </h1>
+                            </div>
+                            <div className="text-sm text-slate-400">
+                                {loading ? "Connecting..." : (
+                                    view === "dashboard" ? `Market Overview` : `Detail View`
+                                )}
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="container mx-auto px-4 md:px-6 space-y-8">
+                        {loading ? (
+                            <div className="flex items-center justify-center h-64 text-slate-500 animate-pulse">Loading Data...</div>
+                        ) : view === "detail" ? (
+                            <CategoryDetailView category={selectedCategory} onBack={() => setView("dashboard")} />
+                        ) : (
+                            <>
+                                {/* Tab Navigation */}
+                                <div className="flex space-x-4 border-b border-slate-700 pb-2 mb-6">
+                                    <button
+                                        onClick={() => setActiveTab("market")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "market" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        Market Breadth
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("category")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "category" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        Category Analysis
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("levels")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "levels" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        Custom Levels
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("sma")}
+
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "sma" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        SMA Chart
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("correlation")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "correlation" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        Correlation
+                                    </button>
+                                </div>
+
+
+                                {/* Market Breadth Section */}
+                                <div className={activeTab === 'market' ? 'space-y-6 block' : 'hidden'}>
+                                    <AiSummarySection />
+                                    <h2 className="text-xl font-bold text-white border-l-4 border-blue-500 pl-4">Market Breadth</h2>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <section className="glass-panel rounded-2xl p-6">
+                                            <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="trending-up" className="text-red-400 w-5 h-5"></i>一年新高 vs 一年新低 (Within 5%)</h2></div>
+                                            <HighLowChart data={recentData} />
+                                        </section>
+                                        <section className="glass-panel rounded-2xl p-6">
+                                            <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="bar-chart" className="text-yellow-400 w-5 h-5"></i>Daily Price Change Dist.</h2></div>
+                                            {distData && <DistributionChart data={distData.data} date={distData.date} />}
+                                        </section>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <section className="glass-panel rounded-2xl p-6">
+                                            <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="activity" className="text-blue-400 w-5 h-5"></i>季線上 vs 下 (13-Week MA)</h2></div>
+                                            <MAShadedChart data={recentData} keyAbove="above_13w_ma" keyBelow="below_13w_ma" title1="> 13w MA" title2="< 13w MA" colorAbove="#60a5fa" colorBelow="#94a3b8" />
+                                        </section>
+                                        <section className="glass-panel rounded-2xl p-6">
+                                            <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="bar-chart-2" className="text-purple-400 w-5 h-5"></i>年線上 vs 下 (52-Week MA)</h2></div>
+                                            <MAShadedChart data={recentData} keyAbove="above_52w_ma" keyBelow="below_52w_ma" title1="> 52w MA" title2="< 52w MA" colorAbove="#c084fc" colorBelow="#94a3b8" />
+                                        </section>
+                                    </div>
+                                    <section className="glass-panel rounded-2xl p-6">
+                                        <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="alert-triangle" className="text-orange-400 w-5 h-5"></i>融資維持率 (Maintenance Ratio - 2 Years)</h2></div>
+                                        <MaintenanceRatioChart data={historyData} />
+                                    </section>
+                                    <section className="glass-panel rounded-2xl p-6">
+                                        <div className="mb-6"><h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2"><i data-lucide="activity" className="text-purple-400 w-5 h-5"></i>Williams Vix Fix (WVF)</h2></div>
+                                        <WVFChart data={recentData} />
+                                    </section>
+                                </div>
+
+                                {/* Category Analysis Section */}
+                                <div className={activeTab === 'category' ? 'space-y-6' : 'hidden'}>
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                        <h2 className="text-xl font-bold text-white border-l-4 border-green-500 pl-4">Category Analysis (Price & Volume)</h2>
+
+                                        {/* Date Picker */}
+                                        <div className="glass-panel rounded-xl px-4 py-3 flex items-center gap-3">
+                                            <i data-lucide="calendar" className="w-5 h-5 text-blue-400"></i>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-slate-400">Analysis Date</span>
+                                                <span className="text-sm font-semibold text-white">{catStats?.date || 'Loading...'}</span>
+                                            </div>
+                                            <select
+                                                value={selectedDate || ''}
+                                                onChange={(e) => handleDateChange(e.target.value)}
+                                                className="ml-2 bg-slate-700 text-white text-sm rounded-lg px-3 py-2 border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer hover:bg-slate-600 transition-colors"
+                                            >
+                                                <option value="">Latest Date</option>
+                                                {availableDates.map(date => (
+                                                    <option key={date} value={date}>{date}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {catStats ? (
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <CategoryTable
+                                                title="Top 10 Categories (1-Day Price Change)"
+                                                data={catStats.table1}
+                                                columns={{
+                                                    valueLabel: "Avg Change %",
+                                                    renderValue: r => <span className={r.avg_change_1d > 0 ? "text-red-400" : "text-green-400"}>{r.avg_change_1d.toFixed(2)}%</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
+                                                title="Top 10 Categories (5-Day Price Change)"
+                                                data={catStats.table2}
+                                                columns={{
+                                                    valueLabel: "Avg Change %",
+                                                    renderValue: r => <span className={r.avg_change_5d > 0 ? "text-red-400" : "text-green-400"}>{r.avg_change_5d.toFixed(2)}%</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
+                                                title="Vol Jump 1-Day (Ratio > 2)"
+                                                data={catStats.table3}
+                                                columns={{
+                                                    valueLabel: "Jump Ratio",
+                                                    renderValue: r => <span>{(r.vol_jump_1d_ratio * 100).toFixed(0)}% ({r.vol_jump_1d_count}/{r.stock_count})</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
+                                                title="Vol Jump 3-Day (Ratio > 2)"
+                                                data={catStats.table4}
+                                                columns={{
+                                                    valueLabel: "Jump Ratio",
+                                                    renderValue: r => <span>{(r.vol_jump_3d_ratio * 100).toFixed(0)}% ({r.vol_jump_3d_count}/{r.stock_count})</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
+                                                title="Top 10 RS Rank"
+                                                data={catStats.table5 || []}
+                                                columns={{
+                                                    valueLabel: "Avg Rank",
+                                                    renderValue: r => <span className="text-yellow-400 font-bold">{r.avg_rs_rank.toFixed(1)}</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="text-center text-slate-500">Loading Category Stats...</div>
+                                    )}
+                                </div>
+
+                                {/* Level Analysis Section */}
+                                <div className={activeTab === 'levels' ? 'space-y-6 block' : 'hidden'}>
+                                    <h2 className="text-xl font-bold text-white border-l-4 border-blue-500 pl-4">Custom Levels Analysis</h2>
+                                    <LevelAnalysisSection />
+                                </div>
+
+                                <div className={activeTab === 'sma' ? 'space-y-6 block' : 'hidden'}>
+                                    <h2 className="text-xl font-bold text-white border-l-4 border-yellow-500 pl-4">SMA Trend Analysis</h2>
+                                    <SmaAnalysisSection />
+                                </div>
+
+                                <div className={activeTab === 'correlation' ? 'space-y-6 block' : 'hidden'}>
+                                    <h2 className="text-xl font-bold text-white border-l-4 border-emerald-500 pl-4">Stock-Metal Correlation</h2>
+                                    <CorrelationAnalysisSection />
+                                </div>
+
+
+                            </>
+                        )}
+                    </main >
+                </div >
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

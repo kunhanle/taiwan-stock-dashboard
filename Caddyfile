@@ -1,0 +1,9 @@
+{
+    # Global options
+    email your-email@example.com
+}
+
+# Replace 'localhost' with your actual domain name in production (e.g., stock.example.com)
+localhost {
+    reverse_proxy backend:8050
+}

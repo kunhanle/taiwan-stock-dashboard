@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: taiwan-stock-backend
+    env: docker
+    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    plan: free # or starter if you need more RAM/Disk
+    branch: main # or master
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8050
+      - key: FINLAB_API_TOKEN
+        sync: false # You must enter this manually in Render Dashboard
+      - key: GOOGLE_API_KEY
+        sync: false # You must enter this manually in Render Dashboard
+
+
+    # Optional: Persistent Disk (Requires Starter Plan - ~$7/mo)
+    # disk:
+    #   name: sqlite-data
+    #   mountPath: /data
+    #   sizeGB: 1

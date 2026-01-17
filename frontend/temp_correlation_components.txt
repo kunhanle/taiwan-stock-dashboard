@@ -1,0 +1,277 @@
+        // --- Correlation Analysis Components ---
+        const CorrelationChart = ({ data, metalName, stockId }) => {
+            const chartRef = useRef(null);
+
+            useEffect(() => {
+                if (!chartRef.current || !data || data.length === 0) return;
+
+                const dates = data.map(d => d.date);
+                const stockPrices = data.map(d => d.stock_close);
+                const metalPrices = data.map(d => d.metal_close);
+
+                // Calculate constraints for dual y-axis
+                const minStock = Math.min(...stockPrices) * 0.95;
+                const maxStock = Math.max(...stockPrices) * 1.05;
+                const minMetal = Math.min(...metalPrices) * 0.95;
+                const maxMetal = Math.max(...metalPrices) * 1.05;
+
+                const options = {
+                    series: [
+                        {
+                            name: `${stockId} Stock Price`,
+                            type: 'line',
+                            data: data.map(d => ({ x: d.date, y: d.stock_close }))
+                        },
+                        {
+                            name: `${metalName} Price`,
+                            type: 'line',
+                            data: data.map(d => ({ x: d.date, y: d.metal_close }))
+                        }
+                    ],
+                    chart: {
+                        id: `correlation-chart-${stockId}`,
+                        type: 'line',
+                        height: 400,
+                        background: 'transparent',
+                        toolbar: {
+                            show: true,
+                            tools: {
+                                download: false // We use custom download
+                            }
+                        }
+                    },
+                    colors: ['#0ea5e9', '#f59e0b'], // Sky Blue & Amber
+                    stroke: {
+                        width: [3, 3],
+                        curve: 'smooth'
+                    },
+                    title: {
+                        text: `${stockId} vs ${metalName}`,
+                        align: 'left',
+                        style: { color: '#f8fafc', fontSize: '18px' }
+                    },
+                    xaxis: {
+                        type: 'category',
+                        tickAmount: 10,
+                        labels: {
+                            style: { colors: '#94a3b8' },
+                            formatter: function (val) {
+                                if (typeof val === 'string' && val.length > 5) return val.slice(5);
+                                return val;
+                            }
+                        }
+                    },
+                    yaxis: [
+                        {
+                            seriesName: `${stockId} Stock Price`,
+                            min: minStock,
+                            max: maxStock,
+                            title: {
+                                text: 'Stock Price (TWD)',
+                                style: { color: '#0ea5e9' }
+                            },
+                            labels: {
+                                style: { colors: '#0ea5e9' },
+                                formatter: (val) => val.toFixed(1)
+                            }
+                        },
+                        {
+                            seriesName: `${metalName} Price`,
+                            opposite: true,
+                            min: minMetal,
+                            max: maxMetal,
+                            title: {
+                                text: `${metalName} Price (USD)`,
+                                style: { color: '#f59e0b' }
+                            },
+                            labels: {
+                                style: { colors: '#f59e0b' },
+                                formatter: (val) => val.toFixed(2)
+                            }
+                        }
+                    ],
+                    grid: {
+                        borderColor: '#334155',
+                        strokeDashArray: 3
+                    },
+                    theme: { mode: 'dark' },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right'
+                    }
+                };
+
+                const chart = new ApexCharts(chartRef.current, options);
+                chart.render();
+
+                return () => chart.destroy();
+            }, [data, metalName, stockId]);
+
+            const handleDownload = async () => {
+                const element = chartRef.current.parentElement; // Capture the parent container
+                if (!element) return;
+
+                try {
+                    const canvas = await window.html2canvas(element, {
+                        backgroundColor: '#0f172a', // Match dashboard background
+                        scale: 2 // Higher resolution
+                    });
+                    
+                    canvas.toBlob((blob) => {
+                        window.saveAs(blob, `${stockId}_${metalName}_Correlation.jpg`);
+                    }, 'image/jpeg');
+                } catch (err) {
+                    console.error("Download failed:", err);
+                    alert("Failed to download chart");
+                }
+            };
+
+            return (
+                <div className="relative group">
+                    <button 
+                        onClick={handleDownload}
+                        className="absolute top-2 right-12 z-10 bg-slate-800/80 hover:bg-slate-700 p-2 rounded text-slate-300 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                        title="Download as JPG"
+                    >
+                        <i data-lucide="download" className="w-4 h-4"></i>
+                    </button>
+                    <div ref={chartRef} className="w-full"></div>
+                </div>
+            );
+        };
+
+        const CorrelationAnalysisSection = () => {
+            const [stockInput, setStockInput] = useState('2002.TW, 2014.TW');
+            const [metal, setMetal] = useState('Nickel');
+            const [startDate, setStartDate] = useState('2023-01-01');
+            const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+            const [results, setResults] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const metals = ['Aluminium', 'Copper', 'Nickel', 'Lead', 'Zinc', 'Tin', 'Platinum', 'Gold', 'Silver'];
+
+            const handleAnalyze = async () => {
+                setLoading(true);
+                setResults(null);
+
+                const stockIds = stockInput.split(',').map(s => s.trim()).filter(s => s);
+                if (stockIds.length === 0) {
+                    alert('Please enter at least one stock ID');
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    const response = await axios.post('/api/analyze', {
+                        stock_ids: stockIds,
+                        metal: metal,
+                        start_date: startDate,
+                        end_date: endDate
+                    });
+                    setResults(response.data);
+                } catch (error) {
+                    console.error("Analysis Error:", error);
+                    alert("Analysis failed. Please check your inputs and try again.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="space-y-8">
+                    {/* Controls */}
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-sm text-slate-400 font-semibold">Stock IDs (comma separated)</label>
+                                <input 
+                                    type="text" 
+                                    value={stockInput} 
+                                    onChange={(e) => setStockInput(e.target.value)}
+                                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                    placeholder="e.g. 2002.TW, 2014.TW"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm text-slate-400 font-semibold">Metal</label>
+                                <select 
+                                    value={metal} 
+                                    onChange={(e) => setMetal(e.target.value)}
+                                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                                >
+                                    {metals.map(m => <option key={m} value={m}>{m}</option>)}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm text-slate-400 font-semibold">Date Range</label>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="date" 
+                                        value={startDate} 
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="w-1/2 bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-2.5 text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                    />
+                                    <input 
+                                        type="date" 
+                                        value={endDate} 
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className="w-1/2 bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-2.5 text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-end">
+                                <button 
+                                    onClick={handleAnalyze} 
+                                    disabled={loading}
+                                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="play-circle"></i>}
+                                    {loading ? 'Running...' : 'Run Correlation Analysis'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Results */}
+                    {results && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                            {Object.entries(results).map(([stockId, data]) => {
+                                if (data.error) return (
+                                    <div key={stockId} className="glass-panel p-6 rounded-xl border-l-4 border-red-500 flex items-center gap-4">
+                                        <i data-lucide="alert-circle" className="text-red-500 w-8 h-8"></i>
+                                        <div>
+                                            <h3 className="font-bold text-lg text-white">{stockId}</h3>
+                                            <p className="text-red-400">{data.error}</p>
+                                        </div>
+                                    </div>
+                                );
+
+                                const correlation = data.correlation;
+                                const corrColor = correlation > 0.7 ? 'text-emerald-400' : correlation < -0.7 ? 'text-red-400' : 'text-slate-400';
+
+                                return (
+                                    <div key={stockId} className="glass-panel p-6 rounded-2xl">
+                                        <div className="flex justify-between items-start mb-4 border-b border-slate-700 pb-4">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                                    {stockId} <span className="text-slate-500 text-sm">vs</span> {metal}
+                                                </h3>
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <span className="text-slate-400 text-sm">Correlation:</span>
+                                                    <span className={`text-2xl font-bold ${corrColor}`}>{correlation.toFixed(4)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <CorrelationChart 
+                                            data={data.data} 
+                                            metalName={metal}
+                                            stockId={stockId} 
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            );
+        };

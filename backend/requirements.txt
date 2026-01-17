@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+finlab
+pandas
+numpy
+google-generativeai
+python-dotenv
+yfinance
+sqlmodel
