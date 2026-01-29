@@ -6,6 +6,8 @@ from finlab import data, login
 import pandas as pd
 import datetime
 import os
+import time
+from functools import wraps
 from pydantic import BaseModel
 from typing import Optional, List
 from correlation_analysis import analyze_correlation
@@ -24,6 +26,32 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 app = FastAPI()
+
+# === Simple TTL Cache ===
+class TTLCache:
+    """Simple in-memory cache with time-to-live."""
+    def __init__(self):
+        self._cache = {}
+    
+    def get(self, key: str, ttl_seconds: int = 300):
+        """Get value if exists and not expired."""
+        if key in self._cache:
+            value, timestamp = self._cache[key]
+            if time.time() - timestamp < ttl_seconds:
+                return value
+            del self._cache[key]
+        return None
+    
+    def set(self, key: str, value):
+        """Store value with current timestamp."""
+        self._cache[key] = (value, time.time())
+    
+    def clear(self):
+        """Clear all cached data."""
+        self._cache.clear()
+
+cache = TTLCache()
+CACHE_TTL = 600  # 10 minutes
 
 @app.on_event("startup")
 def on_startup():
@@ -368,8 +396,16 @@ def get_batch_stock_data(req: BatchStockRequest):
 
 @app.get("/api/market-stats")
 def market_stats():
-    data = get_market_breadth()
-    return data
+    # Check cache first
+    cached = cache.get("market_stats", CACHE_TTL)
+    if cached:
+        print("Returning cached market_stats")
+        return cached
+    
+    # Fetch fresh data
+    result = get_market_breadth()
+    cache.set("market_stats", result)
+    return result
 
 @app.get("/api/preset-levels")
 def get_preset_levels(session: Session = Depends(get_session)):
