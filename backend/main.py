@@ -49,9 +49,10 @@ async def read_index():
 
 # FinLab Login
 API_TOKEN = os.getenv("FINLAB_API_TOKEN")
-if not API_TOKEN:
-    print("Warning: FINLAB_API_TOKEN not found in environment variables.")
-login(api_token=API_TOKEN)
+if API_TOKEN:
+    login(api_token=API_TOKEN)
+else:
+    print("Warning: FINLAB_API_TOKEN not found. FinLab features will be unavailable.")
 
 def get_market_breadth():
     # Fetch data for a longer period to accommodate rolling windows
