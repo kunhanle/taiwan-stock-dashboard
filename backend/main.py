@@ -648,4 +648,5 @@ B. 分析今天台股盤面上的 『熱門題材族群』。請執行以下任�
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8050)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)

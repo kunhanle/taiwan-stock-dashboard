@@ -1,0 +1,6 @@
+{
+    "repo_url": "https://github.com/kunhanle/taiwan-stock-dashboard",
+    "service_name": "taiwan-stock-dashboard",
+    "branch": "main",
+    "port": 8000
+}

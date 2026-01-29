@@ -2,15 +2,15 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "https://YOUR-RENDER-APP-NAME.onrender.com/api/:path*"
+            "destination": "https://taiwan-stock-dashboard-y831.onrender.com/api/:path*"
         },
         {
             "source": "/docs",
-            "destination": "https://YOUR-RENDER-APP-NAME.onrender.com/docs"
+            "destination": "https://taiwan-stock-dashboard-y831.onrender.com/docs"
         },
         {
             "source": "/openapi.json",
-            "destination": "https://YOUR-RENDER-APP-NAME.onrender.com/openapi.json"
+            "destination": "https://taiwan-stock-dashboard-y831.onrender.com/openapi.json"
         }
     ]
 }
