@@ -17,11 +17,17 @@ class CategoryStock(SQLModel, table=True):
 class StockAnnotation(SQLModel, table=True):
     stock_id: str = Field(primary_key=True)
     
-    # Levels
+    # Levels (legacy fixed fields kept for migration fallback)
     level_1: Optional[float] = None
     level_2: Optional[float] = None
     level_3: Optional[float] = None
-    
+
+    # Take profit target
+    take_profit: Optional[float] = None
+
+    # Support levels stored as comma-separated string e.g. "100,90,80"
+    levels_json: Optional[str] = None
+
     # SMA Settings
     sma_short: Optional[int] = None
     sma_long: Optional[int] = None

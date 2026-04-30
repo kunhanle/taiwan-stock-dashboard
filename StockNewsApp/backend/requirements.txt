@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+pandas
+GoogleNews
+langchain-openai
+langchain-google-genai
+langchain-core
+finlab
+dateparser

@@ -2,5 +2,8 @@
     "repo_url": "https://github.com/kunhanle/taiwan-stock-dashboard",
     "service_name": "taiwan-stock-dashboard",
     "branch": "main",
-    "port": 8000
+    "port": 8000,
+    "env_vars": {
+        "FINLAB_API_TOKEN": "WxYZVitl9Ly7elxSHam9yTSgTq1VXS+tz2CODiBY5N4SGiM4FjQuXr1kk+1V7gsv#vip_m"
+    }
 }

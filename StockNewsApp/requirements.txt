@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+GoogleNews
+openai
+google-generativeai
+pandas
+python-dotenv
+beautifulsoup4
+dateparser
+requests
+langchain
+langchain-openai
+langchain-google-genai

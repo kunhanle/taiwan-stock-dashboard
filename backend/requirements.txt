@@ -4,6 +4,9 @@ finlab
 pandas
 numpy
 google-generativeai
+anthropic
 python-dotenv
 yfinance
 sqlmodel
+GoogleNews
+dateparser

@@ -464,57 +464,73 @@
         };
 
         // --- Level Analysis Components ---
-        const LevelCandlestickChart = ({ data, levels, stockId, stockName }) => {
+        const LevelCandlestickChart = ({ data, levels, tp, stockId, stockName, displayDays = 65 }) => {
             const chartRef = useRef(null);
 
             useEffect(() => {
                 if (!chartRef.current || !data || data.length === 0) return;
 
-                // --- X-AXIS ZOOM LOGIC: Show last ~3 months (65 trading days) ---
-                const recentData = data.slice(-65);
+                const recentData = data.slice(-displayDays);
 
                 const volumes = recentData.map(d => d.volume || 0);
                 const maxVol = Math.max(...volumes, 1);
                 const lastClose = recentData[recentData.length - 1].close;
 
-                // Color Logic
-                const levelColors = ['#4ade80', '#facc15', '#a855f7', '#ef4444']; // High-Low: Light Green, Yellow, Purple, Red
-                const sortedLevels = [...levels].sort((a, b) => b - a); // Descending
+                // Support levels: sort descending, assign colors
+                const supportColors = ['#4ade80', '#facc15', '#a855f7', '#ef4444'];
+                const sortedLevels = [...levels].sort((a, b) => b - a);
 
-                // Title Color
-                let titleColor = '#e2e8f0'; // Default White
+                // Title color based on where price sits among support levels
+                let titleColor = '#e2e8f0';
                 if (sortedLevels.length >= 3) {
-                    if (lastClose < sortedLevels[2]) {
-                        titleColor = '#a855f7'; // Purple
-                    } else if (lastClose < sortedLevels[1]) {
-                        titleColor = '#3b82f6'; // Blue
-                    }
+                    if (lastClose < sortedLevels[2]) titleColor = '#a855f7';
+                    else if (lastClose < sortedLevels[1]) titleColor = '#3b82f6';
                 }
 
-                // --- Y-AXIS SCALING LOGIC: Include ALL levels ---
+                // Y-axis: include tp and all support levels
                 const priceHighs = recentData.map(d => d.high);
                 const priceLows = recentData.map(d => d.low);
-                const allValues = [...priceHighs, ...priceLows, ...levels];
-                const minY = Math.min(...allValues) * 0.95; // 5% buffer
+                const allValues = [...priceHighs, ...priceLows, ...levels, ...(tp ? [tp] : [])];
+                const minY = Math.min(...allValues) * 0.95;
                 const maxY = Math.max(...allValues) * 1.05;
+
+                // Build annotations: TP first (gold), then support levels
+                const yaxisAnnotations = [];
+                if (tp && tp > 0) {
+                    yaxisAnnotations.push({
+                        y: tp,
+                        borderColor: '#f59e0b',
+                        label: {
+                            borderColor: '#f59e0b',
+                            style: { color: '#000', background: '#f59e0b', fontWeight: 700 },
+                            text: `停利: ${tp}`
+                        }
+                    });
+                }
+                sortedLevels.forEach((lvl, idx) => {
+                    const color = supportColors[idx] || '#cbd5e1';
+                    yaxisAnnotations.push({
+                        y: lvl,
+                        borderColor: color,
+                        label: {
+                            borderColor: color,
+                            style: { color: '#fff', background: color },
+                            text: `L${idx + 1}: ${lvl}`
+                        }
+                    });
+                });
 
                 const options = {
                     series: [
                         {
                             name: 'Price',
                             type: 'candlestick',
-                            data: recentData.map(d => ({
-                                x: d.date,
-                                y: [d.open, d.high, d.low, d.close]
-                            }))
+                            data: recentData.map(d => ({ x: d.date, y: [d.open, d.high, d.low, d.close] }))
                         },
                         {
                             name: 'Volume',
                             type: 'bar',
-                            data: recentData.map(d => ({
-                                x: d.date,
-                                y: d.volume
-                            }))
+                            data: recentData.map(d => ({ x: d.date, y: d.volume }))
                         }
                     ],
                     chart: {
@@ -528,35 +544,15 @@
                     title: {
                         text: `${stockId} ${stockName}`,
                         align: 'center',
-                        style: {
-                            color: titleColor,
-                            fontSize: '16px',
-                            fontWeight: 700
-                        }
+                        style: { color: titleColor, fontSize: '16px', fontWeight: 700 }
                     },
-                    annotations: {
-                        yaxis: sortedLevels.map((lvl, idx) => ({
-                            y: lvl,
-                            borderColor: levelColors[idx] || '#cbd5e1',
-                            label: {
-                                borderColor: levelColors[idx] || '#cbd5e1',
-                                style: {
-                                    color: '#fff',
-                                    background: levelColors[idx] || '#cbd5e1',
-                                },
-                                text: `L${idx + 1}: ${lvl}`
-                            }
-                        }))
-                    },
+                    annotations: { yaxis: yaxisAnnotations },
                     xaxis: {
                         type: 'category',
                         tickAmount: 5,
                         labels: {
                             style: { colors: '#94a3b8' },
-                            formatter: function (val) {
-                                if (typeof val === 'string' && val.length > 5) return val.slice(5);
-                                return val;
-                            }
+                            formatter: (val) => (typeof val === 'string' && val.length > 5) ? val.slice(5) : val
                         }
                     },
                     yaxis: [
@@ -564,10 +560,7 @@
                             seriesName: 'Price',
                             min: minY,
                             max: maxY,
-                            labels: {
-                                style: { colors: '#94a3b8' },
-                                formatter: (val) => val?.toFixed(1)
-                            }
+                            labels: { style: { colors: '#94a3b8' }, formatter: (val) => val?.toFixed(1) }
                         },
                         {
                             seriesName: 'Volume',
@@ -579,9 +572,7 @@
                     ],
                     grid: { borderColor: '#334155', strokeDashArray: 3 },
                     plotOptions: {
-                        candlestick: {
-                            colors: { upward: '#ef4444', downward: '#22c55e' }
-                        },
+                        candlestick: { colors: { upward: '#ef4444', downward: '#22c55e' } },
                         bar: { columnWidth: '50%' }
                     },
                     theme: { mode: 'dark' }
@@ -591,162 +582,40 @@
                 chart.render();
 
                 return () => chart.destroy();
-            }, [data, levels, stockId, stockName]);
+            }, [data, levels, tp, stockId, stockName, displayDays]);
 
             return <div ref={chartRef} className="w-full"></div>;
         };
 
-        const SmaCandlestickChart = ({ data, shortSmaDays, longSmaDays, stockId, stockName, displayMonths = null }) => {
-            const chartRef = useRef(null);
-
-            useEffect(() => {
-                if (!data || data.length === 0) return;
-
-                // 1. Prepare Candlestick Data (OHLC)
-                // Filter out empty data
-                const validData = data.filter(d => d.open !== null && d.close !== null);
-
-                // Calculate SMAs
-                // We need the full history to calculate SMA correctly, then we can slice for display if needed.
-                // However, user requested 1-year chart, matching the data fetching.
-
-                const calculateSMA = (data, period) => {
-                    let sma = [];
-                    for (let i = 0; i < data.length; i++) {
-                        if (i < period - 1) {
-                            sma.push({ x: data[i].date, y: null });
-                            continue;
-                        }
-                        let sum = 0;
-                        for (let j = 0; j < period; j++) {
-                            sum += data[i - j].close;
-                        }
-                        sma.push({ x: data[i].date, y: parseFloat((sum / period).toFixed(2)) });
-                    }
-                    return sma;
-                };
-
-                const shortSmaDatafull = calculateSMA(validData, shortSmaDays);
-                const longSmaDatafull = calculateSMA(validData, longSmaDays);
-
-                // Filter Data for Display if displayMonths is set
-                let displayData = validData;
-                let displayShortSma = shortSmaDatafull;
-                let displayLongSma = longSmaDatafull;
-
-                if (displayMonths) {
-                    const lastDate = new Date(validData[validData.length - 1].date);
-                    const cutoffDate = new Date(lastDate);
-                    cutoffDate.setMonth(cutoffDate.getMonth() - displayMonths);
-
-                    displayData = validData.filter(d => new Date(d.date) >= cutoffDate);
-                    displayShortSma = shortSmaDatafull.filter(d => new Date(d.x) >= cutoffDate);
-                    displayLongSma = longSmaDatafull.filter(d => new Date(d.x) >= cutoffDate);
-                }
-
-
-                // Sanitize ID for ApexCharts (remove dots, spaces)
-                const safeId = `chart-${stockId.replace(/[^a-zA-Z0-9]/g, '_')}-${displayMonths || '12m'}`;
-
-                // formatting date for better tooltip/display if needed, but simple YYYY-MM-DD works well for matching.
-                // For category axis, ensuring x is string.
-                const candlestickSeries = displayData.map(item => ({
-                    x: item.date, // Use string date for category axis
-                    y: [item.open, item.high, item.low, item.close]
-                }));
-
-                const options = {
-                    series: [
-                        { name: 'Price', type: 'candlestick', data: candlestickSeries },
-                        { name: `SMA ${shortSmaDays}`, type: 'line', data: displayShortSma.map(d => ({ x: d.x, y: d.y })) }, // d.x is already date string
-                        { name: `SMA ${longSmaDays}`, type: 'line', data: displayLongSma.map(d => ({ x: d.x, y: d.y })) }
-                    ],
-                    chart: {
-                        id: safeId,
-                        type: 'candlestick',
-                        height: 350,
-                        width: '100%',
-                        background: 'transparent',
-                        toolbar: { show: false },
-                        animations: { enabled: false },
-                        zoom: { enabled: true }
-                    },
-                    title: {
-                        text: `${stockId} ${stockName} (${displayMonths ? displayMonths + ' Months' : '1 Year'})`,
-                        align: 'left',
-                        style: { color: '#e2e8f0', fontSize: '16px' }
-                    },
-                    xaxis: {
-                        type: 'category', // Continuous axis (skips empty dates)
-                        labels: {
-                            style: { colors: '#94a3b8' },
-                            // Reduce label clutter for 1-year chart if needed, but Apex usually handles it.
-                            // We can use a formatter to just show simpler dates if desired.
-                            formatter: function (val) {
-                                if (!val) return '';
-                                const d = new Date(val);
-                                // Return standard date format
-                                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
-                            }
-                        },
-                        tickAmount: 10, // Limit number of ticks to avoid crowding
-                        axisBorder: { show: false },
-                        axisTicks: { show: false }
-                    },
-                    yaxis: {
-                        tooltip: { enabled: true },
-                        labels: { style: { colors: '#94a3b8' } },
-                        forceNiceScale: true
-                    },
-                    grid: {
-                        borderColor: '#334155',
-                        strokeDashArray: 4
-                    },
-                    theme: { mode: 'dark' },
-                    stroke: { width: [1, 2, 2] },
-                    colors: ['#2E93fA', '#facc15', '#06b6d4'], // Candle (overridden by plotOptions), Short (Yellow), Long (Cyan)
-                    plotOptions: {
-                        candlestick: {
-                            colors: { upward: '#ef4444', downward: '#22c55e' }
-                        }
-                    }
-                };
-
-                const chart = new ApexCharts(chartRef.current, options);
-                chart.render();
-
-                return () => chart.destroy();
-            }, [data, shortSmaDays, longSmaDays, stockId, stockName, displayMonths]);
-
-            return <div ref={chartRef} className="w-full min-w-0 overflow-hidden"></div>;
-        };
-
         const LevelAnalysisSection = () => {
-            // Input State
-            const [rows, setRows] = useState([{ id: '', l1: '', l2: '', l3: '' }]);
-            const [removeId, setRemoveId] = useState('');
+            const [rows, setRows] = useState([{ id: '', tp: '', levels: [''] }]);
             const [analyzedStocks, setAnalyzedStocks] = useState(null);
             const [loading, setLoading] = useState(false);
+            const [chartDisplayDays, setChartDisplayDays] = useState({});
+            const stockDataCache = useRef({});
+
+            // AI dialog state
+            const [showDialog, setShowDialog] = useState(false);
+            const [dialogText, setDialogText] = useState('');
+            const [dialogStockId, setDialogStockId] = useState('');
+            const [extracting, setExtracting] = useState(false);
+            const [extracted, setExtracted] = useState(null);
+            const [editedTp, setEditedTp] = useState('');
+            const [editedLevels, setEditedLevels] = useState(['', '', '']);
+            const [dialogModel, setDialogModel] = useState('');
+            const [availableModels, setAvailableModels] = useState([]);
 
             useEffect(() => {
                 const loadPreset = async () => {
                     try {
                         const res = await axios.get('/api/preset-levels');
-                        if (res.data.content) {
-                            const lines = res.data.content.split('\n');
-                            const newRows = [];
-                            lines.forEach(line => {
-                                const parts = line.split(',');
-                                if (parts.length > 0 && parts[0].trim()) {
-                                    newRows.push({
-                                        id: parts[0].trim(),
-                                        l1: parts[1] || '',
-                                        l2: parts[2] || '',
-                                        l3: parts[3] || ''
-                                    });
-                                }
-                            });
-                            if (newRows.length > 0) setRows(newRows);
+                        if (res.data.stocks && res.data.stocks.length > 0) {
+                            const newRows = res.data.stocks.map(s => ({
+                                id: s.stock_id,
+                                tp: s.take_profit != null ? String(s.take_profit) : '',
+                                levels: s.levels.length > 0 ? s.levels.map(String) : ['']
+                            }));
+                            setRows(newRows);
                         }
                     } catch (e) {
                         console.error("Failed to load preset levels:", e);
@@ -755,227 +624,175 @@
                 loadPreset();
             }, []);
 
-            const saveToCsv = async (currentRows) => {
-                const content = currentRows
-                    .filter(r => r.id)
-                    .map(r => `${r.id},${r.l1},${r.l2},${r.l3}`)
-                    .join('\n');
+            useEffect(() => {
+                axios.get('/api/ai-models').then(res => {
+                    const models = res.data.models || [];
+                    setAvailableModels(models);
+                    if (models.length > 0) {
+                        const preferred = models.find(m => m.toLowerCase().includes('flash')) || models[0];
+                        setDialogModel(preferred);
+                    }
+                }).catch(() => {});
+            }, []);
+
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [rows, analyzedStocks, showDialog, extracted]);
+
+            const handleExtract = async () => {
+                if (!dialogText.trim()) return;
+                setExtracting(true);
+                setExtracted(null);
                 try {
-                    await axios.post('/api/save-levels', { content });
+                    const res = await axios.post('/api/extract-levels', { text: dialogText, model: dialogModel || null });
+                    if (res.data.error) {
+                        alert('解析失敗：' + res.data.error);
+                    } else {
+                        setExtracted(res.data);
+                        setEditedTp(res.data.take_profit != null ? String(res.data.take_profit) : '');
+                        const lvls = res.data.levels || [];
+                        setEditedLevels([
+                            lvls[0] != null ? String(lvls[0]) : '',
+                            lvls[1] != null ? String(lvls[1]) : '',
+                            lvls[2] != null ? String(lvls[2]) : ''
+                        ]);
+                    }
+                } catch (e) {
+                    alert('解析失敗，請確認 Gemini API Key 已設定');
+                } finally {
+                    setExtracting(false);
+                }
+            };
+
+            const handleApplyExtracted = () => {
+                const targetId = dialogStockId.trim();
+                if (!targetId) { alert('請輸入股票代碼'); return; }
+
+                const newRow = {
+                    id: targetId,
+                    tp: editedTp,
+                    levels: editedLevels.filter(l => l.trim())
+                };
+
+                const existingIdx = rows.findIndex(r => r.id === targetId);
+                let newRows;
+                if (existingIdx >= 0) {
+                    newRows = [...rows];
+                    newRows[existingIdx] = newRow;
+                } else {
+                    // Replace trailing empty row if present, otherwise append
+                    const lastRow = rows[rows.length - 1];
+                    if (rows.length > 0 && !lastRow.id.trim()) {
+                        newRows = [...rows.slice(0, -1), newRow];
+                    } else {
+                        newRows = [...rows, newRow];
+                    }
+                }
+
+                setRows(newRows);
+                setShowDialog(false);
+                setDialogText('');
+                setExtracted(null);
+                setEditedTp('');
+                setEditedLevels(['', '', '']);
+            };
+
+            const saveData = async (currentRows) => {
+                const stocks = currentRows
+                    .filter(r => r.id.trim())
+                    .map(r => ({
+                        stock_id: r.id.trim(),
+                        take_profit: parseFloat(r.tp) > 0 ? parseFloat(r.tp) : null,
+                        levels: r.levels.map(Number).filter(n => !isNaN(n) && n > 0)
+                    }));
+                try {
+                    await axios.post('/api/save-levels', { stocks });
                 } catch (e) {
                     console.error("Failed to save levels:", e);
                 }
             };
 
-            const handleRemoveStock = async () => {
-                if (!removeId) return;
-                const newRows = rows.filter(r => r.id !== removeId);
-                setRows(newRows);
-                setRemoveId('');
-                await saveToCsv(newRows);
-
-                if (analyzedStocks && analyzedStocks[removeId]) {
-                    const newAnalyzed = { ...analyzedStocks };
-                    delete newAnalyzed[removeId];
-                    setAnalyzedStocks(newAnalyzed);
-                }
-            };
-            /* handleFileUpload removed */
-
-
-            const addRow = () => setRows([...rows, { id: '', l1: '', l2: '', l3: '' }]);
-
-            const handleRowChange = (idx, field, val) => {
+            const handleIdChange = (idx, val) => {
                 const newRows = [...rows];
-                newRows[idx][field] = val;
+                newRows[idx] = { ...newRows[idx], id: val };
                 setRows(newRows);
             };
 
+            const handleTpChange = (idx, val) => {
+                const newRows = [...rows];
+                newRows[idx] = { ...newRows[idx], tp: val };
+                setRows(newRows);
+            };
 
-            const handleAnalyze = async () => {
-                setLoading(true);
-                // First Save
-                await saveToCsv(rows);
+            const handleLevelChange = (idx, lIdx, val) => {
+                const newRows = [...rows];
+                const newLevels = [...newRows[idx].levels];
+                newLevels[lIdx] = val;
+                newRows[idx] = { ...newRows[idx], levels: newLevels };
+                setRows(newRows);
+            };
 
-                let stockIds = [];
-                let stockLevels = {};
+            const handleAddLevel = (idx) => {
+                const newRows = [...rows];
+                newRows[idx] = { ...newRows[idx], levels: [...newRows[idx].levels, ''] };
+                setRows(newRows);
+            };
 
-                try {
-                    rows.forEach(r => {
-                        if (r.id) {
-                            stockIds.push(r.id);
-                            const lvls = [r.l1, r.l2, r.l3].map(Number).filter(n => !isNaN(n) && n > 0);
-                            stockLevels[r.id] = lvls;
-                        }
-                    });
+            const handleRemoveLevel = (idx, lIdx) => {
+                const newRows = [...rows];
+                const newLevels = newRows[idx].levels.filter((_, i) => i !== lIdx);
+                newRows[idx] = { ...newRows[idx], levels: newLevels.length > 0 ? newLevels : [''] };
+                setRows(newRows);
+            };
 
-                    if (stockIds.length === 0) {
-                        setLoading(false);
-                        return;
-                    }
-
-                    // Fetch Batch Data
-                    const response = await axios.post('/api/batch-stock-data', { stock_ids: stockIds });
-                    const stocksData = response.data.stocks;
-
-                    // Combine Data with Levels
-                    const finalResult = {};
-                    Object.keys(stocksData).forEach(sid => {
-                        finalResult[sid] = {
-                            ...stocksData[sid],
-                            levels: stockLevels[sid] || []
-                        };
-                    });
-
-                    setAnalyzedStocks(finalResult);
-
-                } catch (err) {
-                    console.error(err);
-                    alert("Analysis Failed");
-                } finally {
-                    setLoading(false);
+            const handleRemoveRow = async (idx) => {
+                const sid = rows[idx].id;
+                const newRows = rows.filter((_, i) => i !== idx);
+                setRows(newRows);
+                await saveData(newRows);
+                if (sid && analyzedStocks?.[sid]) {
+                    const newAnalyzed = { ...analyzedStocks };
+                    delete newAnalyzed[sid];
+                    setAnalyzedStocks(Object.keys(newAnalyzed).length > 0 ? newAnalyzed : null);
                 }
             };
 
-            return (
-                <div className="space-y-6">
-                    <div className="glass-panel p-6 rounded-2xl">
-                        <div className="flex flex-col md:flex-row gap-8">
-                            <div className="flex-1 space-y-4">
-                                <h3 className="text-lg font-semibold text-blue-400 border-b border-slate-700 pb-2">Custom Levels</h3>
-                                <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-                                    {rows.map((r, idx) => (
-                                        <div key={idx} className="flex gap-2">
-                                            <input placeholder="ID" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.id} onChange={e => handleRowChange(idx, 'id', e.target.value)} />
-                                            <input placeholder="Lvl 1" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l1} onChange={e => handleRowChange(idx, 'l1', e.target.value)} />
-                                            <input placeholder="Lvl 2" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l2} onChange={e => handleRowChange(idx, 'l2', e.target.value)} />
-                                            <input placeholder="Lvl 3" className="bg-slate-800 text-white p-2 rounded w-20 text-center" value={r.l3} onChange={e => handleRowChange(idx, 'l3', e.target.value)} />
-                                        </div>
-                                    ))}
-                                </div>
-                                <button onClick={addRow} className="text-sm text-blue-400 hover:text-blue-300 font-semibold">+ Add Row</button>
-                            </div>
-
-                            <div className="w-full md:w-64 space-y-4">
-                                <h3 className="text-lg font-semibold text-red-400 border-b border-slate-700 pb-2">Remove Stock</h3>
-                                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700 space-y-3">
-                                    <input
-                                        placeholder="Stock ID"
-                                        className="w-full bg-slate-900 text-white p-2 rounded border border-slate-700 focus:border-red-400 transition-colors"
-                                        value={removeId}
-                                        onChange={e => setRemoveId(e.target.value)}
-                                    />
-                                    <button
-                                        onClick={handleRemoveStock}
-                                        className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 py-2 rounded-lg transition-all text-sm font-bold flex justify-center items-center gap-2"
-                                    >
-                                        <i data-lucide="trash-2" className="w-4 h-4"></i> Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 pt-4 border-t border-slate-700 flex justify-end">
-                            <button onClick={handleAnalyze} disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                                {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="bar-chart-2"></i>}
-                                {loading ? 'Analyzing & Saving...' : 'Save & Analyze'}
-                            </button>
-                        </div>
-                    </div>
-
-
-                    {
-                        analyzedStocks && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {Object.entries(analyzedStocks).map(([sid, info]) => (
-                                    <div key={sid} className="glass-panel p-4 rounded-xl">
-                                        <LevelCandlestickChart
-                                            data={info.data}
-                                            levels={info.levels}
-                                            stockId={sid}
-                                            stockName={info.name}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )
-                    }
-                </div >
-            );
-        };
-
-        const SmaAnalysisSection = () => {
-            const [rows, setRows] = useState([{ id: '', short: '', long: '' }]);
-            const [removeId, setRemoveId] = useState('');
-            const [analyzedStocks, setAnalyzedStocks] = useState(null);
-            const [loading, setLoading] = useState(false);
-
-            useEffect(() => {
-                const loadPreset = async () => {
-                    try {
-                        const res = await axios.get('/api/preset-sma');
-                        if (res.data.content) {
-                            const lines = res.data.content.split('\n');
-                            const newRows = [];
-                            lines.forEach(line => {
-                                const parts = line.split(',');
-                                if (parts.length > 0 && parts[0].trim()) {
-                                    newRows.push({
-                                        id: parts[0].trim(),
-                                        short: parts[1] || '',
-                                        long: parts[2] || ''
-                                    });
-                                }
-                            });
-                            if (newRows.length > 0) setRows(newRows);
-                        }
-                    } catch (e) { console.error(e); }
-                };
-                loadPreset();
-            }, []);
-
-            const saveToCsv = async (currentRows) => {
-                const content = currentRows
-                    .filter(r => r.id)
-                    .map(r => `${r.id},${r.short},${r.long}`)
-                    .join('\n');
-                try {
-                    await axios.post('/api/save-sma', { content });
-                } catch (e) { console.error(e); }
-            };
+            const addRow = () => setRows([...rows, { id: '', tp: '', levels: [''] }]);
 
             const handleAnalyze = async () => {
                 setLoading(true);
-                await saveToCsv(rows);
+                await saveData(rows);
 
-                let stockIds = [];
-                let stockSmaParams = {};
-
+                const stockIds = [];
+                const stockLevels = {};
+                const stockTps = {};
                 rows.forEach(r => {
-                    if (r.id) {
-                        stockIds.push(r.id);
-                        stockSmaParams[r.id] = {
-                            short: parseInt(r.short) || 20,
-                            long: parseInt(r.long) || 60
-                        };
+                    if (r.id.trim()) {
+                        stockIds.push(r.id.trim());
+                        stockLevels[r.id] = r.levels.map(Number).filter(n => !isNaN(n) && n > 0);
+                        const tp = parseFloat(r.tp);
+                        stockTps[r.id] = !isNaN(tp) && tp > 0 ? tp : null;
                     }
                 });
 
-                if (stockIds.length === 0) {
-                    setLoading(false);
-                    return;
-                }
+                if (stockIds.length === 0) { setLoading(false); return; }
 
                 try {
-                    const response = await axios.post('/api/batch-stock-data', { stock_ids: stockIds });
-                    const stocksData = response.data.stocks;
+                    const toFetch = stockIds.filter(id => !stockDataCache.current[id]);
+                    if (toFetch.length > 0) {
+                        const response = await axios.post('/api/batch-stock-data', { stock_ids: toFetch });
+                        Object.assign(stockDataCache.current, response.data.stocks);
+                    }
 
                     const finalResult = {};
-                    Object.keys(stocksData).forEach(sid => {
-                        finalResult[sid] = {
-                            ...stocksData[sid],
-                            smaParams: stockSmaParams[sid]
-                        };
+                    stockIds.forEach(sid => {
+                        if (stockDataCache.current[sid]) {
+                            finalResult[sid] = {
+                                ...stockDataCache.current[sid],
+                                levels: stockLevels[sid] || [],
+                                tp: stockTps[sid] || null
+                            };
+                        }
                     });
                     setAnalyzedStocks(finalResult);
                 } catch (err) {
@@ -986,91 +803,252 @@
                 }
             };
 
-            const handleRemoveStock = async () => {
-                if (!removeId) return;
-                const newRows = rows.filter(r => r.id !== removeId);
-                setRows(newRows);
-                setRemoveId('');
-                await saveToCsv(newRows);
+            const getDisplayDays = (sid) => chartDisplayDays[sid] || 65;
+            const setDisplayDays = (sid, days) => setChartDisplayDays(prev => ({ ...prev, [sid]: days }));
+            const timeRanges = [{ label: '1M', days: 22 }, { label: '3M', days: 65 }, { label: '6M', days: 130 }, { label: '1Y', days: 250 }];
 
-                if (analyzedStocks && analyzedStocks[removeId]) {
-                    const newAnalyzed = { ...analyzedStocks };
-                    delete newAnalyzed[removeId];
-                    setAnalyzedStocks(newAnalyzed);
-                }
-            };
+            const alerts = useMemo(() => {
+                if (!analyzedStocks) return [];
+                const result = [];
+                Object.entries(analyzedStocks).forEach(([sid, info]) => {
+                    if (!info.data || info.data.length === 0) return;
+                    const latest = info.data[info.data.length - 1];
+                    const price = latest.close;
+                    const date = latest.date;
+                    const label = `${sid} ${info.name}`;
 
-            const handleRowChange = (idx, field, val) => {
-                const newRows = [...rows];
-                newRows[idx][field] = val;
-                setRows(newRows);
-            };
-
-            const addRow = () => setRows([...rows, { id: '', short: '', long: '' }]);
+                    if (info.tp && price >= info.tp) {
+                        result.push({ type: 'tp', label, price, date, ref: `停利 ${info.tp}`, msg: '已達停利點' });
+                    }
+                    const sortedLevels = [...info.levels].sort((a, b) => b - a);
+                    sortedLevels.forEach((lvl, idx) => {
+                        if (price < lvl) {
+                            result.push({ type: 'breach', label, price, date, ref: `L${idx + 1} ${lvl}`, msg: `跌穿 L${idx + 1}` });
+                        }
+                    });
+                });
+                return result;
+            }, [analyzedStocks]);
 
             return (
                 <div className="space-y-6">
-                    <div className="glass-panel p-6 rounded-2xl">
-                        <div className="flex flex-col md:flex-row gap-8">
-                            <div className="flex-1 space-y-4">
-                                <h3 className="text-lg font-semibold text-yellow-400 border-b border-slate-700 pb-2">SMA Setup</h3>
-                                <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-                                    {rows.map((r, idx) => (
-                                        <div key={idx} className="flex gap-2">
-                                            <input placeholder="ID" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.id} onChange={e => handleRowChange(idx, 'id', e.target.value)} />
-                                            <input placeholder="Short SMA" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.short} onChange={e => handleRowChange(idx, 'short', e.target.value)} />
-                                            <input placeholder="Long SMA" className="bg-slate-800 text-white p-2 rounded w-24 text-center" value={r.long} onChange={e => handleRowChange(idx, 'long', e.target.value)} />
-                                        </div>
-                                    ))}
-                                </div>
-                                <button onClick={addRow} className="text-sm text-blue-400 hover:text-blue-300 font-semibold">+ Add Row</button>
-                            </div>
-
-                            <div className="w-full md:w-64 space-y-4">
-                                <h3 className="text-lg font-semibold text-red-400 border-b border-slate-700 pb-2">Remove Stock</h3>
-                                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700 space-y-3">
-                                    <input
-                                        placeholder="Stock ID"
-                                        className="w-full bg-slate-900 text-white p-2 rounded border border-slate-700 focus:border-red-400 transition-colors"
-                                        value={removeId}
-                                        onChange={e => setRemoveId(e.target.value)}
-                                    />
-                                    <button onClick={handleRemoveStock} className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 py-2 rounded-lg transition-all text-sm font-bold flex justify-center items-center gap-2">
-                                        <i data-lucide="trash-2" className="w-4 h-4"></i> Remove
+                    {/* AI Extract Dialog */}
+                    {showDialog && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={e => e.target === e.currentTarget && setShowDialog(false)}>
+                            <div className="glass-panel rounded-2xl p-6 w-full max-w-2xl mx-4 space-y-4 border border-slate-600 max-h-[90vh] overflow-y-auto">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <i data-lucide="sparkles" className="w-5 h-5 text-emerald-400"></i>
+                                        AI 解析 — 自動提取價位
+                                    </h3>
+                                    <button onClick={() => setShowDialog(false)} className="text-slate-400 hover:text-white transition-colors">
+                                        <i data-lucide="x" className="w-5 h-5"></i>
                                     </button>
                                 </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-slate-400 font-semibold">套用至股票代碼</label>
+                                        <input
+                                            value={dialogStockId}
+                                            onChange={e => setDialogStockId(e.target.value)}
+                                            placeholder="e.g. 2330"
+                                            className="w-full bg-slate-800 text-white p-2.5 rounded-lg border border-slate-700 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-slate-400 font-semibold">Gemini 模型</label>
+                                        <select
+                                            value={dialogModel}
+                                            onChange={e => setDialogModel(e.target.value)}
+                                            className="w-full bg-slate-800 text-white p-2.5 rounded-lg border border-slate-700 text-sm focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
+                                        >
+                                            {availableModels.length === 0 && <option value="">載入中...</option>}
+                                            {availableModels.map(m => (
+                                                <option key={m} value={m}>{m.replace('models/', '')}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs text-slate-400 font-semibold">貼入分析文字</label>
+                                    <textarea
+                                        value={dialogText}
+                                        onChange={e => setDialogText(e.target.value)}
+                                        rows={9}
+                                        placeholder={"例如：\n四層風險參考層級 (由輕至重)：\n層級一 (情緒支撐)：680.0 元\n層級二 (溫和支撐)：528.0 元\n層級三 (熊市支撐)：329.1 元\n目標價：750 元"}
+                                        className="w-full bg-slate-900 text-slate-200 p-3 rounded-lg border border-slate-700 text-sm resize-none focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed"
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleExtract}
+                                    disabled={extracting || !dialogText.trim()}
+                                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {extracting
+                                        ? <><i data-lucide="loader" className="animate-spin w-4 h-4"></i> 解析中...</>
+                                        : <><i data-lucide="sparkles" className="w-4 h-4"></i> 開始解析</>
+                                    }
+                                </button>
+
+                                {extracted && (
+                                    <div className="space-y-3 border-t border-slate-700 pt-4">
+                                        <p className="text-xs text-slate-400 font-semibold tracking-wide uppercase">解析結果（可直接修改）</p>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                            <div className="space-y-1">
+                                                <label className="text-xs text-yellow-400 font-semibold">停利點</label>
+                                                <input
+                                                    value={editedTp}
+                                                    onChange={e => setEditedTp(e.target.value)}
+                                                    className="w-full bg-slate-800 border border-yellow-500/50 text-yellow-300 p-2 rounded-lg text-sm text-center focus:outline-none focus:border-yellow-400"
+                                                    placeholder="—"
+                                                />
+                                            </div>
+                                            {['L1', 'L2', 'L3'].map((label, i) => (
+                                                <div key={i} className="space-y-1">
+                                                    <label className="text-xs text-slate-400 font-semibold">{label} 防守</label>
+                                                    <input
+                                                        value={editedLevels[i]}
+                                                        onChange={e => {
+                                                            const nl = [...editedLevels];
+                                                            nl[i] = e.target.value;
+                                                            setEditedLevels(nl);
+                                                        }}
+                                                        className="w-full bg-slate-800 border border-slate-700 text-white p-2 rounded-lg text-sm text-center focus:outline-none focus:border-blue-400"
+                                                        placeholder="—"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <button
+                                            onClick={handleApplyExtracted}
+                                            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <i data-lucide="check-circle" className="w-4 h-4"></i>
+                                            套用至 {dialogStockId || '（請填入股票代碼）'}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
+                    )}
 
-                        <div className="mt-6 pt-4 border-t border-slate-700 flex justify-end">
+                    {/* Alert System */}
+                    {alerts.length > 0 && (
+                        <div className="rounded-2xl border border-red-500/40 overflow-hidden">
+                            <div className="flex items-center gap-2 px-5 py-3 bg-red-500/10 border-b border-red-500/30">
+                                <i data-lucide="bell-ring" className="w-5 h-5 text-red-400"></i>
+                                <span className="font-bold text-red-300 text-base">Alert System</span>
+                                <span className="ml-1 text-xs bg-red-500/30 text-red-300 px-2 py-0.5 rounded-full font-mono">{alerts.length}</span>
+                            </div>
+                            <div className="divide-y divide-slate-700/50">
+                                {alerts.map((a, idx) => (
+                                    <div key={idx} className={`flex items-center gap-3 px-5 py-3 text-sm ${a.type === 'tp' ? 'bg-yellow-500/5' : 'bg-red-500/5'}`}>
+                                        <i data-lucide={a.type === 'tp' ? 'target' : 'trending-down'} className={`w-4 h-4 flex-shrink-0 ${a.type === 'tp' ? 'text-yellow-400' : 'text-red-400'}`}></i>
+                                        <span className={`font-bold flex-shrink-0 ${a.type === 'tp' ? 'text-yellow-300' : 'text-red-300'}`}>{a.label}</span>
+                                        <span className={`font-semibold flex-shrink-0 ${a.type === 'tp' ? 'text-yellow-400' : 'text-red-400'}`}>{a.msg}</span>
+                                        <span className="text-slate-400 text-xs">
+                                            現價 <span className="text-white font-mono">{a.price.toFixed(2)}</span>
+                                            {a.type === 'tp' ? ' ≥ ' : ' < '}
+                                            <span className="font-mono">{a.ref}</span>
+                                        </span>
+                                        <span className="ml-auto text-slate-500 text-xs flex-shrink-0">{a.date}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <div className="flex items-center gap-3 border-b border-slate-700 pb-3 mb-4">
+                            <h3 className="text-lg font-semibold text-blue-400">Custom Levels</h3>
+                            <span className="text-xs text-yellow-400 bg-yellow-400/10 border border-yellow-400/30 px-2 py-0.5 rounded-full">金色 = 停利點</span>
+                            <span className="text-xs text-green-400 bg-green-400/10 border border-green-400/30 px-2 py-0.5 rounded-full">綠/黃/紫/紅 = 防守區位</span>
+                            <button
+                                onClick={() => setShowDialog(true)}
+                                className="ml-auto flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-400/60 bg-emerald-500/5 hover:bg-emerald-500/10 px-3 py-1.5 rounded-lg transition-all"
+                            >
+                                <i data-lucide="sparkles" className="w-3.5 h-3.5"></i>
+                                AI 解析
+                            </button>
+                        </div>
+                        <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                            {rows.map((r, idx) => (
+                                <div key={idx} className="flex items-center gap-2 flex-wrap py-0.5">
+                                    <input
+                                        placeholder="Stock ID"
+                                        className="bg-slate-800 text-white p-2 rounded w-24 text-center flex-shrink-0 text-sm"
+                                        value={r.id}
+                                        onChange={e => handleIdChange(idx, e.target.value)}
+                                    />
+                                    {/* 停利點 */}
+                                    <input
+                                        placeholder="停利點"
+                                        className="bg-slate-800 border border-yellow-500/50 text-yellow-300 p-2 rounded w-24 text-center flex-shrink-0 text-sm placeholder-yellow-700"
+                                        value={r.tp}
+                                        onChange={e => handleTpChange(idx, e.target.value)}
+                                    />
+                                    <div className="w-px h-5 bg-slate-600 flex-shrink-0"></div>
+                                    {/* Support levels */}
+                                    {r.levels.map((lvl, lIdx) => (
+                                        <div key={lIdx} className="flex items-center gap-1">
+                                            <input
+                                                placeholder={`L${lIdx + 1}`}
+                                                className="bg-slate-800 text-white p-2 rounded w-20 text-center text-sm"
+                                                value={lvl}
+                                                onChange={e => handleLevelChange(idx, lIdx, e.target.value)}
+                                            />
+                                            {r.levels.length > 1 && (
+                                                <button onClick={() => handleRemoveLevel(idx, lIdx)} className="text-slate-500 hover:text-red-400 transition-colors flex-shrink-0">
+                                                    <i data-lucide="x" className="w-3 h-3"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                    <button onClick={() => handleAddLevel(idx)} className="text-emerald-400 hover:text-emerald-300 p-1 transition-colors flex-shrink-0" title="新增防守區位">
+                                        <i data-lucide="plus-circle" className="w-4 h-4"></i>
+                                    </button>
+                                    <button onClick={() => handleRemoveRow(idx)} className="text-slate-600 hover:text-red-400 p-1 transition-colors flex-shrink-0 ml-1" title="移除此股票">
+                                        <i data-lucide="trash-2" className="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-between">
+                            <button onClick={addRow} className="text-sm text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
+                                <i data-lucide="plus" className="w-4 h-4"></i> Add Stock
+                            </button>
                             <button onClick={handleAnalyze} disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                                 {loading ? <i data-lucide="loader" className="animate-spin"></i> : <i data-lucide="bar-chart-2"></i>}
-                                {loading ? 'Analyzing & Saving...' : 'Save & Analyze'}
+                                {loading ? 'Loading...' : 'Save & Analyze'}
                             </button>
                         </div>
                     </div>
 
                     {analyzedStocks && (
-                        <div className="flex flex-col gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {Object.entries(analyzedStocks).map(([sid, info]) => (
                                 <div key={sid} className="glass-panel p-4 rounded-xl">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                        <SmaCandlestickChart
-                                            data={info.data}
-                                            shortSmaDays={info.smaParams.short}
-                                            longSmaDays={info.smaParams.long}
-                                            stockId={sid}
-                                            stockName={info.name}
-                                        />
-                                        <SmaCandlestickChart
-                                            data={info.data}
-                                            shortSmaDays={info.smaParams.short}
-                                            longSmaDays={info.smaParams.long}
-                                            stockId={sid}
-                                            stockName={info.name}
-                                            displayMonths={3}
-                                        />
+                                    <div className="flex justify-end gap-1 mb-2">
+                                        {timeRanges.map(({ label, days }) => (
+                                            <button
+                                                key={label}
+                                                onClick={() => setDisplayDays(sid, days)}
+                                                className={`px-2 py-1 text-xs rounded transition-colors ${getDisplayDays(sid) === days ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-400 hover:text-white'}`}
+                                            >
+                                                {label}
+                                            </button>
+                                        ))}
                                     </div>
+                                    <LevelCandlestickChart
+                                        data={info.data}
+                                        levels={info.levels}
+                                        tp={info.tp}
+                                        stockId={sid}
+                                        stockName={info.name}
+                                        displayDays={getDisplayDays(sid)}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -1078,7 +1056,6 @@
                 </div>
             );
         };
-
 
         // --- Correlation Analysis Components ---
         const CorrelationChart = ({ data, series1Name, series2Name, series1Key = 'stock_price', series2Key = 'metal_price', title }) => {
@@ -1369,104 +1346,195 @@
             );
         };
 
-        const AiSummarySection = () => {
-            const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-            const [model, setModel] = useState("models/gemini-1.5-flash");
-            const [availableModels, setAvailableModels] = useState([]);
-            const [summary, setSummary] = useState("");
+
+        // --- Stock News Section ---
+        const StockNewsSection = () => {
+            const [watchlist, setWatchlist] = useState([]);
+            const [newStockId, setNewStockId] = useState('');
+            const [newsResults, setNewsResults] = useState(null);
             const [loading, setLoading] = useState(false);
+            const [days, setDays] = useState(1);
 
             useEffect(() => {
-                const fetchModels = async () => {
-                    try {
-                        const res = await axios.get('/api/ai-models');
-                        if (res.data.models) {
-                            setAvailableModels(res.data.models);
-                            // Try to set a smart default
-                            const current = res.data.models.find(m => m === model);
-                            if (!current && res.data.models.length > 0) {
-                                const prefer = res.data.models.find(m => m.includes('1.5-flash')) || res.data.models[0];
-                                setModel(prefer);
-                            }
-                        }
-                    } catch (e) {
-                        console.error("Failed to fetch models", e);
-                        setAvailableModels(['models/gemini-1.5-flash', 'models/gemini-pro']);
-                    }
-                };
-                fetchModels();
+                axios.get('/api/news-watchlist')
+                    .then(res => setWatchlist(res.data.stocks || []))
+                    .catch(() => {});
             }, []);
 
-            const handleGenerate = async () => {
-                setLoading(true);
-                setSummary("");
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [watchlist, newsResults, loading]);
+
+            const saveWatchlist = async (list) => {
                 try {
-                    const res = await axios.post('/api/ai-summary', { date, model });
-                    if (res.data.summary) {
-                        setSummary(res.data.summary);
-                    } else if (res.data.error) {
-                        setSummary("Error: " + res.data.error);
-                    }
+                    await axios.post('/api/news-watchlist', { stocks: list });
                 } catch (e) {
-                    console.error(e);
-                    setSummary("Failed to generate summary. Please check console for details.");
+                    console.error('Failed to save watchlist', e);
+                }
+            };
+
+            const handleAddStock = async () => {
+                const id = newStockId.trim();
+                if (!id || watchlist.some(s => s.id === id)) return;
+
+                let name = id;
+                try {
+                    const res = await axios.get(`/api/stock-name/${id}`);
+                    if (res.data.name) name = res.data.name;
+                } catch (e) {}
+
+                const newList = [...watchlist, { id, name }];
+                setWatchlist(newList);
+                setNewStockId('');
+                saveWatchlist(newList);
+            };
+
+            const handleDeleteStock = (idx) => {
+                const newList = watchlist.filter((_, i) => i !== idx);
+                setWatchlist(newList);
+                saveWatchlist(newList);
+            };
+
+            const handleFetchNews = async () => {
+                if (watchlist.length === 0) return;
+                setLoading(true);
+                setNewsResults(null);
+                try {
+                    const res = await axios.post('/api/fetch-news', {
+                        stock_ids: watchlist.map(s => s.id),
+                        days
+                    });
+                    setNewsResults(res.data.results);
+                } catch (e) {
+                    console.error('Failed to fetch news', e);
                 } finally {
                     setLoading(false);
                 }
             };
 
             return (
-                <div className="glass-panel p-6 rounded-2xl mb-6 shadow-lg shadow-emerald-900/10 border border-emerald-500/30">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 border-b border-slate-700 pb-4 gap-4">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            <i data-lucide="bot" className="text-emerald-400 w-6 h-6"></i>
-                            AI Market Summary (Gemini)
-                        </h2>
-                        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <select
-                                value={model}
-                                onChange={e => setModel(e.target.value)}
-                                className="bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500 max-w-[200px]"
-                            >
-                                {availableModels.map(m => <option key={m} value={m}>{m.replace('models/', '')}</option>)}
-                            </select>
+                <div className="space-y-6">
+                    <div className="glass-panel p-6 rounded-2xl">
+                        <h3 className="text-lg font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                            <i data-lucide="newspaper" className="w-5 h-5"></i>
+                            股票自選清單
+                        </h3>
 
+                        <div className="space-y-1 mb-4 max-h-64 overflow-y-auto">
+                            {watchlist.map((stock, idx) => (
+                                <div key={idx} className="flex items-center gap-3 py-1.5 px-2 rounded hover:bg-slate-800/40">
+                                    <span className="font-mono text-blue-300 w-16 flex-shrink-0">{stock.id}</span>
+                                    <span className="text-slate-300 text-sm">{stock.name !== stock.id ? stock.name : ''}</span>
+                                    <button onClick={() => handleDeleteStock(idx)} className="ml-auto text-slate-600 hover:text-red-400 transition-colors flex-shrink-0">
+                                        <i data-lucide="trash-2" className="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            ))}
+                            {watchlist.length === 0 && (
+                                <p className="text-slate-500 text-sm py-2">尚無股票，請在下方新增</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2">
                             <input
-                                type="date"
-                                value={date}
-                                onChange={e => setDate(e.target.value)}
-                                className="bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-600 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                                type="text"
+                                value={newStockId}
+                                onChange={e => setNewStockId(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && handleAddStock()}
+                                placeholder="輸入股票代號 (e.g. 2330, AAPL)"
+                                className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
                             />
                             <button
-                                onClick={handleGenerate}
-                                disabled={loading}
-                                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleAddStock}
+                                className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5"
                             >
-                                {loading ? <i data-lucide="loader" className="animate-spin w-4 h-4"></i> : <i data-lucide="sparkles" className="w-4 h-4"></i>}
-                                {loading ? "Analyzing..." : "Generate Summary"}
+                                <i data-lucide="plus" className="w-4 h-4"></i>
+                                新增
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-700 flex-wrap">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm text-slate-400 flex-shrink-0">搜尋範圍：</span>
+                                {[1, 3, 7, 14, 30].map(d => (
+                                    <button
+                                        key={d}
+                                        onClick={() => setDays(d)}
+                                        className={`px-2.5 py-1 text-xs rounded transition-colors ${days === d ? 'bg-purple-600 text-white' : 'bg-slate-700 text-slate-400 hover:text-white'}`}
+                                    >
+                                        {d}天
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={handleFetchNews}
+                                disabled={loading || watchlist.length === 0}
+                                className="ml-auto bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-bold transition-all flex items-center gap-2"
+                            >
+                                {loading
+                                    ? <><i data-lucide="loader" className="animate-spin w-4 h-4"></i> 讀取中...</>
+                                    : <><i data-lucide="newspaper" className="w-4 h-4"></i> 讀取新聞</>
+                                }
                             </button>
                         </div>
                     </div>
 
-                    <div className="bg-slate-900/50 rounded-xl p-6 min-h-[100px] text-slate-300 whitespace-pre-wrap leading-relaxed border border-slate-700/50 font-sans text-base">
-                        {loading && (
-                            <div className="flex flex-col items-center justify-center py-8 space-y-3">
-                                <i data-lucide="cpu" className="w-8 h-8 text-emerald-400 animate-pulse"></i>
-                                <span className="text-emerald-400 animate-pulse">Analyzing market data and generating insights...</span>
-                            </div>
-                        )}
-                        {!loading && !summary && (
-                            <div className="flex flex-col items-center justify-center py-8 text-slate-500 space-y-2">
-                                <i data-lucide="search" className="w-8 h-8 opacity-50"></i>
-                                <span className="italic">Select a model and date, then click "Generate Summary".</span>
-                            </div>
-                        )}
-                        {!loading && summary && (
-                            <div className="animate-fade-in">
-                                {summary}
-                            </div>
-                        )}
-                    </div>
+                    {loading && (
+                        <div className="text-center py-12 text-slate-400 animate-pulse">
+                            正在抓取新聞，請稍候⋯（依股票數量需要一段時間）
+                        </div>
+                    )}
+
+                    {newsResults && !loading && (
+                        <div className="space-y-4">
+                            {watchlist.map(stock => {
+                                const result = newsResults[stock.id];
+                                if (!result) return null;
+                                const displayName = (result.name && result.name !== stock.id) ? result.name : stock.name;
+                                return (
+                                    <div key={stock.id} className="glass-panel p-5 rounded-2xl">
+                                        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-700">
+                                            <span className="font-mono text-blue-400 font-bold">{stock.id}</span>
+                                            {displayName && displayName !== stock.id && (
+                                                <span className="text-slate-300 font-semibold">{displayName}</span>
+                                            )}
+                                            <span className="ml-auto text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">
+                                                {result.articles.length} 篇
+                                            </span>
+                                        </div>
+                                        {result.articles.length === 0 ? (
+                                            <p className="text-slate-500 text-sm">未找到相關新聞</p>
+                                        ) : (
+                                            <ul className="space-y-1">
+                                                {result.articles.map((article, idx) => (
+                                                    <li key={idx} className="group">
+                                                        <a
+                                                            href={article.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-start gap-2 hover:bg-slate-800/40 rounded-lg px-2 py-1.5 transition-colors"
+                                                        >
+                                                            <span className="text-slate-600 text-xs mt-1 flex-shrink-0">•</span>
+                                                            <div className="min-w-0">
+                                                                <span className="text-sm text-blue-300 group-hover:text-blue-200 group-hover:underline leading-snug block">
+                                                                    {article.title}
+                                                                </span>
+                                                                {(article.source || article.date) && (
+                                                                    <span className="text-xs text-slate-500 mt-0.5 block">
+                                                                        {article.source}{article.source && article.date ? ' · ' : ''}{article.date}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -1567,11 +1635,10 @@
                                         Custom Levels
                                     </button>
                                     <button
-                                        onClick={() => setActiveTab("sma")}
-
-                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "sma" ? "bg-slate-700 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                        onClick={() => setActiveTab("news")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "news" ? "bg-slate-700 text-purple-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
                                     >
-                                        SMA Chart
+                                        News
                                     </button>
                                     <button
                                         onClick={() => setActiveTab("correlation")}
@@ -1584,7 +1651,6 @@
 
                                 {/* Market Breadth Section */}
                                 <div className={activeTab === 'market' ? 'space-y-6 block' : 'hidden'}>
-                                    <AiSummarySection />
                                     <h2 className="text-xl font-bold text-white border-l-4 border-blue-500 pl-4">Market Breadth</h2>
                                     <div className="grid md:grid-cols-2 gap-6">
                                         <section className="glass-panel rounded-2xl p-6">
@@ -1644,6 +1710,28 @@
                                     {catStats ? (
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <CategoryTable
+                                                title="Top 10 RS Rank"
+                                                data={catStats.table5 || []}
+                                                columns={{
+                                                    valueLabel: "Avg Rank",
+                                                    renderValue: r => <span className="text-yellow-400 font-bold">{r.avg_rs_rank.toFixed(1)}</span>
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
+                                                title="Top 10 RS Turning Stronger"
+                                                data={catStats.table6 || []}
+                                                columns={{
+                                                    valueLabel: "RS Delta",
+                                                    renderValue: r => {
+                                                        const v = r.avg_rs_delta;
+                                                        const color = v > 0 ? "text-emerald-400" : "text-red-400";
+                                                        return <span className={`${color} font-bold`}>{v > 0 ? "+" : ""}{v.toFixed(1)}</span>;
+                                                    }
+                                                }}
+                                                onSelect={handleSelectCategory}
+                                            />
+                                            <CategoryTable
                                                 title="Top 10 Categories (1-Day Price Change)"
                                                 data={catStats.table1}
                                                 columns={{
@@ -1679,15 +1767,6 @@
                                                 }}
                                                 onSelect={handleSelectCategory}
                                             />
-                                            <CategoryTable
-                                                title="Top 10 RS Rank"
-                                                data={catStats.table5 || []}
-                                                columns={{
-                                                    valueLabel: "Avg Rank",
-                                                    renderValue: r => <span className="text-yellow-400 font-bold">{r.avg_rs_rank.toFixed(1)}</span>
-                                                }}
-                                                onSelect={handleSelectCategory}
-                                            />
                                         </div>
                                     ) : (
                                         <div className="text-center text-slate-500">Loading Category Stats...</div>
@@ -1700,14 +1779,14 @@
                                     <LevelAnalysisSection />
                                 </div>
 
-                                <div className={activeTab === 'sma' ? 'space-y-6 block' : 'hidden'}>
-                                    <h2 className="text-xl font-bold text-white border-l-4 border-yellow-500 pl-4">SMA Trend Analysis</h2>
-                                    <SmaAnalysisSection />
-                                </div>
-
                                 <div className={activeTab === 'correlation' ? 'space-y-6 block' : 'hidden'}>
                                     <h2 className="text-xl font-bold text-white border-l-4 border-emerald-500 pl-4">Stock-Metal Correlation</h2>
                                     <CorrelationAnalysisSection />
+                                </div>
+
+                                <div className={activeTab === 'news' ? 'space-y-6 block' : 'hidden'}>
+                                    <h2 className="text-xl font-bold text-white border-l-4 border-purple-500 pl-4">News</h2>
+                                    <StockNewsSection />
                                 </div>
 
 

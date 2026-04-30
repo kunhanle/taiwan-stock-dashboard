@@ -8,10 +8,12 @@ import datetime
 import os
 import time
 from functools import wraps
+import json
 from pydantic import BaseModel
 from typing import Optional, List
 from correlation_analysis import analyze_correlation
 import google.generativeai as genai
+import anthropic
 from dotenv import load_dotenv
 
 # Database Imports
@@ -24,6 +26,9 @@ load_dotenv()
 
 # Configure Gemini API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+# Configure Anthropic (Claude) client
+anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY")) if os.getenv("ANTHROPIC_API_KEY") else None
 
 app = FastAPI()
 
@@ -219,9 +224,17 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
     pct_change_3d = close.pct_change(periods=3)
     pct_change_9d = close.pct_change(periods=9)
     pct_change_17d = close.pct_change(periods=17)
-    
+
     rs = (pct_change_3d * 2) + pct_change_9d + pct_change_17d
     rs_rank = rs.rank(axis=1, pct=True) * 100
+
+    # Medium-term RS baseline for delta: 20d×2 + 60d + 120d, percentile-ranked
+    pct_change_20d  = close.pct_change(periods=20)
+    pct_change_60d  = close.pct_change(periods=60)
+    pct_change_120d = close.pct_change(periods=120)
+
+    rs_lt = (pct_change_20d * 2) + pct_change_60d + pct_change_120d
+    rs_rank_lt = rs_lt.rank(axis=1, pct=True) * 100
 
     if date:
         try:
@@ -243,7 +256,8 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
     latest_pct_5d = pct_change_5d.iloc[date_idx]
     latest_vol_jump_1d = vol_jump_1d.iloc[date_idx]
     latest_vol_jump_3d = vol_jump_3d.iloc[date_idx]
-    latest_rs_rank = rs_rank.iloc[date_idx]
+    latest_rs_rank    = rs_rank.iloc[date_idx]
+    latest_rs_rank_lt = rs_rank_lt.iloc[date_idx]
 
     cat_metrics = []
 
@@ -251,20 +265,26 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
         valid_stocks = [s for s in stocks if s in close.columns]
         if not valid_stocks:
             continue
-            
+
         val_1d = latest_pct_1d[valid_stocks].mean()
         val_5d = latest_pct_5d[valid_stocks].mean()
-        
+
         stocks_vol_1d = latest_vol_jump_1d[valid_stocks]
         count_vol_1d = (stocks_vol_1d > 2).sum()
         ratio_vol_1d = count_vol_1d / len(valid_stocks)
-        
+
         stocks_vol_3d = latest_vol_jump_3d[valid_stocks]
         count_vol_3d = (stocks_vol_3d > 2).sum()
         ratio_vol_3d = count_vol_3d / len(valid_stocks)
 
-        val_rs_rank = latest_rs_rank[valid_stocks].mean()
-        
+        val_rs_rank    = latest_rs_rank[valid_stocks].mean()
+        val_rs_rank_lt = latest_rs_rank_lt[valid_stocks].mean()
+        val_rs_delta   = (
+            (val_rs_rank - val_rs_rank_lt)
+            if not pd.isna(val_rs_rank) and not pd.isna(val_rs_rank_lt)
+            else 0
+        )
+
         cat_metrics.append({
             "name": cat_name,
             "avg_change_1d": val_1d if not pd.isna(val_1d) else 0,
@@ -274,6 +294,7 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
             "vol_jump_3d_count": int(count_vol_3d),
             "vol_jump_3d_ratio": ratio_vol_3d,
             "avg_rs_rank": val_rs_rank if not pd.isna(val_rs_rank) else 0,
+            "avg_rs_delta": val_rs_delta,
             "stock_count": len(valid_stocks)
         })
 
@@ -282,9 +303,10 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
     table3 = [x for x in cat_metrics if x['vol_jump_1d_ratio'] > 0.5]
     table4 = [x for x in cat_metrics if x['vol_jump_3d_ratio'] > 0.5]
     table5 = sorted(cat_metrics, key=lambda x: x['avg_rs_rank'], reverse=True)[:10]
-    
+    table6 = sorted(cat_metrics, key=lambda x: x['avg_rs_delta'], reverse=True)[:10]
+
     available_dates = [d.strftime('%Y-%m-%d') for d in close.index[-60:]]
-    
+
     return {
         "date": str(target_date.date()),
         "available_dates": available_dates,
@@ -292,7 +314,8 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
         "table2": table2,
         "table3": table3,
         "table4": table4,
-        "table5": table5
+        "table5": table5,
+        "table6": table6
     }
 
 @app.get("/api/category-details/{category_name}")
@@ -409,58 +432,62 @@ def market_stats():
 
 @app.get("/api/preset-levels")
 def get_preset_levels(session: Session = Depends(get_session)):
-    # Convert DB levels to CSV format to maintain frontend compatibility
     try:
         annotations = session.exec(select(StockAnnotation)).all()
-        # Filter only those that have levels
-        lines = []
+        stocks = []
         for a in annotations:
-            if a.level_1 is not None: # Assuming if L1 exists, display. Or check any level.
-                # Format: StockID, L1, L2, L3
-                l1 = f"{a.level_1}" if a.level_1 is not None else ""
-                l2 = f"{a.level_2}" if a.level_2 is not None else ""
-                l3 = f"{a.level_3}" if a.level_3 is not None else ""
-                # Avoid trailing commas if empty? The frontend likely expects numbers.
-                # Replicate previous CSV format: ID, L1, L2, L3
-                # Need to match strictness. If None, empty string?
-                # The previous parser handled it via split.
-                lines.append(f"{a.stock_id},{l1},{l2},{l3}")
-        
-        content = "\n".join(lines)
-        return {"content": content}
+            levels = []
+            if a.levels_json:
+                levels = [float(x) for x in a.levels_json.split(',') if x.strip()]
+            elif a.level_1 is not None:
+                # Migrate legacy fields on read
+                for v in [a.level_1, a.level_2, a.level_3]:
+                    if v is not None:
+                        levels.append(v)
+            stocks.append({
+                "stock_id": a.stock_id,
+                "take_profit": a.take_profit,
+                "levels": levels
+            })
+        return {"stocks": stocks}
     except Exception as e:
         print(f"Error reading levels: {e}")
-        return {"content": ""}
+        return {"stocks": []}
+
+class SaveContentRequest(BaseModel):
+    content: str
+
+class StockLevelItem(BaseModel):
+    stock_id: str
+    take_profit: Optional[float] = None
+    levels: List[float] = []
 
 class SaveLevelsRequest(BaseModel):
-    content: str
+    stocks: List[StockLevelItem]
 
 @app.post("/api/save-levels")
 def save_preset_levels(req: SaveLevelsRequest, session: Session = Depends(get_session)):
     try:
-        # content is CSV string. Parse and update DB.
-        lines = req.content.strip().split('\n')
-        for line in lines:
-            line = line.strip()
-            if not line: continue
-            parts = line.split(',')
-            if len(parts) >= 4:
-                sid = parts[0].strip()
-                try:
-                    l1 = float(parts[1]) if parts[1].strip() else None
-                    l2 = float(parts[2]) if parts[2].strip() else None
-                    l3 = float(parts[3]) if parts[3].strip() else None
-                    
-                    annot = session.get(StockAnnotation, sid)
-                    if not annot:
-                        annot = StockAnnotation(stock_id=sid)
-                    
-                    annot.level_1 = l1
-                    annot.level_2 = l2
-                    annot.level_3 = l3
-                    session.add(annot)
-                except ValueError:
-                    continue
+        submitted_ids = set()
+        for item in req.stocks:
+            sid = item.stock_id.strip()
+            if not sid:
+                continue
+            submitted_ids.add(sid)
+            annot = session.get(StockAnnotation, sid)
+            if not annot:
+                annot = StockAnnotation(stock_id=sid)
+            annot.take_profit = item.take_profit if item.take_profit and item.take_profit > 0 else None
+            valid_levels = [l for l in item.levels if l > 0]
+            annot.levels_json = ','.join(str(l) for l in valid_levels) if valid_levels else None
+            session.add(annot)
+
+        # Delete annotations not in the submitted list (true sync)
+        all_annotations = session.exec(select(StockAnnotation)).all()
+        for a in all_annotations:
+            if a.stock_id not in submitted_ids:
+                session.delete(a)
+
         session.commit()
         return {"status": "success"}
     except Exception as e:
@@ -482,7 +509,7 @@ def get_preset_sma(session: Session = Depends(get_session)):
         return {"content": ""}
 
 @app.post("/api/save-sma")
-def save_preset_sma(req: SaveLevelsRequest, session: Session = Depends(get_session)):
+def save_preset_sma(req: SaveContentRequest, session: Session = Depends(get_session)):
     try:
         lines = req.content.strip().split('\n')
         for line in lines:
@@ -508,6 +535,72 @@ def save_preset_sma(req: SaveLevelsRequest, session: Session = Depends(get_sessi
         return {"status": "success"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+class ExtractLevelsRequest(BaseModel):
+    text: str
+    model: Optional[str] = None
+
+@app.post("/api/extract-levels")
+def extract_levels(req: ExtractLevelsRequest):
+    import json, re
+    try:
+        prompt = f"""你是一個台股技術分析助手。請從以下分析文字中，提取出最關鍵的價格數字。
+
+**停利點**：文字中的「目標價」、「樂觀目標」、「短期/中期目標」、「壓力位」、「滿足點」等最高合理目標價。優先選取短期或中期目標，而非極端的長期估值。
+
+**Level 1（第一道防線）**：最靠近現價的支撐位，例如「層級一」、「情緒支撐」、「短期支撐」、「第一支撐」。
+**Level 2（第二道防線）**：第二道支撐，例如「層級二」、「溫和支撐」、「中期支撐」。
+**Level 3（第三道防線）**：更深的支撐，例如「層級三」、「熊市支撐」、「年線支撐」、「底部區域」。
+
+規則：
+- 支撐位必須 L1 > L2 > L3（由高到低排列）
+- 若某層不存在，回傳 null
+- 只擷取文字中明確提及的數字，不要推算或猜測
+- 只回傳 JSON，不要有任何說明文字
+
+格式：{{"take_profit": 數字或null, "level_1": 數字或null, "level_2": 數字或null, "level_3": 數字或null}}
+
+分析文字：
+{req.text}"""
+
+        available = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        if req.model and req.model in available:
+            model_name = req.model
+        else:
+            model_name = next((m for m in available if 'flash' in m.lower()), available[0] if available else None)
+        if not model_name:
+            return {"error": "No Gemini model available"}
+
+        print(f"extract-levels using model: {model_name}")
+        model = genai.GenerativeModel(model_name)
+        response = model.generate_content(prompt)
+        raw = response.text.strip()
+        print(f"Gemini extract-levels raw: {raw}")
+
+        match = re.search(r'\{[^{}]+\}', raw)
+        if not match:
+            return {"error": "無法從回應中解析 JSON", "raw": raw}
+        data = json.loads(match.group())
+
+        levels = []
+        for key in ["level_1", "level_2", "level_3"]:
+            v = data.get(key)
+            if v is not None:
+                try:
+                    levels.append(float(v))
+                except (TypeError, ValueError):
+                    pass
+
+        tp = data.get("take_profit")
+        try:
+            tp = float(tp) if tp is not None else None
+        except (TypeError, ValueError):
+            tp = None
+
+        return {"take_profit": tp, "levels": levels}
+    except Exception as e:
+        print(f"Extract levels error: {e}")
+        return {"error": str(e)}
 
 class AnalyzeRequest(BaseModel):
     stock_ids: list[str]
@@ -538,7 +631,7 @@ def get_ai_models():
                 models.append(m.name)
         return {"models": models}
     except Exception as e:
-        return {"error": str(e), "models": ["models/gemini-1.5-flash"]}
+        return {"error": str(e), "models": []}
 
 class AiSummaryRequest(BaseModel):
     date: str
@@ -671,9 +764,13 @@ B. 分析今天台股盤面上的 『熱門題材族群』。請執行以下任�
         print(f"Prompt constructed. Calling Gemini with model {req.model}...")
         try:
             model = genai.GenerativeModel(req.model)
-        except:
-             print(f"Model {req.model} failed, falling back to gemini-1.5-flash")
-             model = genai.GenerativeModel('gemini-1.5-flash')
+        except Exception:
+            available = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+            fallback = next((m for m in available if 'flash' in m.lower()), available[0] if available else None)
+            if not fallback:
+                return {"error": "No Gemini model available"}
+            print(f"Model {req.model} failed, falling back to {fallback}")
+            model = genai.GenerativeModel(fallback)
 
         response = model.generate_content(prompt)
         
@@ -682,6 +779,380 @@ B. 分析今天台股盤面上的 『熱門題材族群』。請執行以下任�
     except Exception as e:
         print(f"Error generating summary: {e}")
         return {"error": str(e)}
+
+# ──────────────────────────────────────────────────────────
+# Stock News Feature
+# ──────────────────────────────────────────────────────────
+
+_DATA_DIR = os.environ.get("DATA_DIR", os.path.dirname(__file__))
+NEWS_WATCHLIST_FILE = os.path.join(_DATA_DIR, "news_watchlist.csv")
+
+def _load_news_watchlist():
+    try:
+        if os.path.exists(NEWS_WATCHLIST_FILE):
+            df = pd.read_csv(NEWS_WATCHLIST_FILE, dtype=str).fillna('')
+            stocks = [{"id": row["id"], "name": row["name"]} for _, row in df.iterrows() if row["id"]]
+            return {"stocks": stocks}
+    except Exception as e:
+        print(f"Error loading news watchlist: {e}")
+    return {"stocks": []}
+
+def _save_news_watchlist(watchlist_data):
+    try:
+        stocks = watchlist_data.get("stocks", [])
+        df = pd.DataFrame(stocks if stocks else [], columns=["id", "name"])
+        df.to_csv(NEWS_WATCHLIST_FILE, index=False, encoding="utf-8-sig")
+    except Exception as e:
+        print(f"Error saving news watchlist: {e}")
+
+class NewsStockItem(BaseModel):
+    id: str
+    name: str
+
+class NewsWatchlistRequest(BaseModel):
+    stocks: List[NewsStockItem]
+
+class FetchNewsRequest(BaseModel):
+    stock_ids: List[str]
+    days: int = 7
+
+@app.get("/api/news-watchlist")
+def get_news_watchlist():
+    return _load_news_watchlist()
+
+@app.post("/api/news-watchlist")
+def save_news_watchlist_endpoint(req: NewsWatchlistRequest):
+    watchlist_data = {"stocks": [{"id": s.id, "name": s.name} for s in req.stocks]}
+    _save_news_watchlist(watchlist_data)
+    return {"status": "success"}
+
+@app.get("/api/stock-name/{stock_id}")
+def get_stock_name_endpoint(stock_id: str):
+    try:
+        if any(c.isalpha() for c in stock_id):
+            return {"stock_id": stock_id, "name": None}
+        df = data.get('company_basic_info')
+        if df is not None:
+            matches = df[df['stock_id'] == stock_id]
+            if not matches.empty:
+                name = str(matches.iloc[0]['公司簡稱'])
+                return {"stock_id": stock_id, "name": name}
+    except Exception as e:
+        print(f"Error getting stock name for {stock_id}: {e}")
+    return {"stock_id": stock_id, "name": None}
+
+@app.post("/api/fetch-news")
+def fetch_stock_news(req: FetchNewsRequest):
+    import urllib.request
+    from urllib.parse import quote
+    import xml.etree.ElementTree as ET
+    import datetime as dt
+
+    company_info = None
+    try:
+        df = data.get('company_basic_info')
+        if df is not None:
+            company_info = df.set_index('stock_id')
+    except Exception as e:
+        print(f"Error loading company info: {e}")
+
+    def is_us_stock(sid):
+        return any(c.isalpha() for c in sid)
+
+    def get_name(sid):
+        if company_info is None or is_us_stock(sid):
+            return None
+        try:
+            if sid in company_info.index:
+                return str(company_info.loc[sid]['公司簡稱'])
+        except Exception:
+            pass
+        return None
+
+    def fetch_finlab_news(stock_id, days):
+        """Fetch Taiwan stock news from FinLab tw_news_cnyes (indexed by stock_id)."""
+        news_list = []
+        try:
+            df_news = data.get('tw_news_cnyes')
+            if df_news is None or df_news.empty:
+                return []
+            regex_pat = f'(^|,){stock_id}(,|$)'
+            mask = df_news['stock_ids'].astype(str).str.contains(regex_pat, regex=True, na=False)
+            filtered = df_news[mask].copy()
+            if filtered.empty:
+                return []
+            filtered['date'] = pd.to_datetime(filtered['date'])
+            cutoff = dt.datetime.now() - dt.timedelta(days=days)
+            filtered = filtered[filtered['date'] >= cutoff]
+            for _, row in filtered.iterrows():
+                news_list.append({
+                    "title": str(row['title']),
+                    "link": str(row['url']),
+                    "date": row['date'].strftime("%Y-%m-%d %H:%M"),
+                    "source": "鉅亨網"
+                })
+            news_list.sort(key=lambda x: x['date'], reverse=True)
+            print(f"FinLab news: {len(news_list)} articles for {stock_id}")
+        except Exception as e:
+            print(f"Error fetching FinLab news for {stock_id}: {e}")
+        return news_list
+
+    def get_real_article_date(url):
+        """Fetch article page and extract real publication date from meta tags."""
+        import re as _re
+        try:
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            req_obj = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req_obj, timeout=4) as resp:
+                html = resp.read(8192).decode("utf-8", errors="replace")
+            # Open Graph article:published_time
+            m = _re.search(r'<meta[^>]+property=["\']article:published_time["\'][^>]+content=["\']([^"\']+)["\']', html, _re.I)
+            if not m:
+                m = _re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']article:published_time["\']', html, _re.I)
+            if m:
+                return pd.to_datetime(m.group(1), utc=True).to_pydatetime().replace(tzinfo=None)
+            # JSON-LD datePublished
+            m = _re.search(r'"datePublished"\s*:\s*"([^"]+)"', html)
+            if m:
+                return pd.to_datetime(m.group(1), utc=True).to_pydatetime().replace(tzinfo=None)
+            # <time datetime="...">
+            m = _re.search(r'<time[^>]+datetime=["\']([^"\']+)["\']', html, _re.I)
+            if m:
+                return pd.to_datetime(m.group(1), utc=True).to_pydatetime().replace(tzinfo=None)
+        except Exception:
+            pass
+        return None
+
+    def filter_by_real_date(articles, days):
+        """Parallel-fetch each article to verify its real publication date."""
+        import concurrent.futures
+        cutoff = dt.datetime.now() - dt.timedelta(days=days)
+
+        def check(article):
+            real_dt = get_real_article_date(article["link"])
+            if real_dt is not None:
+                if real_dt < cutoff:
+                    return None  # confirmed stale — drop
+                article["date"] = real_dt.strftime("%Y-%m-%d %H:%M")
+            # real_dt is None → can't verify → keep with RSS date
+            return article
+
+        valid = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+            for result in ex.map(check, articles):
+                if result is not None:
+                    valid.append(result)
+        return valid
+
+    def fetch_google_news_rss_tw(query, days, keyword=None):
+        """Google News RSS for Taiwan stocks with title filtering and real-date validation."""
+        full_query = f"{query} when:{days}d"
+        url = f"https://news.google.com/rss/search?q={quote(full_query)}&hl=zh-TW&gl=TW&ceid=TW:zh-TW"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        req_obj = urllib.request.Request(url, headers=headers)
+        raw_articles = []
+        try:
+            with urllib.request.urlopen(req_obj, timeout=15) as resp:
+                content = resp.read()
+            root = ET.fromstring(content)
+            seen = set()
+            for item in root.findall(".//item"):
+                title = item.findtext("title", "").strip()
+                link = item.findtext("link", "").strip()
+                pub_date = item.findtext("pubDate", "").strip()
+                source_el = item.find("source")
+                source = source_el.text.strip() if source_el is not None and source_el.text else "Google News"
+                if not title or not link or link in seen:
+                    continue
+                # Only keep articles where the stock name appears in the title
+                if keyword and keyword not in title:
+                    continue
+                seen.add(link)
+                raw_articles.append({"title": title, "link": link, "date": pub_date, "source": source})
+            print(f"Google News RSS raw: {len(raw_articles)} articles for '{query}' (after title filter)")
+        except Exception as e:
+            print(f"Google News RSS error for '{query}': {e}")
+        return filter_by_real_date(raw_articles, days)
+
+    def fetch_uanalyze_news(stock_name, days):
+        """Fetch articles from UAnalyze XML feed filtered by stock name in title."""
+        articles = []
+        cutoff_ms = int((dt.datetime.now() - dt.timedelta(days=days)).timestamp() * 1000)
+        try:
+            url = "https://uanalyze.com.tw/feeds/articles"
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            req_obj = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req_obj, timeout=10) as resp:
+                content = resp.read()
+            root = ET.fromstring(content)
+            for article in root.findall(".//article"):
+                title = article.findtext("title", "").strip()
+                pub_ts_ms = int(article.findtext("publishTimeUnix", "0").strip() or 0)
+                src_url = article.findtext("sourceUrl", "").strip()
+                if not title or not src_url or stock_name not in title or pub_ts_ms < cutoff_ms:
+                    continue
+                pub_dt = dt.datetime.fromtimestamp(pub_ts_ms / 1000)
+                articles.append({
+                    "title": title,
+                    "link": src_url,
+                    "date": pub_dt.strftime("%Y-%m-%d %H:%M"),
+                    "source": "UAnalyze"
+                })
+            print(f"UAnalyze: {len(articles)} articles for {stock_name}")
+        except Exception as e:
+            print(f"Error fetching UAnalyze news: {e}")
+        return articles
+
+    def fetch_trendforce_news(stock_name, days):
+        """Scrape TrendForce presscenter page filtered by stock name in title."""
+        import re as _re
+        articles = []
+        cutoff = dt.datetime.now() - dt.timedelta(days=days)
+        try:
+            url = "https://www.trendforce.com.tw/presscenter"
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            req_obj = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req_obj, timeout=10) as resp:
+                html = resp.read().decode("utf-8", errors="replace")
+            pattern = r'href="(/presscenter/news/(\d{8})-\d+\.html)"[^>]*>.*?<strong>(.*?)</strong>'
+            seen = set()
+            for link, date_str, title in _re.findall(pattern, html, _re.DOTALL):
+                title = _re.sub(r"<[^>]+>", "", title).strip()
+                if not title or link in seen or stock_name not in title:
+                    continue
+                try:
+                    pub_dt = dt.datetime.strptime(date_str, "%Y%m%d")
+                except Exception:
+                    continue
+                if pub_dt < cutoff:
+                    continue
+                seen.add(link)
+                articles.append({
+                    "title": title,
+                    "link": f"https://www.trendforce.com.tw{link}",
+                    "date": pub_dt.strftime("%Y-%m-%d"),
+                    "source": "TrendForce"
+                })
+            print(f"TrendForce: {len(articles)} articles for {stock_name}")
+        except Exception as e:
+            print(f"Error fetching TrendForce news: {e}")
+        return articles
+
+    def parse_rss_date(pub_date_str):
+        from email.utils import parsedate_to_datetime
+        try:
+            return parsedate_to_datetime(pub_date_str).replace(tzinfo=None)
+        except Exception:
+            try:
+                return pd.to_datetime(pub_date_str, utc=True).to_pydatetime().replace(tzinfo=None)
+            except Exception:
+                return None
+
+    def fetch_site_rss(rss_url, source_name, days, keyword=None):
+        """Generic RSS fetcher with strict server-side date filtering."""
+        articles = []
+        cutoff = dt.datetime.now() - dt.timedelta(days=days)
+        try:
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            req_obj = urllib.request.Request(rss_url, headers=headers)
+            with urllib.request.urlopen(req_obj, timeout=10) as resp:
+                content = resp.read()
+            root = ET.fromstring(content)
+            seen = set()
+            for item in root.findall(".//item"):
+                title = item.findtext("title", "").strip()
+                link = item.findtext("link", "").strip()
+                pub_date_str = item.findtext("pubDate", "").strip()
+                if not title or not link or link in seen:
+                    continue
+                if keyword and keyword not in title:
+                    continue
+                pub_dt = parse_rss_date(pub_date_str)
+                if pub_dt is None or pub_dt < cutoff:
+                    continue
+                seen.add(link)
+                articles.append({
+                    "title": title,
+                    "link": link,
+                    "date": pub_dt.strftime("%Y-%m-%d %H:%M"),
+                    "source": source_name
+                })
+            print(f"{source_name}: {len(articles)} articles")
+        except Exception as e:
+            print(f"Error fetching {source_name} ({rss_url}): {e}")
+        return articles
+
+    def fetch_google_news_rss(query, lang, country, ceid, days):
+        """Google News RSS — used for US stocks only."""
+        full_query = f"{query} when:{days}d"
+        url = f"https://news.google.com/rss/search?q={quote(full_query)}&hl={lang}&gl={country}&ceid={ceid}"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        req_obj = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req_obj, timeout=15) as resp:
+            content = resp.read()
+        root = ET.fromstring(content)
+        articles = []
+        seen = set()
+        for item in root.findall(".//item"):
+            title = item.findtext("title", "").strip()
+            link = item.findtext("link", "").strip()
+            pub_date = item.findtext("pubDate", "").strip()
+            source_el = item.find("source")
+            source = source_el.text.strip() if source_el is not None and source_el.text else ""
+            if title and link and link not in seen:
+                seen.add(link)
+                articles.append({"title": title, "link": link, "date": pub_date, "source": source})
+        return articles
+
+    def merge_articles(base, additions):
+        seen = {a['link'] for a in base}
+        for a in additions:
+            if a['link'] not in seen:
+                base.append(a)
+                seen.add(a['link'])
+        return base
+
+    results = {}
+    for stock_id in req.stock_ids:
+        try:
+            is_us = is_us_stock(stock_id)
+            stock_name = get_name(stock_id)
+            articles = []
+
+            if is_us:
+                articles = fetch_google_news_rss(f"{stock_id} stock", "en", "US", "US:en", req.days)
+            else:
+                # FinLab (鉅亨網) — primary source, indexed by stock_id
+                articles = fetch_finlab_news(stock_id, req.days)
+
+                # MoneyDJ — per-stock RSS, strict date filtering
+                merge_articles(articles, fetch_site_rss(
+                    f"https://www.moneydj.com/rss/RssCompanyNews.aspx?stockid={stock_id}",
+                    "MoneyDJ", req.days
+                ))
+
+                # UAnalyze — XML feed filtered by stock name in title
+                if stock_name:
+                    merge_articles(articles, fetch_uanalyze_news(stock_name, req.days))
+
+                # TrendForce TW — scrape presscenter page filtered by stock name in title
+                if stock_name:
+                    merge_articles(articles, fetch_trendforce_news(stock_name, req.days))
+
+                # Google News RSS — title must contain stock name, plus real-date validation
+                gn_query = stock_name if stock_name else stock_id
+                merge_articles(articles, fetch_google_news_rss_tw(gn_query, req.days, keyword=stock_name))
+
+                articles.sort(key=lambda x: x['date'], reverse=True)
+
+            results[stock_id] = {"name": stock_name or stock_id, "articles": articles[:50]}
+            print(f"Total {len(articles)} articles for {stock_id}")
+        except Exception as e:
+            print(f"Error fetching news for {stock_id}: {e}")
+            results[stock_id] = {"name": stock_id, "articles": [], "error": str(e)}
+
+    return {"results": results}
+
 
 if __name__ == "__main__":
     import uvicorn
