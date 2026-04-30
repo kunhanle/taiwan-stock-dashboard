@@ -1733,7 +1733,7 @@
                                             />
                                             <CategoryTable
                                                 title="Top 10 Categories (1-Day Price Change)"
-                                                data={catStats.table1}
+                                                data={catStats.table1 || []}
                                                 columns={{
                                                     valueLabel: "Avg Change %",
                                                     renderValue: r => <span className={r.avg_change_1d > 0 ? "text-red-400" : "text-green-400"}>{r.avg_change_1d.toFixed(2)}%</span>
@@ -1742,7 +1742,7 @@
                                             />
                                             <CategoryTable
                                                 title="Top 10 Categories (5-Day Price Change)"
-                                                data={catStats.table2}
+                                                data={catStats.table2 || []}
                                                 columns={{
                                                     valueLabel: "Avg Change %",
                                                     renderValue: r => <span className={r.avg_change_5d > 0 ? "text-red-400" : "text-green-400"}>{r.avg_change_5d.toFixed(2)}%</span>
@@ -1751,7 +1751,7 @@
                                             />
                                             <CategoryTable
                                                 title="Vol Jump 1-Day (Ratio > 2)"
-                                                data={catStats.table3}
+                                                data={catStats.table3 || []}
                                                 columns={{
                                                     valueLabel: "Jump Ratio",
                                                     renderValue: r => <span>{(r.vol_jump_1d_ratio * 100).toFixed(0)}% ({r.vol_jump_1d_count}/{r.stock_count})</span>
@@ -1760,7 +1760,7 @@
                                             />
                                             <CategoryTable
                                                 title="Vol Jump 3-Day (Ratio > 2)"
-                                                data={catStats.table4}
+                                                data={catStats.table4 || []}
                                                 columns={{
                                                     valueLabel: "Jump Ratio",
                                                     renderValue: r => <span>{(r.vol_jump_3d_ratio * 100).toFixed(0)}% ({r.vol_jump_3d_count}/{r.stock_count})</span>
