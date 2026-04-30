@@ -303,7 +303,10 @@ def get_category_stats(date: str = None, session: Session = Depends(get_session)
     table3 = [x for x in cat_metrics if x['vol_jump_1d_ratio'] > 0.5]
     table4 = [x for x in cat_metrics if x['vol_jump_3d_ratio'] > 0.5]
     table5 = sorted(cat_metrics, key=lambda x: x['avg_rs_rank'], reverse=True)[:10]
-    table6 = sorted(cat_metrics, key=lambda x: x['avg_rs_delta'], reverse=True)[:10]
+    table6 = sorted(
+        [x for x in cat_metrics if x['avg_rs_rank'] >= 70],
+        key=lambda x: x['avg_rs_delta'], reverse=True
+    )[:10]
 
     available_dates = [d.strftime('%Y-%m-%d') for d in close.index[-60:]]
 
