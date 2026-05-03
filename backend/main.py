@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from financials import router as financials_router
 from finlab import data, login
 import pandas as pd
 import datetime
@@ -1156,6 +1157,8 @@ def fetch_stock_news(req: FetchNewsRequest):
 
     return {"results": results}
 
+
+app.include_router(financials_router, prefix="/api/financials", tags=["financials"])
 
 if __name__ == "__main__":
     import uvicorn

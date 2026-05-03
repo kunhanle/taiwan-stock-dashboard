@@ -71,7 +71,8 @@
 
         const {
             LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-            AreaChart, Area, BarChart, Bar, Cell, ReferenceLine
+            AreaChart, Area, BarChart, Bar, Cell, ReferenceLine,
+            ComposedChart
         } = RechartsObj || {};
 
         // --- API ---
@@ -1539,6 +1540,317 @@
             );
         };
 
+        // --- Financials Tab ---
+        const FIN_COLORS = {
+            amber: '#f59e0b', blue: '#3b82f6', red: '#ef4444',
+            green: '#22c55e', purple: '#a855f7', orange: '#f97316', price: '#f87171',
+        };
+        const FIN_AXIS = { fill: '#94a3b8', fontSize: 11 };
+        const FIN_GRID = { strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.08)' };
+        const FIN_LEGEND = { wrapperStyle: { fontSize: 11, color: '#94a3b8', paddingTop: 4 } };
+        const CHART_H = 280;
+
+        const FinTooltip = ({ active, payload, label }) => {
+            if (!active || !payload?.length) return null;
+            return (
+                <div style={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '0.5rem 0.75rem', fontSize: '0.78rem' }}>
+                    <p style={{ margin: '0 0 0.3rem', color: '#94a3b8' }}>{label}</p>
+                    {payload.map(p => (
+                        <p key={p.dataKey} style={{ margin: '0.1rem 0', color: p.color }}>
+                            {p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}
+                        </p>
+                    ))}
+                </div>
+            );
+        };
+
+        const FinCard = ({ title, children, loading, error, extra }) => (
+            <div style={{ background: 'rgba(30,41,59,0.7)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#e2e8f0', fontWeight: 600 }}>{title}</h3>
+                    {extra}
+                </div>
+                {loading ? (
+                    <div style={{ height: CHART_H, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>載入中…</div>
+                ) : error ? (
+                    <div style={{ height: CHART_H, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', fontSize: '0.8rem', textAlign: 'center', padding: '0 1rem' }}>{error}</div>
+                ) : children}
+            </div>
+        );
+
+        const FinEmpty = () => (
+            <div style={{ height: CHART_H, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontSize: '0.85rem' }}>
+                輸入股號後點擊「顯示」
+            </div>
+        );
+
+        const initC = () => ({ data: [], loading: false, error: null });
+
+        const FinancialsTab = () => {
+            const [inputId, setInputId]   = useState('');
+            const [stockId, setStockId]   = useState('');
+            const [stockName, setStockName] = useState('');
+            const [years, setYears]         = useState(3);
+            const [minShares, setMinShares]     = useState(400);
+            const [pendingShares, setPendingShares] = useState(400);
+            const [charts, setCharts] = useState({
+                revenue: initC(), eps: initC(), margins: initC(),
+                revGrowth: initC(), turnover: initC(), contractLiab: initC(), shareholders: initC(),
+            });
+
+            const setC = (key, u) => setCharts(prev => ({ ...prev, [key]: { ...prev[key], ...u } }));
+
+            const fetchC = async (key, path, id, yrs, extra = '') => {
+                setC(key, { loading: true, error: null, data: [] });
+                try {
+                    const sep = extra.startsWith('?') ? extra : (extra ? '?' + extra : '');
+                    const qs = `?years=${yrs}` + (sep.startsWith('?') ? '&' + sep.slice(1) : sep);
+                    const res = await fetch(`/api/financials/${id}/${path}${qs}`);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const json = await res.json();
+                    if (json.error) throw new Error(json.error);
+                    setC(key, { data: json.data ?? [], loading: false });
+                } catch (e) {
+                    setC(key, { error: e.message, loading: false, data: [] });
+                }
+            };
+
+            const fetchAll = (id, yrs, shares) => {
+                fetchC('revenue',      'revenue',              id, yrs);
+                fetchC('eps',          'eps',                  id, yrs);
+                fetchC('margins',      'margins',              id, yrs);
+                fetchC('revGrowth',    'revenue-growth',       id, yrs);
+                fetchC('turnover',     'turnover-days',        id, yrs);
+                fetchC('contractLiab', 'contract-liabilities', id, yrs);
+                fetchC('shareholders', 'shareholders',         id, yrs, `?min_shares=${shares}`);
+            };
+
+            const handleSearch = () => {
+                const id = inputId.trim();
+                if (!id) return;
+                setStockId(id);
+                setStockName('');
+                fetch(`/api/financials/${id}/info`)
+                    .then(r => r.json())
+                    .then(j => setStockName(j.name || ''))
+                    .catch(() => {});
+                fetchAll(id, years, minShares);
+            };
+
+            const handleYears = (y) => {
+                setYears(y);
+                if (stockId) fetchAll(stockId, y, minShares);
+            };
+
+            const { revenue, eps, margins, revGrowth, turnover, contractLiab, shareholders } = charts;
+            const fmtD = v => v ? String(v).slice(0, 7) : '';
+
+            const yearBtnStyle = (y) => ({
+                padding: '0.3rem 0.8rem', borderRadius: 6, fontSize: '0.85rem', fontWeight: 600,
+                border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', transition: 'all 0.15s',
+                background: years === y ? '#3b82f6' : 'rgba(255,255,255,0.05)',
+                color: years === y ? 'white' : '#94a3b8',
+            });
+
+            return (
+                <div style={{ paddingBottom: '2rem' }}>
+                    {/* Top bar: search + year range */}
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                        <input
+                            type="text"
+                            placeholder="輸入股號（例：2330）"
+                            value={inputId}
+                            onChange={e => setInputId(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                            className="glass-panel"
+                            style={{ padding: '0.6rem 1rem', borderRadius: 8, width: 200, color: 'white', fontSize: '1rem', border: '1px solid rgba(255,255,255,0.15)' }}
+                        />
+                        <button
+                            onClick={handleSearch}
+                            disabled={!inputId.trim()}
+                            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors disabled:opacity-40"
+                        >
+                            顯示
+                        </button>
+                        {/* Year range selector */}
+                        <div style={{ display: 'flex', gap: '0.3rem', marginLeft: '0.5rem' }}>
+                            {[1, 3, 5].map(y => (
+                                <button key={y} onClick={() => handleYears(y)} style={yearBtnStyle(y)}>{y} 年</button>
+                            ))}
+                        </div>
+                        {stockId && (
+                            <span style={{ fontSize: '1rem', fontWeight: 700, color: '#e2e8f0' }}>
+                                {stockId}{stockName ? <span style={{ color: '#94a3b8', fontWeight: 400 }}> {stockName}</span> : ''}
+                            </span>
+                        )}
+                    </div>
+
+                    {/* Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+
+                        {/* 1. Revenue */}
+                        <FinCard title="每月營收 (億元)" loading={revenue.loading} error={revenue.error}>
+                            {revenue.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <ComposedChart data={revenue.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} tickFormatter={fmtD} interval="preserveStartEnd" />
+                                        <YAxis yAxisId="l" tick={FIN_AXIS} />
+                                        <YAxis yAxisId="r" orientation="right" tick={FIN_AXIS} />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Bar  yAxisId="l" dataKey="value" name="月營收(億)" fill="#38bdf8" opacity={0.85} />
+                                        <Line yAxisId="r" dataKey="price" name="股價" stroke="#ef4444" dot={false} strokeWidth={2} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 2. EPS */}
+                        <FinCard title="單季 EPS (元)" loading={eps.loading} error={eps.error}>
+                            {eps.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <ComposedChart data={eps.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} />
+                                        <YAxis yAxisId="l" tick={FIN_AXIS} />
+                                        <YAxis yAxisId="r" orientation="right" tick={FIN_AXIS} />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Bar  yAxisId="l" dataKey="value" name="EPS(元)" fill="#34d399" opacity={0.85} />
+                                        <Line yAxisId="r" dataKey="price" name="股價" stroke="#ef4444" dot={false} strokeWidth={2} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 3. Margins */}
+                        <FinCard title="利潤比率 (%)" loading={margins.loading} error={margins.error}>
+                            {margins.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <LineChart data={margins.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} />
+                                        <YAxis tick={FIN_AXIS} unit="%" />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Line dataKey="gross_margin"     name="毛利率"    stroke={FIN_COLORS.amber}  dot={{ r: 3, fill: FIN_COLORS.amber,  strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line dataKey="operating_margin" name="營業利益率" stroke={FIN_COLORS.blue}   dot={{ r: 3, fill: FIN_COLORS.blue,   strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line dataKey="pre_tax_margin"   name="稅前淨利率" stroke={FIN_COLORS.red}    dot={{ r: 3, fill: FIN_COLORS.red,    strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line dataKey="net_margin"       name="稅後淨利率" stroke={FIN_COLORS.green}  dot={{ r: 3, fill: FIN_COLORS.green,  strokeWidth: 0 }} strokeWidth={2} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 4. Revenue Growth */}
+                        <FinCard title="長短期月營收年增率 (%)" loading={revGrowth.loading} error={revGrowth.error}>
+                            {revGrowth.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <ComposedChart data={revGrowth.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} tickFormatter={fmtD} interval="preserveStartEnd" />
+                                        <YAxis yAxisId="l" tick={FIN_AXIS} unit="%" />
+                                        <YAxis yAxisId="r" orientation="right" tick={FIN_AXIS} />
+                                        <ReferenceLine yAxisId="l" y={0} stroke="rgba(255,255,255,0.2)" />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Line yAxisId="l" dataKey="rev3_yoy"  name="近3月"  stroke="#fbbf24" dot={{ r: 3, fill: '#fbbf24', strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line yAxisId="l" dataKey="rev6_yoy"  name="近6月"  stroke="#22d3ee" dot={{ r: 3, fill: '#22d3ee', strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line yAxisId="l" dataKey="rev12_yoy" name="近12月" stroke="#86efac" dot={{ r: 3, fill: '#86efac', strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line yAxisId="r" dataKey="price"     name="股價"   stroke="#ef4444" dot={false} strokeWidth={2} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 5. Turnover Days */}
+                        <FinCard title="週轉天數 (天)" loading={turnover.loading} error={turnover.error}>
+                            {turnover.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <LineChart data={turnover.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} />
+                                        <YAxis tick={FIN_AXIS} unit="天" />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Line dataKey="dso"             name="應收帳款收現天數" stroke={FIN_COLORS.amber}  dot={{ r: 3, fill: FIN_COLORS.amber, strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line dataKey="dio"             name="存貨週轉天數"     stroke={FIN_COLORS.blue}   dot={{ r: 3, fill: FIN_COLORS.blue,  strokeWidth: 0 }} strokeWidth={2} />
+                                        <Line dataKey="operating_cycle" name="營業週轉天數"     stroke={FIN_COLORS.red}    dot={{ r: 3, fill: FIN_COLORS.red,   strokeWidth: 0 }} strokeWidth={2} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 6. Contract Liabilities */}
+                        <FinCard title="合約負債 (億元) 及佔營收比例" loading={contractLiab.loading} error={contractLiab.error}>
+                            {contractLiab.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <ComposedChart data={contractLiab.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} />
+                                        <YAxis yAxisId="l" tick={FIN_AXIS} unit="億" />
+                                        <YAxis yAxisId="r" orientation="right" tick={FIN_AXIS} unit="%" />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Bar  yAxisId="l" dataKey="cl_bn"  name="合約負債(億)" fill="#818cf8" opacity={0.85} />
+                                        <Line yAxisId="r" dataKey="ratio"  name="佔營收%" stroke="#f472b6" dot={{ r: 3, fill: '#f472b6', strokeWidth: 0 }} strokeWidth={2} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                        {/* 7. Shareholders */}
+                        <FinCard
+                            title="大股東持股比率 (%)"
+                            loading={shareholders.loading}
+                            error={shareholders.error}
+                            extra={
+                                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>大股東定義≥</span>
+                                    <select
+                                        value={pendingShares}
+                                        onChange={e => {
+                                            const v = Number(e.target.value);
+                                            setPendingShares(v);
+                                            if (stockId) {
+                                                setMinShares(v);
+                                                fetchC('shareholders', 'shareholders', stockId, years, `?min_shares=${v}`);
+                                            }
+                                        }}
+                                        disabled={!stockId}
+                                        style={{ padding: '0.2rem 0.4rem', borderRadius: 4, fontSize: '0.8rem', border: '1px solid rgba(255,255,255,0.15)', background: '#1e293b', color: 'white', cursor: 'pointer' }}
+                                    >
+                                        <option value={200}>200 張</option>
+                                        <option value={400}>400 張</option>
+                                        <option value={600}>600 張</option>
+                                        <option value={800}>800 張</option>
+                                        <option value={1000}>1000 張</option>
+                                    </select>
+                                </div>
+                            }
+                        >
+                            {shareholders.data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={CHART_H}>
+                                    <ComposedChart data={shareholders.data}>
+                                        <CartesianGrid {...FIN_GRID} />
+                                        <XAxis dataKey="date" tick={FIN_AXIS} tickFormatter={fmtD} interval="preserveStartEnd" />
+                                        <YAxis yAxisId="l" tick={FIN_AXIS} unit="%" domain={['auto', 'auto']} />
+                                        <YAxis yAxisId="r" orientation="right" tick={FIN_AXIS} />
+                                        <Tooltip content={<FinTooltip />} />
+                                        <Legend {...FIN_LEGEND} />
+                                        <Line yAxisId="l" dataKey="value" name="大股東持股%" stroke={FIN_COLORS.amber} dot={false} strokeWidth={2} />
+                                        <Line yAxisId="r" dataKey="price" name="股價"        stroke={FIN_COLORS.price} dot={false} strokeWidth={1.5} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : <FinEmpty />}
+                        </FinCard>
+
+                    </div>
+                </div>
+            );
+        };
+
         // --- App ---
         const App = () => {
             const [view, setView] = useState("dashboard"); // dashboard | detail
@@ -1635,6 +1947,12 @@
                                         Custom Levels
                                     </button>
                                     <button
+                                        onClick={() => setActiveTab("financials")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "financials" ? "bg-slate-700 text-yellow-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        Financials
+                                    </button>
+                                    <button
                                         onClick={() => setActiveTab("news")}
                                         className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "news" ? "bg-slate-700 text-purple-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
                                     >
@@ -1648,6 +1966,11 @@
                                     </button>
                                 </div>
 
+
+                                {/* Financials Section */}
+                                <div className={activeTab === 'financials' ? 'block' : 'hidden'}>
+                                    <FinancialsTab />
+                                </div>
 
                                 {/* Market Breadth Section */}
                                 <div className={activeTab === 'market' ? 'space-y-6 block' : 'hidden'}>
