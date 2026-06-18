@@ -1,0 +1,679 @@
+# =============================================================================
+# US Thematic Category Seed  —  Taiwan-US Supply-Chain Linkage App
+# =============================================================================
+# Fine-grained US sub-sector taxonomy. Each category = ONE narrow sub-theme,
+# represented by <=8 US-listed leader (龍頭) tickers. These are the "trigger"
+# baskets: when a category's leaders move sharply, the linkage engine maps the
+# move to the Taiwan nodes listed under `tw_linkage`.
+#
+# Field schema per category:
+#   id              stable slug (do not rename once wired)
+#   name_en/name_zh display names
+#   cluster         high-level grouping
+#   linkage         strong | medium | weak   (TW supply-chain coupling)
+#   us_tickers      <=8 leader tickers (end-market representative)
+#   tw_linkage      [{t: TW ticker, n: name, role: up|down|peer}]
+#                     up   = TW supplies INTO the US theme (upstream)
+#                     down = TW sits downstream of the US theme
+#                     peer = TW competitor / same layer
+#   flags           special situations (ADR / merger / bankruptcy / etc.)
+#
+# Verification: tickers web-verified as US-listed on 2026-06-18. Run a final
+# programmatic pass against the live market-data feed before ingest (re-tickers
+# like XYZ=Block, post-spin SNDK/WDC, and merger/bankruptcy names are the risk).
+# A ticker may legitimately appear in multiple categories (different end-market
+# -> different TW supplier). Dedupe is by category, NOT by ticker.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# CLUSTER 1 — Semiconductor Manufacturing & Equipment
+# -----------------------------------------------------------------------------
+- id: semi-wfe
+  name_en: Wafer Fab Equipment (Front-End)
+  name_zh: 晶圓廠前道設備
+  cluster: Semi Manufacturing
+  linkage: strong
+  us_tickers: [AMAT, LRCX, KLAC, ASML, ENTG, ACLS, ONTO]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC, role: down}
+    - {t: "2303", n: 聯電 UMC, role: down}
+    - {t: "2408", n: 南亞科 Nanya, role: down}
+    - {t: "6770", n: 力積電 PSMC, role: down}
+  flags: "ASML=NL ADR (EUV monopoly). Advanced-packaging/HBM equip (CoWoS) folded here — same leaders. ACMR dropped (China exposure)."
+
+- id: semi-backend-equip
+  name_en: Test & Assembly (Back-End) Equipment
+  name_zh: 後道測試封裝設備
+  cluster: Semi Manufacturing
+  linkage: strong
+  us_tickers: [TER, FORM, COHU, KLIC, CAMT, ONTO]
+  tw_linkage:
+    - {t: "3711", n: 日月光投控 ASE, role: down}
+    - {t: "6239", n: 力成 Powertech, role: down}
+    - {t: "8150", n: 南茂 ChipMOS, role: down}
+    - {t: "2449", n: 京元電 King Yuan, role: down}
+  flags: "CAMT=Israel ADR. Advantest (ATE co-leader) Tokyo-listed, excluded."
+
+- id: semi-materials
+  name_en: Semiconductor Materials & Specialty Chemicals
+  name_zh: 半導體材料／特用化學品／矽晶圓
+  cluster: Semi Manufacturing
+  linkage: strong
+  us_tickers: [ENTG, MKSI, AXTI, DD]
+  tw_linkage:
+    - {t: "6488", n: 環球晶 GlobalWafers, role: peer}
+    - {t: "5483", n: 中美晶 SAS, role: peer}
+    - {t: "2330", n: 台積電 TSMC, role: down}
+  flags: "DD=conglomerate, electronics-materials exposure only. No US pure-play photoresist (JP/DE dominated). GlobalWafers is TW-listed, not US."
+
+- id: semi-foundry-idm
+  name_en: Foundry / IDM (US-listed)
+  name_zh: 晶圓代工／IDM（美股掛牌）
+  cluster: Semi Manufacturing
+  linkage: strong
+  us_tickers: [TSM, UMC, INTC, GFS]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC, role: peer}
+    - {t: "2303", n: 聯電 UMC, role: peer}
+    - {t: "5347", n: 世界先進 VIS, role: peer}
+    - {t: "3661", n: 世芯-KY Alchip, role: up}
+    - {t: "3443", n: 創意 GUC, role: up}
+  flags: "TSM=ADR of 2330, UMC=ADR of 2303 (direct mirrors). INTC US-gov ~10% stake."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 2 — Chip Design (Fabless & IP)
+# -----------------------------------------------------------------------------
+- id: semi-eda-ip
+  name_en: EDA & Semiconductor IP
+  name_zh: EDA 與半導體矽智財
+  cluster: Chip Design
+  linkage: strong
+  us_tickers: [SNPS, CDNS, ARM, CEVA]
+  tw_linkage:
+    - {t: "2454", n: 聯發科 MediaTek, role: down}
+    - {t: "6533", n: 晶心科 Andes (RISC-V IP), role: peer}
+    - {t: "3443", n: 創意 GUC, role: down}
+    - {t: "3661", n: 世芯-KY Alchip, role: down}
+  flags: "ARM=UK ADS, SoftBank-controlled. CEVA small-cap. Siemens EDA inside Siemens AG, excluded."
+
+- id: ai-training-gpu
+  name_en: AI Accelerators / Datacenter GPU
+  name_zh: AI 加速器／資料中心 GPU
+  cluster: Chip Design
+  linkage: strong
+  us_tickers: [NVDA, AMD, AVGO, MRVL]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (3nm + CoWoS), role: up}
+    - {t: "3711", n: 日月光投控 ASE, role: up}
+    - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+  flags: "Merchant GPU (NVDA/AMD) + custom ASIC (AVGO/MRVL) merged — same TW chain."
+
+- id: client-compute-chips
+  name_en: PC / Client Compute Chips (CPU/GPU/SoC)
+  name_zh: PC／消費端處理器（CPU/GPU/SoC）
+  cluster: Chip Design
+  linkage: strong
+  us_tickers: [NVDA, AMD, INTC, QCOM]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC, role: up}
+    - {t: "2376", n: 技嘉 Gigabyte (板卡), role: down}
+    - {t: "2377", n: 微星 MSI, role: down}
+    - {t: "2357", n: 華碩 Asus, role: down}
+  flags: "Same vendors as AI GPU but PC end-market -> board-partner downstream differs."
+
+- id: datacenter-cpu
+  name_en: Datacenter / Server CPU
+  name_zh: 資料中心／伺服器 CPU
+  cluster: Chip Design
+  linkage: strong
+  us_tickers: [AMD, INTC, ARM]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC, role: up}
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+    - {t: "2356", n: 英業達 Inventec, role: down}
+  flags: "ARM = architecture IP behind Graviton/Axion/Grace (royalty model)."
+
+- id: analog-power-ic
+  name_en: Analog / Power Management IC
+  name_zh: 類比／電源管理 IC
+  cluster: Chip Design
+  linkage: medium
+  us_tickers: [TXN, ADI, MPWR, ON, MCHP, POWI]
+  tw_linkage:
+    - {t: "2303", n: 聯電 UMC, role: up}
+    - {t: "5347", n: 世界先進 VIS, role: up}
+    - {t: "6770", n: 力積電 PSMC, role: up}
+  flags: "MPWR is key NVIDIA power supplier. NXPI/STM US-listed but NL-incorporated."
+
+- id: power-semi-sic-gan
+  name_en: Power Semiconductors (SiC / GaN)
+  name_zh: 寬能隙功率半導體（碳化矽／氮化鎵）
+  cluster: Chip Design
+  linkage: medium
+  us_tickers: [ON, WOLF, NVTS, POWI, ALGM]
+  tw_linkage:
+    - {t: "3105", n: 穩懋 WIN Semi (GaN foundry), role: up}
+    - {t: "5347", n: 世界先進 VIS, role: up}
+    - {t: "2330", n: 台積電 TSMC (GaN-on-Si), role: up}
+    - {t: "2308", n: 台達電 Delta, role: down}
+  flags: "WOLF post-Ch.11 restructured (high risk). NVTS small-cap volatile."
+
+- id: rf-connectivity
+  name_en: RF / Connectivity / Wireless
+  name_zh: 射頻／連接／無線通訊
+  cluster: Chip Design
+  linkage: medium
+  us_tickers: [QCOM, AVGO, SWKS, QRVO, CRUS]
+  tw_linkage:
+    - {t: "3105", n: 穩懋 WIN Semi (GaAs/GaN RF foundry), role: up}
+    - {t: "2330", n: 台積電 TSMC (RF SOI), role: up}
+    - {t: "3711", n: 日月光投控 ASE, role: up}
+    - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
+  flags: "SWKS + QRVO ~$22B merger expected close early-2027."
+
+- id: memory
+  name_en: Memory — DRAM / NAND / HBM
+  name_zh: 記憶體（DRAM／NAND／HBM）
+  cluster: Chip Design
+  linkage: strong
+  us_tickers: [MU, SNDK, WDC]
+  tw_linkage:
+    - {t: "2408", n: 南亞科 Nanya (DRAM), role: peer}
+    - {t: "6770", n: 力積電 PSMC, role: peer}
+    - {t: "2330", n: 台積電 TSMC (HBM CoWoS), role: up}
+    - {t: "3711", n: 日月光投控 ASE, role: up}
+  flags: "MU = only US-listed DRAM/HBM maker (Samsung/SK Hynix not US-listed). SNDK spun from WDC Feb-2025; WDC now mostly HDD."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 3 — AI Datacenter Networking & Infrastructure
+# -----------------------------------------------------------------------------
+- id: dc-ethernet-switching
+  name_en: Datacenter Ethernet Switching
+  name_zh: 資料中心乙太網路交換
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [ANET, CSCO, AVGO, NVDA, JNPR]
+  tw_linkage:
+    - {t: "2376", n: 技嘉 Gigabyte, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+    - {t: "3037", n: 欣興 Unimicron (high-layer PCB), role: up}
+    - {t: "2368", n: 金像電 GCE (PCB), role: up}
+  flags: ""
+
+- id: dc-optical-transceivers
+  name_en: Optical Transceivers & Laser Components
+  name_zh: 光收發模組與雷射元件
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [COHR, LITE, MRVL]
+  tw_linkage:
+    - {t: "4977", n: 眾達-KY, role: peer}
+    - {t: "4979", n: 華星光 Luxnet, role: peer}
+    - {t: "3081", n: 聯亞 LandMark, role: up}
+    - {t: "3450", n: 聯鈞 Intelligent Epitaxy, role: up}
+  flags: "800G/1.6T cycle. COHR=NYSE."
+
+- id: dc-interconnect-aec
+  name_en: High-Speed Interconnect (AEC / Retimers / SerDes)
+  name_zh: 高速連接（主動電纜／重定時器）
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [CRDO, ALAB, MRVL]
+  tw_linkage:
+    - {t: "3023", n: 信邦 Sinbon, role: up}
+    - {t: "2308", n: 台達電 Delta, role: up}
+    - {t: "2392", n: 正崴 Cheng Uei, role: up}
+    - {t: "2330", n: 台積電 TSMC, role: up}
+  flags: ""
+
+- id: dc-server-odm
+  name_en: Server / ODM System Integrators (US-listed)
+  name_zh: 伺服器系統整合商（美股）
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [SMCI, DELL, HPE]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Hon Hai, role: peer}
+    - {t: "2382", n: 廣達 Quanta, role: peer}
+    - {t: "3231", n: 緯創 Wistron, role: peer}
+    - {t: "6669", n: 緯穎 Wiwynn, role: peer}
+    - {t: "2356", n: 英業達 Inventec, role: peer}
+  flags: "Dell/HPE outsource much L10/L11 rack build to these TW ODMs."
+
+- id: dc-liquid-cooling
+  name_en: Datacenter Liquid Cooling & Thermal
+  name_zh: 資料中心液冷與散熱
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [VRT, MOD, NVT]
+  tw_linkage:
+    - {t: "3017", n: 奇鋐 AVC, role: peer}
+    - {t: "3324", n: 雙鴻 Auras, role: peer}
+    - {t: "2421", n: 建準 Sunonwealth, role: up}
+  flags: "VRT/NVT also span Power infra below."
+
+- id: dc-power-infra
+  name_en: Datacenter Power / Electrical Infrastructure
+  name_zh: 資料中心電力與電氣基礎設施
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [ETN, VRT, GEV, POWL, NVT]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (PSU/PDU/busbar), role: peer}
+    - {t: "1519", n: 華城 Fortune Electric, role: up}
+    - {t: "1503", n: 士電 Shihlin, role: up}
+  flags: "Delta directly supplies & competes with Vertiv/Eaton."
+
+- id: hyperscale-cloud
+  name_en: Hyperscale Cloud (Capex Buyers)
+  name_zh: 超大規模雲（資本支出買方）
+  cluster: AI Datacenter
+  linkage: strong
+  us_tickers: [MSFT, AMZN, GOOGL, META, ORCL]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+    - {t: "2330", n: 台積電 TSMC, role: down}
+  flags: "Single largest demand driver (~$660-725B 2026 AI capex). Their custom ASICs (TPU/Trainium/Maia/MTIA) also via TSMC."
+
+- id: dc-reit-colo
+  name_en: Datacenter REITs / Colocation
+  name_zh: 資料中心 REIT／主機代管
+  cluster: AI Datacenter
+  linkage: medium
+  us_tickers: [EQIX, DLR, IRM]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta, role: up}
+    - {t: "3017", n: 奇鋐 AVC, role: up}
+    - {t: "3324", n: 雙鴻 Auras, role: up}
+  flags: "AMT excluded (tower REIT, only partial DC exposure)."
+
+- id: neocloud
+  name_en: Neocloud / GPU Cloud Operators
+  name_zh: 新雲端／GPU 算力租賃
+  cluster: AI Datacenter
+  linkage: medium
+  us_tickers: [CRWV, NBIS, IREN]
+  tw_linkage:
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+    - {t: "2330", n: 台積電 TSMC, role: down}
+  flags: "NBIS=NL-domiciled, Nasdaq-listed."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 4 — Consumer Electronics & Devices
+# -----------------------------------------------------------------------------
+- id: smartphone-oem
+  name_en: Smartphone OEM / Brand
+  name_zh: 智慧型手機品牌廠
+  cluster: Consumer Electronics
+  linkage: strong
+  us_tickers: [AAPL, GOOGL]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Foxconn (assembly), role: down}
+    - {t: "4938", n: 和碩 Pegatron, role: down}
+    - {t: "2474", n: 可成 Catcher (casing), role: up}
+    - {t: "3008", n: 大立光 Largan (lens), role: up}
+  flags: "Samsung/Xiaomi not US-listed."
+
+- id: pc-notebook-oem
+  name_en: PC / Notebook OEM
+  name_zh: 個人電腦／筆電品牌廠
+  cluster: Consumer Electronics
+  linkage: strong
+  us_tickers: [AAPL, DELL, HPQ]
+  tw_linkage:
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "2324", n: 仁寶 Compal, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+    - {t: "4938", n: 和碩 Pegatron, role: down}
+  flags: "Lenovo/Asus/Acer are brands but not US-listed."
+
+- id: display-driver-oled
+  name_en: Display Driver IC / OLED Materials
+  name_zh: 顯示驅動 IC 與 OLED 材料
+  cluster: Consumer Electronics
+  linkage: medium
+  us_tickers: [OLED, GLW, HIMX]
+  tw_linkage:
+    - {t: "2409", n: 友達 AUO, role: down}
+    - {t: "3481", n: 群創 Innolux, role: down}
+    - {t: "3034", n: 聯詠 Novatek (driver IC), role: peer}
+  flags: "HIMX=Himax, TW-HQ fabless ADR."
+
+- id: wearables
+  name_en: Wearables / Smartwatch
+  name_zh: 穿戴裝置與智慧手錶
+  cluster: Consumer Electronics
+  linkage: medium
+  us_tickers: [AAPL, GRMN, GOOGL]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+    - {t: "4938", n: 和碩 Pegatron, role: down}
+    - {t: "2474", n: 可成 Catcher, role: up}
+  flags: "Garmin (GRMN) is TW-founded, US/Swiss-listed."
+
+- id: ar-vr-headsets
+  name_en: AR / VR Headsets & Microdisplays
+  name_zh: AR／VR 頭戴裝置與微顯示器
+  cluster: Consumer Electronics
+  linkage: medium
+  us_tickers: [META, AAPL, KOPN, VUZI, HIMX]
+  tw_linkage:
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "4938", n: 和碩 Pegatron, role: down}
+    - {t: "3008", n: 大立光 Largan (optics), role: up}
+    - {t: "3406", n: 玉晶光 GSEO, role: up}
+  flags: "KOPN/VUZI speculative small-cap. HIMX supplies LCoS."
+
+- id: imaging-optics
+  name_en: Imaging / Camera / Optical Sensors
+  name_zh: 影像、相機與光學感測
+  cluster: Consumer Electronics
+  linkage: strong
+  us_tickers: [GPRO, SONY, AAPL]
+  tw_linkage:
+    - {t: "3008", n: 大立光 Largan (Apple main lens), role: up}
+    - {t: "3406", n: 玉晶光 GSEO, role: up}
+    - {t: "6239", n: 力成 Powertech (CIS test), role: up}
+  flags: "SONY=ADR (dominant CMOS sensor proxy). OmniVision delisted."
+
+- id: gaming-hardware
+  name_en: Gaming Hardware / Consoles
+  name_zh: 遊戲主機與硬體
+  cluster: Consumer Electronics
+  linkage: medium
+  us_tickers: [SONY, MSFT, NTDOY, CRSR, LOGI]
+  tw_linkage:
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "4938", n: 和碩 Pegatron, role: down}
+    - {t: "2376", n: 技嘉 Gigabyte, role: up}
+    - {t: "2377", n: 微星 MSI, role: up}
+  flags: "NTDOY=ADR (liquidity)."
+
+- id: audio-peripherals
+  name_en: Audio / Accessories / Peripherals
+  name_zh: 音訊、配件與週邊
+  cluster: Consumer Electronics
+  linkage: medium
+  us_tickers: [LOGI, SONO, GPRO, TBCH, CRSR]
+  tw_linkage:
+    - {t: "2439", n: 美律 Merry (acoustic ODM), role: up}
+    - {t: "2392", n: 正崴 Cheng Uei, role: up}
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+  flags: ""
+
+# -----------------------------------------------------------------------------
+# CLUSTER 5 — EV / Auto / Mobility
+# -----------------------------------------------------------------------------
+- id: ev-oem
+  name_en: EV Makers / OEM
+  name_zh: 純電動車整車廠
+  cluster: EV / Auto
+  linkage: medium
+  us_tickers: [TSLA, RIVN, LCID, NIO, LI, XPEV]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Foxconn (MIH/EV CM), role: down}
+    - {t: "2308", n: 台達電 Delta (powertrain), role: up}
+    - {t: "3665", n: 貿聯-KY BizLink (harness), role: up}
+    - {t: "1536", n: 和大 Hota (gears), role: up}
+  flags: "NIO/LI/XPEV=ADR. PSNY/VFS micro-cap stressed."
+
+- id: auto-semi
+  name_en: Automotive Semiconductors
+  name_zh: 車用半導體
+  cluster: EV / Auto
+  linkage: strong
+  us_tickers: [NXPI, TXN, ON, STM, ADI, MCHP, ALGM]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (auto foundry), role: up}
+    - {t: "2454", n: 聯發科 MediaTek (cockpit SoC), role: peer}
+    - {t: "3034", n: 聯詠 Novatek (auto driver), role: up}
+    - {t: "6533", n: 晶心科 Andes (RISC-V IP), role: up}
+  flags: "NXPI/STM=NL-incorporated. Infineon/Renesas only OTC in US, excluded."
+
+- id: adas-lidar
+  name_en: ADAS / Autonomous / LiDAR & Sensing
+  name_zh: 先進駕駛輔助／自駕光達與感測
+  cluster: EV / Auto
+  linkage: medium
+  us_tickers: [MBLY, OUST, AEVA, INVZ, MVIS]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (ADAS SoC), role: up}
+    - {t: "3008", n: 大立光 Largan (auto lens), role: up}
+    - {t: "3406", n: 玉晶光 GSEO, role: up}
+    - {t: "6533", n: 晶心科 Andes, role: up}
+  flags: "LAZR/CPTN/VLDR/QNGY excluded (bankrupt/merged/delisted). MVIS dilution risk."
+
+- id: ev-battery
+  name_en: EV Battery Cells & Materials
+  name_zh: 電動車電池芯與電池材料
+  cluster: EV / Auto
+  linkage: medium
+  us_tickers: [ALB, QS, ENVX, AMPX, NVX]
+  tw_linkage:
+    - {t: "1101", n: 台泥 TCC (Molicel cells), role: peer}
+    - {t: "1722", n: 台肥 TFC (LFP cathode), role: up}
+    - {t: "1303", n: 南亞 Nan Ya (copper foil/separator), role: up}
+    - {t: "6121", n: 新普 Simplo (pack), role: down}
+  flags: "MVST China-linked geopolitical risk."
+
+- id: ev-charging
+  name_en: EV Charging Infrastructure
+  name_zh: 電動車充電基礎設施
+  cluster: EV / Auto
+  linkage: medium
+  us_tickers: [CHPT, EVGO, TSLA, BLNK, BEEM, WBX]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (DC fast charger), role: up}
+    - {t: "2301", n: 光寶科 Lite-On (power module), role: up}
+    - {t: "1519", n: 華城 Fortune Electric, role: up}
+    - {t: "1605", n: 華新 Walsin (cable), role: up}
+  flags: "Most charging names carry going-concern risk (WBX/CHPT/BLNK/BEEM)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 6 — Industrial / Clean Energy
+# -----------------------------------------------------------------------------
+- id: industrial-automation-robotics
+  name_en: Industrial Automation / Robotics
+  name_zh: 工業自動化與機器人
+  cluster: Industrial
+  linkage: strong
+  us_tickers: [ROK, EMR, SYM, TER, ZBRA, TSLA]
+  tw_linkage:
+    - {t: "2049", n: 上銀 HIWIN (ballscrew/guideway), role: up}
+    - {t: "2308", n: 台達電 Delta (servo/SCARA), role: up}
+    - {t: "2059", n: 川湖 King Slide, role: up}
+    - {t: "2317", n: 鴻海 Hon Hai (humanoid CM), role: down}
+  flags: "TSLA=Optimus humanoid play. ZBRA sold robotics unit Apr-2026."
+
+- id: solar-clean-energy
+  name_en: Solar / Clean Energy Hardware
+  name_zh: 太陽能／潔淨能源硬體
+  cluster: Industrial
+  linkage: medium
+  us_tickers: [FSLR, ENPH, SEDG, NXT, ARRY, SHLS, RUN, CSIQ]
+  tw_linkage:
+    - {t: "6443", n: 元晶 TSEC (cell/module), role: peer}
+    - {t: "3576", n: 聯合再生 URE, role: peer}
+    - {t: "2308", n: 台達電 Delta (inverter), role: peer}
+  flags: "US names mostly downstream system/module integrators."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 7 — Software / Internet  (mostly weak TW hardware linkage)
+# -----------------------------------------------------------------------------
+- id: cybersecurity
+  name_en: Cybersecurity
+  name_zh: 網路資安
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [PANW, CRWD, ZS, FTNT, NET, S]
+  tw_linkage: []
+  flags: "Mostly SaaS; FTNT appliances minor HW. 弱連動."
+
+- id: enterprise-saas
+  name_en: Enterprise SaaS / Application Software
+  name_zh: 企業應用軟體
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [CRM, NOW, WDAY, ADBE, SAP, INTU]
+  tw_linkage: []
+  flags: "Software-only. 弱連動 (indirect cloud-compute pull only)."
+
+- id: fintech-payments
+  name_en: Fintech / Payments
+  name_zh: 金融科技／支付
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [V, MA, PYPL, FI, GPN, XYZ]
+  tw_linkage: []
+  flags: "XYZ=Block (ex-SQ), FI=Fiserv — re-ticker risk. 弱連動."
+
+- id: e-commerce
+  name_en: E-Commerce
+  name_zh: 電子商務
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [AMZN, SHOP, MELI, SE, CPNG]
+  tw_linkage: []
+  flags: "AMZN inherits linkage via AWS capex (see hyperscale-cloud). 偏弱."
+
+- id: social-advertising
+  name_en: Social / Digital Advertising
+  name_zh: 社群／數位廣告
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [META, GOOGL, RDDT, PINS, SNAP, TTD, APP]
+  tw_linkage: []
+  flags: "META/GOOGL drive TW HW via own capex (see hyperscale-cloud). 弱連動."
+
+- id: streaming-media
+  name_en: Streaming / Media
+  name_zh: 串流／媒體
+  cluster: Software / Internet
+  linkage: weak
+  us_tickers: [NFLX, DIS, SPOT, WBD, ROKU, CMCSA]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (ROKU SoC), role: up}
+  flags: "Only ROKU streaming devices have TW SoC/panel content. 弱連動."
+
+# -----------------------------------------------------------------------------
+# CLUSTER 8 — Broader Market  (diversification / completeness; mostly 弱連動)
+# -----------------------------------------------------------------------------
+- id: big-banks
+  name_en: Big Banks / Money-Center
+  name_zh: 大型銀行
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [JPM, BAC, WFC, C]
+  tw_linkage: []
+  flags: "弱連動."
+
+- id: oil-gas-majors
+  name_en: Oil & Gas Majors / Integrated
+  name_zh: 整合油氣巨頭
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [XOM, CVX, COP]
+  tw_linkage: []
+  flags: "TW is downstream LNG/crude importer (CPC buys US LNG). 弱連動."
+
+- id: oilfield-services
+  name_en: Oilfield Services
+  name_zh: 油田服務
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [SLB, HAL, BKR]
+  tw_linkage: []
+  flags: "弱連動."
+
+- id: pharma
+  name_en: Large-Cap Pharma
+  name_zh: 大型製藥
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [LLY, JNJ, ABBV, MRK, PFE, BMY]
+  tw_linkage: []
+  flags: "Modest CDMO/API touchpoints (e.g. Bora). 弱連動."
+
+- id: biotech
+  name_en: Biotech
+  name_zh: 生物科技
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [AMGN, GILD, VRTX, REGN, BIIB, MRNA]
+  tw_linkage: []
+  flags: "弱連動."
+
+- id: medical-devices
+  name_en: Medical Devices
+  name_zh: 醫療器材
+  cluster: Broader Market
+  linkage: medium
+  us_tickers: [MDT, ABT, SYK, BSX, ISRG, BDX, GEHC]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (device chips), role: up}
+  flags: "Devices embed semis/PCB/sensors — strongest non-tech linkage (ISRG/GEHC)."
+
+- id: aerospace-defense
+  name_en: Aerospace & Defense
+  name_zh: 航太與國防
+  cluster: Broader Market
+  linkage: medium
+  us_tickers: [GE, RTX, BA, LMT, NOC, GD, TDG, HEI]
+  tw_linkage:
+    - {t: "2634", n: 漢翔 AIDC (airframe/engine parts), role: up}
+  flags: "TW supplies fasteners, CNC structural parts, mil-grade PCB into Tier-1/2."
+
+- id: machinery-heavy-equip
+  name_en: Machinery / Heavy Equipment
+  name_zh: 機械／重型設備
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [CAT, DE, PCAR, CMI, PH, ETN]
+  tw_linkage:
+    - {t: "2049", n: 上銀 HIWIN, role: up}
+  flags: "Component-level only (hydraulics/castings/bearings/fasteners). 弱-中度."
+
+- id: consumer-staples
+  name_en: Consumer Staples
+  name_zh: 民生必需消費
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [WMT, COST, PG, KO, PEP, PM, MDLZ]
+  tw_linkage: []
+  flags: "弱連動."
+
+- id: consumer-discretionary
+  name_en: Consumer Discretionary / Retail
+  name_zh: 非必需消費／零售
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [HD, MCD, BKNG, TJX, LOW, NKE]
+  tw_linkage: []
+  flags: "弱連動 (AMZN placed in e-commerce/cloud)."
+
+- id: metals-mining
+  name_en: Metals & Mining
+  name_zh: 金屬與採礦
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [FCX, NEM, SCCO, NUE, STLD, AA]
+  tw_linkage: []
+  flags: "TW downstream consumer of refined copper/steel. 弱連動. (Metal futures tracked separately.)"
+
+- id: utilities
+  name_en: Utilities
+  name_zh: 公用事業
+  cluster: Broader Market
+  linkage: weak
+  us_tickers: [NEE, SO, DUK, CEG, AEP, D, XEL]
+  tw_linkage: []
+  flags: "Indirect AI-power theme only (CEG/NEE/SO). 弱連動."
