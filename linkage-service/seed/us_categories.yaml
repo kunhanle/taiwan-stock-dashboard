@@ -106,6 +106,7 @@
     - {t: "2330", n: 台積電 TSMC (3nm + CoWoS), role: up}
     - {t: "3711", n: 日月光投控 ASE, role: up}
     - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
+    - {t: "2383", n: 台光電 EMC (AI 伺服器 CCL), role: up}
     - {t: "2382", n: 廣達 Quanta, role: down}
     - {t: "2317", n: 鴻海 Hon Hai, role: down}
     - {t: "6669", n: 緯穎 Wiwynn, role: down}
@@ -198,11 +199,12 @@
   linkage: strong
   us_tickers: [ANET, CSCO, AVGO, NVDA, JNPR]
   tw_linkage:
+    - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
     - {t: "2376", n: 技嘉 Gigabyte, role: down}
-    - {t: "3231", n: 緯創 Wistron, role: down}
     - {t: "6669", n: 緯穎 Wiwynn, role: down}
     - {t: "3037", n: 欣興 Unimicron (high-layer PCB), role: up}
     - {t: "2368", n: 金像電 GCE (PCB), role: up}
+    - {t: "6213", n: 聯茂 ITEQ (high-speed CCL), role: up}
   flags: ""
 
 - id: dc-optical-transceivers
@@ -507,111 +509,49 @@
   flags: "US names mostly downstream system/module integrators."
 
 # -----------------------------------------------------------------------------
-# CLUSTER 7 — Software / Internet  (mostly weak TW hardware linkage)
+# CLUSTER 7 — Traditional Export / Consumer Goods (strong TW OEM linkage)
 # -----------------------------------------------------------------------------
-- id: cybersecurity
-  name_en: Cybersecurity
-  name_zh: 網路資安
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [PANW, CRWD, ZS, FTNT, NET, S]
-  tw_linkage: []
-  flags: "Mostly SaaS; FTNT appliances minor HW. 弱連動."
-
-- id: enterprise-saas
-  name_en: Enterprise SaaS / Application Software
-  name_zh: 企業應用軟體
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [CRM, NOW, WDAY, ADBE, SAP, INTU]
-  tw_linkage: []
-  flags: "Software-only. 弱連動 (indirect cloud-compute pull only)."
-
-- id: fintech-payments
-  name_en: Fintech / Payments
-  name_zh: 金融科技／支付
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [V, MA, PYPL, FI, GPN, XYZ]
-  tw_linkage: []
-  flags: "XYZ=Block (ex-SQ), FI=Fiserv — re-ticker risk. 弱連動."
-
-- id: e-commerce
-  name_en: E-Commerce
-  name_zh: 電子商務
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [AMZN, SHOP, MELI, SE, CPNG]
-  tw_linkage: []
-  flags: "AMZN inherits linkage via AWS capex (see hyperscale-cloud). 偏弱."
-
-- id: social-advertising
-  name_en: Social / Digital Advertising
-  name_zh: 社群／數位廣告
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [META, GOOGL, RDDT, PINS, SNAP, TTD, APP]
-  tw_linkage: []
-  flags: "META/GOOGL drive TW HW via own capex (see hyperscale-cloud). 弱連動."
-
-- id: streaming-media
-  name_en: Streaming / Media
-  name_zh: 串流／媒體
-  cluster: Software / Internet
-  linkage: weak
-  us_tickers: [NFLX, DIS, SPOT, WBD, ROKU, CMCSA]
+- id: footwear-apparel
+  name_en: Footwear & Apparel (Brand)
+  name_zh: 運動鞋服品牌（代工鏈）
+  cluster: Traditional Export
+  linkage: strong
+  us_tickers: [NKE, DECK, ONON, LULU, VFC, UAA]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (ROKU SoC), role: up}
-  flags: "Only ROKU streaming devices have TW SoC/panel content. 弱連動."
+    - {t: "9910", n: 豐泰 Feng Tay (Nike 最大鞋廠), role: down}
+    - {t: "9904", n: 寶成 Pou Chen, role: down}
+    - {t: "1476", n: 儒鴻 Eclat (機能布/成衣), role: up}
+    - {t: "1477", n: 聚陽 Makalot, role: up}
+  flags: "TW are the OEM/ODM makers for these US brands. Adidas/Puma not US-listed."
+
+- id: auto-aftermarket
+  name_en: Auto Aftermarket Parts & Retail
+  name_zh: 汽車售後零件與通路
+  cluster: Traditional Export
+  linkage: medium
+  us_tickers: [AZO, ORLY, LKQ, GPC, AAP]
+  tw_linkage:
+    - {t: "1319", n: 東陽 Tong Yang (車燈/鈑件 AM 龍頭), role: up}
+    - {t: "6605", n: 帝寶 Depo (車燈), role: up}
+    - {t: "2231", n: 為升 CUB (TPMS/感測), role: up}
+    - {t: "6279", n: 胡連 Holync (車用端子), role: up}
+  flags: "TW aftermarket (副廠) parts sell heavily into US collision/repair market."
+
+- id: hand-tools-fasteners
+  name_en: Hand Tools & Fasteners
+  name_zh: 手工具與扣件
+  cluster: Traditional Export
+  linkage: medium
+  us_tickers: [SWK, HD, LOW]
+  tw_linkage:
+    - {t: "5007", n: 三星科技 Sun Star (扣件), role: up}
+    - {t: "8349", n: 恒耀 Heng Yao (扣件), role: up}
+    - {t: "1539", n: 巨庭 Jiu Ting (手工具), role: up}
+  flags: "TW is a major exporter of hand tools/fasteners; HD/LOW are the retail demand channel."
 
 # -----------------------------------------------------------------------------
-# CLUSTER 8 — Broader Market  (diversification / completeness; mostly 弱連動)
+# CLUSTER 8 — Broader Market (selective — medium linkage only)
 # -----------------------------------------------------------------------------
-- id: big-banks
-  name_en: Big Banks / Money-Center
-  name_zh: 大型銀行
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [JPM, BAC, WFC, C]
-  tw_linkage: []
-  flags: "弱連動."
-
-- id: oil-gas-majors
-  name_en: Oil & Gas Majors / Integrated
-  name_zh: 整合油氣巨頭
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [XOM, CVX, COP]
-  tw_linkage: []
-  flags: "TW is downstream LNG/crude importer (CPC buys US LNG). 弱連動."
-
-- id: oilfield-services
-  name_en: Oilfield Services
-  name_zh: 油田服務
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [SLB, HAL, BKR]
-  tw_linkage: []
-  flags: "弱連動."
-
-- id: pharma
-  name_en: Large-Cap Pharma
-  name_zh: 大型製藥
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [LLY, JNJ, ABBV, MRK, PFE, BMY]
-  tw_linkage: []
-  flags: "Modest CDMO/API touchpoints (e.g. Bora). 弱連動."
-
-- id: biotech
-  name_en: Biotech
-  name_zh: 生物科技
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [AMGN, GILD, VRTX, REGN, BIIB, MRNA]
-  tw_linkage: []
-  flags: "弱連動."
-
 - id: medical-devices
   name_en: Medical Devices
   name_zh: 醫療器材
@@ -631,49 +571,3 @@
   tw_linkage:
     - {t: "2634", n: 漢翔 AIDC (airframe/engine parts), role: up}
   flags: "TW supplies fasteners, CNC structural parts, mil-grade PCB into Tier-1/2."
-
-- id: machinery-heavy-equip
-  name_en: Machinery / Heavy Equipment
-  name_zh: 機械／重型設備
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [CAT, DE, PCAR, CMI, PH, ETN]
-  tw_linkage:
-    - {t: "2049", n: 上銀 HIWIN, role: up}
-  flags: "Component-level only (hydraulics/castings/bearings/fasteners). 弱-中度."
-
-- id: consumer-staples
-  name_en: Consumer Staples
-  name_zh: 民生必需消費
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [WMT, COST, PG, KO, PEP, PM, MDLZ]
-  tw_linkage: []
-  flags: "弱連動."
-
-- id: consumer-discretionary
-  name_en: Consumer Discretionary / Retail
-  name_zh: 非必需消費／零售
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [HD, MCD, BKNG, TJX, LOW, NKE]
-  tw_linkage: []
-  flags: "弱連動 (AMZN placed in e-commerce/cloud)."
-
-- id: metals-mining
-  name_en: Metals & Mining
-  name_zh: 金屬與採礦
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [FCX, NEM, SCCO, NUE, STLD, AA]
-  tw_linkage: []
-  flags: "TW downstream consumer of refined copper/steel. 弱連動. (Metal futures tracked separately.)"
-
-- id: utilities
-  name_en: Utilities
-  name_zh: 公用事業
-  cluster: Broader Market
-  linkage: weak
-  us_tickers: [NEE, SO, DUK, CEG, AEP, D, XEL]
-  tw_linkage: []
-  flags: "Indirect AI-power theme only (CEG/NEE/SO). 弱連動."
