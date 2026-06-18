@@ -143,7 +143,7 @@
   name_zh: 類比／電源管理 IC
   cluster: Chip Design
   linkage: medium
-  us_tickers: [TXN, ADI, MPWR, ON, MCHP, POWI]
+  us_tickers: [TXN, ADI, MPWR, "ON", MCHP, POWI]
   tw_linkage:
     - {t: "2303", n: 聯電 UMC, role: up}
     - {t: "5347", n: 世界先進 VIS, role: up}
@@ -155,7 +155,7 @@
   name_zh: 寬能隙功率半導體（碳化矽／氮化鎵）
   cluster: Chip Design
   linkage: medium
-  us_tickers: [ON, WOLF, NVTS, POWI, ALGM]
+  us_tickers: ["ON", WOLF, NVTS, POWI, ALGM]
   tw_linkage:
     - {t: "3105", n: 穩懋 WIN Semi (GaN foundry), role: up}
     - {t: "5347", n: 世界先進 VIS, role: up}
@@ -433,7 +433,7 @@
   name_zh: 車用半導體
   cluster: EV / Auto
   linkage: strong
-  us_tickers: [NXPI, TXN, ON, STM, ADI, MCHP, ALGM]
+  us_tickers: [NXPI, TXN, "ON", STM, ADI, MCHP, ALGM]
   tw_linkage:
     - {t: "2330", n: 台積電 TSMC (auto foundry), role: up}
     - {t: "2454", n: 聯發科 MediaTek (cockpit SoC), role: peer}
