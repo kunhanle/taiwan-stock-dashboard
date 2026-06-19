@@ -1,0 +1,276 @@
+"""
+US–TW Linkage engine (Step 3).
+
+Given the ingested taxonomy (UsCategory / UsCategoryTicker / TwLinkageNode),
+turn a *US category move* into a weighted *read-through* onto Taiwan nodes.
+
+Pipeline per category:
+  1. Basket return  = equal-weight mean of member US tickers' daily returns.
+  2. Category move  = cumulative basket return over the last `window` days,
+                      plus a z-score vs the basket's own daily vol (for ranking
+                      "sharp" moves robustly across different-volatility themes).
+  3. Read-through   = move * empirical_corr * linkage_prior * purity_weight
+                      for each TW node, where
+        empirical_corr  = corr(basket daily ret, node daily ret) over the window
+        linkage_prior   = strong 1.0 / medium 0.6 / weak 0.3   (seed `linkage`)
+        purity_weight   = 1.0 unless the node is a low-purity proxy (see overrides)
+     `dual` nodes (ADR<->TW same company) are EXCLUDED — self-correlation, not a
+     linkage signal (TwLinkageNode.exclude_from_scoring).
+
+Design choices vs the legacy correlation_analysis.py:
+  * Correlate on RETURNS, not price levels (price-level corr is spurious on trends).
+  * LAG the US basket by 1 trading day when correlating with TW nodes: TW trades
+    ahead of the US session, so TW day-t reacts to the US day-(t-1) close.
+    Contemporaneous (same-day) corr structurally understates the linkage.
+    Consequently today's US move implies TW's *next* session read-through.
+  * Resolve bare TW ids to .TW/.TWO ourselves (get_stock_ticker() mislabels
+    numeric TW ids as US).
+
+Everything reads from the DB, so it always reflects the latest ingested seed.
+"""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import pandas as pd
+import yfinance as yf
+from sqlmodel import Session, select
+
+BACKEND_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BACKEND_DIR))
+
+from database import engine  # noqa: E402
+from models import TwLinkageNode, UsCategory, UsCategoryTicker  # noqa: E402
+
+# --------------------------------------------------------------------------- #
+# Tunables
+# --------------------------------------------------------------------------- #
+LINKAGE_PRIOR = {"strong": 1.0, "medium": 0.6, "weak": 0.3}
+
+# Low-purity TW proxies: business mix dilutes the linkage signal, so down-weight
+# (user principle: 對標要用 pure-play 同業). Extend as needed.
+PURITY_OVERRIDES = {
+    "1101": 0.4,   # 台泥 TCC — cement co. proxied for Molicel battery cells
+    "1303": 0.6,   # 南亞 Nan Ya — diversified plastics, partial battery-material
+    "1722": 0.7,   # 台肥 TFC — fertilizer co., LFP cathode is a small segment
+}
+
+# Categories with fewer than this many TW nodes are flagged low-signal and
+# get a category-level penalty (e.g. medical-devices / aerospace-defense: 1 node).
+MIN_NODES_FOR_SIGNAL = 2
+LOW_SIGNAL_PENALTY = 0.5
+
+# On-disk cache of resolved TW yahoo symbols (avoids re-probing .TW/.TWO).
+TW_SYMBOL_CACHE = BACKEND_DIR.parent / "linkage-service" / "seed" / "tw_symbol_map.json"
+
+
+# --------------------------------------------------------------------------- #
+# Ticker resolution + price fetch
+# --------------------------------------------------------------------------- #
+def _load_tw_cache() -> dict:
+    if TW_SYMBOL_CACHE.exists():
+        try:
+            return json.loads(TW_SYMBOL_CACHE.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_tw_cache(cache: dict) -> None:
+    TW_SYMBOL_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def resolve_tw_symbol(tw_id: str, cache: dict) -> str | None:
+    """Map a bare TW id (e.g. '2330') to a working yahoo symbol ('2330.TW' or
+    '2330.TWO'), probing once and caching the result."""
+    if tw_id in cache:
+        return cache[tw_id]
+    for suffix in (".TW", ".TWO"):
+        try:
+            if not yf.Ticker(tw_id + suffix).history(period="5d").empty:
+                cache[tw_id] = tw_id + suffix
+                return cache[tw_id]
+        except Exception:
+            pass
+    cache[tw_id] = None
+    return None
+
+
+def fetch_returns(symbols: list[str], period: str = "1y") -> pd.DataFrame:
+    """Daily simple returns for each symbol, columns = symbols, NaNs kept
+    (pairwise dropna happens at correlation time)."""
+    symbols = sorted(set(s for s in symbols if s))
+    if not symbols:
+        return pd.DataFrame()
+    raw = yf.download(symbols, period=period, interval="1d",
+                      auto_adjust=True, progress=False, group_by="ticker")
+    closes = {}
+    for s in symbols:
+        try:
+            col = raw[s]["Close"] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
+            if col.dropna().empty:
+                continue
+            closes[s] = col
+        except Exception:
+            continue
+    if not closes:
+        return pd.DataFrame()
+    close_df = pd.DataFrame(closes)
+    close_df.index = pd.to_datetime(close_df.index).tz_localize(None)
+    return close_df.sort_index().pct_change().dropna(how="all")
+
+
+# --------------------------------------------------------------------------- #
+# Scoring
+# --------------------------------------------------------------------------- #
+def _basket_return(returns: pd.DataFrame, us_syms: list[str]) -> pd.Series:
+    cols = [c for c in us_syms if c in returns.columns]
+    if not cols:
+        return pd.Series(dtype="float64")
+    return returns[cols].mean(axis=1)
+
+
+def _move_and_z(basket: pd.Series, window: int) -> tuple[float, float]:
+    """Cumulative basket return over last `window` days + z-score vs daily vol."""
+    if basket.empty:
+        return 0.0, 0.0
+    recent = basket.tail(window)
+    move = float((1 + recent).prod() - 1)
+    vol = float(basket.std())
+    z = move / (vol * (window ** 0.5)) if vol > 0 else 0.0
+    return move, z
+
+
+def score_category(session: Session, slug: str, returns: pd.DataFrame,
+                   tw_cache: dict, window: int = 1, lag: int = 1) -> dict | None:
+    cat = session.get(UsCategory, slug)
+    if cat is None:
+        return None
+    us_syms = [t.ticker for t in cat.us_tickers]
+    basket = _basket_return(returns, us_syms)
+    move, z = _move_and_z(basket, window)
+
+    prior = LINKAGE_PRIOR.get(cat.linkage, 0.5)
+    scored_nodes = [n for n in cat.tw_nodes if not n.exclude_from_scoring]
+    low_signal = len(scored_nodes) < MIN_NODES_FOR_SIGNAL
+    cat_penalty = LOW_SIGNAL_PENALTY if low_signal else 1.0
+
+    # TW reacts to the prior US session -> correlate TW[t] with US basket[t-lag].
+    basket_lagged = basket.shift(lag)
+
+    nodes = []
+    for n in scored_nodes:
+        sym = resolve_tw_symbol(n.ticker, tw_cache)
+        corr = None
+        if sym and sym in returns.columns and not basket.empty:
+            pair = pd.concat([basket_lagged.rename("b"), returns[sym].rename("n")], axis=1).dropna()
+            if len(pair) > 5:
+                c = pair["b"].corr(pair["n"])
+                corr = None if pd.isna(c) else float(c)
+        purity = PURITY_OVERRIDES.get(n.ticker, 1.0)
+        readthrough = None
+        if corr is not None:
+            readthrough = move * corr * prior * purity * cat_penalty
+        nodes.append({
+            "ticker": n.ticker, "name": n.name, "role": n.role,
+            "corr": corr, "purity": purity, "readthrough": readthrough,
+        })
+
+    nodes.sort(key=lambda x: abs(x["readthrough"]) if x["readthrough"] is not None else -1,
+               reverse=True)
+    return {
+        "slug": slug, "name_zh": cat.name_zh, "name_en": cat.name_en,
+        "cluster": cat.cluster, "linkage": cat.linkage,
+        "move": move, "z": z, "low_signal": low_signal,
+        "us_tickers": us_syms, "nodes": nodes,
+    }
+
+
+def _all_symbols(session: Session, slugs: list[str], tw_cache: dict) -> list[str]:
+    us = session.exec(select(UsCategoryTicker.ticker).where(
+        UsCategoryTicker.category_slug.in_(slugs))).all()
+    tw_ids = session.exec(select(TwLinkageNode.ticker).where(
+        TwLinkageNode.category_slug.in_(slugs),
+        TwLinkageNode.exclude_from_scoring == False)).all()  # noqa: E712
+    tw = [resolve_tw_symbol(t, tw_cache) for t in set(tw_ids)]
+    return list(set(us)) + [s for s in tw if s]
+
+
+def compute_movers(session: Session, clusters: list[str] | None = None,
+                   window: int = 1, period: str = "1y", lag: int = 1) -> list[dict]:
+    """Score every category (optionally limited to `clusters`); return ranked by
+    |z| (sharpest US moves first), each with its TW read-throughs."""
+    q = select(UsCategory)
+    if clusters:
+        q = q.where(UsCategory.cluster.in_(clusters))
+    cats = session.exec(q).all()
+    slugs = [c.slug for c in cats]
+
+    tw_cache = _load_tw_cache()
+    returns = fetch_returns(_all_symbols(session, slugs, tw_cache), period=period)
+    _save_tw_cache(tw_cache)
+
+    out = []
+    for slug in slugs:
+        r = score_category(session, slug, returns, tw_cache, window=window, lag=lag)
+        if r:
+            out.append(r)
+    out.sort(key=lambda x: abs(x["z"]), reverse=True)
+    return out
+
+
+def stock_readthrough(session: Session, tw_id: str, window: int = 1,
+                      period: str = "1y", lag: int = 1) -> dict:
+    """Reverse lookup: which US themes currently drive a given TW stock."""
+    nodes = session.exec(select(TwLinkageNode).where(
+        TwLinkageNode.ticker == tw_id)).all()
+    if not nodes:
+        return {"tw_id": tw_id, "drivers": []}
+    slugs = [n.category_slug for n in nodes]
+    tw_cache = _load_tw_cache()
+    returns = fetch_returns(_all_symbols(session, slugs, tw_cache), period=period)
+    _save_tw_cache(tw_cache)
+
+    drivers = []
+    for slug in slugs:
+        cat = score_category(session, slug, returns, tw_cache, window=window, lag=lag)
+        if not cat:
+            continue
+        node = next((n for n in cat["nodes"] if n["ticker"] == tw_id), None)
+        if node:
+            drivers.append({
+                "slug": slug, "name_zh": cat["name_zh"], "role": node["role"],
+                "us_move": cat["move"], "corr": node["corr"],
+                "readthrough": node["readthrough"], "low_signal": cat["low_signal"],
+            })
+    drivers.sort(key=lambda x: abs(x["readthrough"]) if x["readthrough"] is not None else -1,
+                 reverse=True)
+    return {"tw_id": tw_id, "drivers": drivers}
+
+
+# --------------------------------------------------------------------------- #
+# CLI demo / smoke test (small subset to stay fast)
+# --------------------------------------------------------------------------- #
+def _demo() -> int:
+    with Session(engine) as s:
+        movers = compute_movers(s, clusters=["AI Datacenter"], window=5)
+        if not movers:
+            print("No categories scored (DB empty? run ingest_linkage.py first).")
+            return 1
+        print(f"AI Datacenter — {len(movers)} categories, ranked by |z| (5d window)\n")
+        for m in movers[:5]:
+            print(f"[{m['z']:+.2f}z  move {m['move']:+.1%}] {m['slug']}  {m['name_zh']}"
+                  f"{'  (LOW SIGNAL)' if m['low_signal'] else ''}")
+            for n in m["nodes"][:3]:
+                rt = f"{n['readthrough']:+.3f}" if n["readthrough"] is not None else "  n/a"
+                cr = f"{n['corr']:+.2f}" if n["corr"] is not None else " n/a"
+                print(f"     -> {n['ticker']:<5} {n['name'][:22]:<22} role={n['role']:<4}"
+                      f" corr={cr} readthrough={rt}")
+            print()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_demo())

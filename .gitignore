@@ -28,3 +28,6 @@ Thumbs.db
 secrets.json
 config.js
 *.bak
+
+# Linkage runtime cache (resolved TW .TW/.TWO symbols; self-heals, pre-warm on deploy)
+linkage-service/seed/tw_symbol_map.json
