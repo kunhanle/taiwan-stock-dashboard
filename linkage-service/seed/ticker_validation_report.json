@@ -1,11 +1,7 @@
 {
-  "us_total": 149,
+  "us_total": 148,
   "tw_total": 74,
-  "us_invalid": {
-    "JNPR": [
-      "dc-ethernet-switching"
-    ]
-  },
+  "us_invalid": {},
   "tw_invalid": {},
   "tw_source": "finlab"
 }

@@ -197,7 +197,7 @@
   name_zh: 資料中心乙太網路交換
   cluster: AI Datacenter
   linkage: strong
-  us_tickers: [ANET, CSCO, AVGO, NVDA, JNPR]
+  us_tickers: [ANET, CSCO, AVGO, NVDA, HPE]
   tw_linkage:
     - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
     - {t: "2376", n: 技嘉 Gigabyte, role: down}

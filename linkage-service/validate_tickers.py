@@ -57,17 +57,30 @@ def collect(seed: list[dict]):
 # --------------------------------------------------------------------------- #
 # US validation (yfinance)
 # --------------------------------------------------------------------------- #
-def validate_us(tickers: list[str]) -> dict[str, bool]:
+def _yf_has_history(symbol: str, retries: int = 3) -> bool:
+    """True if Yahoo returns price history for `symbol`.
+
+    Retries on empty/exception with backoff: under a long sequential run Yahoo
+    intermittently throttles and returns an empty frame for a perfectly valid
+    ticker, which would otherwise be mislabelled INVALID.
+    """
     import yfinance as yf
 
+    for attempt in range(retries):
+        try:
+            df = yf.Ticker(symbol).history(period="5d")
+            if not df.empty:
+                return True
+        except Exception:
+            pass
+        time.sleep(0.5 * (attempt + 1))  # backoff before retrying
+    return False
+
+
+def validate_us(tickers: list[str]) -> dict[str, bool]:
     result = {}
     for i, t in enumerate(sorted(tickers), 1):
-        ok = False
-        try:
-            df = yf.Ticker(t).history(period="5d")
-            ok = not df.empty
-        except Exception:
-            ok = False
+        ok = _yf_has_history(t)
         result[t] = ok
         print(f"  [US {i:>3}/{len(tickers)}] {t:<6} {'OK' if ok else 'INVALID'}")
         time.sleep(0.15)  # be gentle on Yahoo
@@ -92,19 +105,9 @@ def validate_tw_finlab(tickers: list[str], token: str) -> dict[str, bool] | None
 
 
 def validate_tw_yfinance(tickers: list[str]) -> dict[str, bool]:
-    import yfinance as yf
-
     result = {}
     for i, t in enumerate(sorted(tickers), 1):
-        ok = False
-        for suffix in (".TW", ".TWO"):
-            try:
-                df = yf.Ticker(t + suffix).history(period="5d")
-                if not df.empty:
-                    ok = True
-                    break
-            except Exception:
-                pass
+        ok = any(_yf_has_history(t + suffix) for suffix in (".TW", ".TWO"))
         result[t] = ok
         print(f"  [TW {i:>3}/{len(tickers)}] {t:<6} {'OK' if ok else 'INVALID'}")
         time.sleep(0.15)
