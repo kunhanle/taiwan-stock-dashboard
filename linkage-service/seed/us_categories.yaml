@@ -12,10 +12,13 @@
 #   cluster         high-level grouping
 #   linkage         strong | medium | weak   (TW supply-chain coupling)
 #   us_tickers      <=8 leader tickers (end-market representative)
-#   tw_linkage      [{t: TW ticker, n: name, role: up|down|peer}]
+#   tw_linkage      [{t: TW ticker, n: name, role: up|down|peer|dual}]
 #                     up   = TW supplies INTO the US theme (upstream)
 #                     down = TW sits downstream of the US theme
 #                     peer = TW competitor / same layer
+#                     dual = SAME company dual-listed (US ADR <-> TW local);
+#                            NOT a linkage signal (self-correlation) — treat
+#                            as identity, exclude from correlation scoring
 #   flags           special situations (ADR / merger / bankruptcy / etc.)
 #
 # Verification: tickers web-verified as US-listed on 2026-06-18. Run a final
@@ -73,8 +76,8 @@
   linkage: strong
   us_tickers: [TSM, UMC, INTC, GFS]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC, role: peer}
-    - {t: "2303", n: 聯電 UMC, role: peer}
+    - {t: "2330", n: 台積電 TSMC, role: dual}
+    - {t: "2303", n: 聯電 UMC, role: dual}
     - {t: "5347", n: 世界先進 VIS, role: peer}
     - {t: "3661", n: 世芯-KY Alchip, role: up}
     - {t: "3443", n: 創意 GUC, role: up}
@@ -185,6 +188,8 @@
   tw_linkage:
     - {t: "2408", n: 南亞科 Nanya (DRAM), role: peer}
     - {t: "6770", n: 力積電 PSMC, role: peer}
+    - {t: "2344", n: 華邦電 Winbond (niche DRAM/NOR), role: peer}
+    - {t: "2337", n: 旺宏 Macronix (NOR/NAND flash), role: peer}
     - {t: "2330", n: 台積電 TSMC (HBM CoWoS), role: up}
     - {t: "3711", n: 日月光投控 ASE, role: up}
   flags: "MU = only US-listed DRAM/HBM maker (Samsung/SK Hynix not US-listed). SNDK spun from WDC Feb-2025; WDC now mostly HDD."
@@ -216,8 +221,10 @@
   tw_linkage:
     - {t: "4977", n: 眾達-KY, role: peer}
     - {t: "4979", n: 華星光 Luxnet, role: peer}
+    - {t: "6442", n: 光聖 Gloria (AOC/transceiver), role: peer}
     - {t: "3081", n: 聯亞 LandMark, role: up}
     - {t: "3450", n: 聯鈞 Intelligent Epitaxy, role: up}
+    - {t: "3363", n: 上詮 (FAU/fiber-array passive optics), role: up}
   flags: "800G/1.6T cycle. COHR=NYSE."
 
 - id: dc-interconnect-aec
@@ -269,6 +276,8 @@
     - {t: "2308", n: 台達電 Delta (PSU/PDU/busbar), role: peer}
     - {t: "1519", n: 華城 Fortune Electric, role: up}
     - {t: "1503", n: 士電 Shihlin, role: up}
+    - {t: "1513", n: 中興電 CHEM (GIS/switchgear), role: up}
+    - {t: "1514", n: 亞力 Allis (switchgear/transformer), role: up}
   flags: "Delta directly supplies & competes with Vertiv/Eaton."
 
 - id: hyperscale-cloud

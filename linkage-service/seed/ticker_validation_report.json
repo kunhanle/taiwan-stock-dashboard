@@ -1,7 +1,7 @@
 {
   "us_total": 148,
-  "tw_total": 74,
+  "tw_total": 80,
   "us_invalid": {},
   "tw_invalid": {},
-  "tw_source": "finlab"
+  "tw_source": "yfinance"
 }
