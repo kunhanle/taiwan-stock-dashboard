@@ -62,6 +62,15 @@ PURITY_OVERRIDES = {
 MIN_NODES_FOR_SIGNAL = 2
 LOW_SIGNAL_PENALTY = 0.5
 
+# Semiconductor sector factor. For semi clusters, a TW node's raw corr with the
+# US category basket is mostly Phlx-Semi (SOX) sector beta — the US baskets are
+# themselves 0.77-0.91 correlated with SOX. We therefore weight semi categories
+# by the SOX-ADJUSTED PARTIAL correlation, isolating the category-specific
+# linkage from broad-semi co-movement. (Validated: memory makers survive,
+# WFE->foundry collapses to ~0, TSMC collapses everywhere — it IS the sector.)
+SOX_SYMBOL = "^SOX"
+SEMI_CLUSTERS = {"Semi Manufacturing", "Chip Design"}
+
 # On-disk cache of resolved TW yahoo symbols (avoids re-probing .TW/.TWO).
 TW_SYMBOL_CACHE = BACKEND_DIR.parent / "linkage-service" / "seed" / "tw_symbol_map.json"
 
@@ -181,6 +190,32 @@ def _move_and_z(basket: pd.Series, window: int) -> tuple[float, float]:
     return move, z
 
 
+def _corr(a: pd.Series, b: pd.Series) -> float | None:
+    pair = pd.concat([a.rename("a"), b.rename("b")], axis=1).dropna()
+    if len(pair) <= 5:
+        return None
+    c = pair["a"].corr(pair["b"])
+    return None if pd.isna(c) else float(c)
+
+
+def _partial_corr(node: pd.Series, basket_lag: pd.Series, sox_lag: pd.Series) -> float | None:
+    """Partial corr(node, basket | SOX): the category-specific linkage left after
+    removing the common Phlx-Semi factor.
+        r(t,b|s) = (r_tb - r_ts*r_bs) / sqrt((1-r_ts^2)(1-r_bs^2))
+    """
+    df = pd.concat([node.rename("t"), basket_lag.rename("b"), sox_lag.rename("s")],
+                   axis=1).dropna()
+    if len(df) <= 8:
+        return None
+    r_tb, r_ts, r_bs = df["t"].corr(df["b"]), df["t"].corr(df["s"]), df["b"].corr(df["s"])
+    if any(pd.isna(x) for x in (r_tb, r_ts, r_bs)):
+        return None
+    denom = ((1 - r_ts ** 2) * (1 - r_bs ** 2)) ** 0.5
+    if denom < 1e-6:
+        return None
+    return float((r_tb - r_ts * r_bs) / denom)
+
+
 def score_category(session: Session, slug: str, returns: pd.DataFrame,
                    tw_cache: dict, window: int = 1, lag: int = 1) -> dict | None:
     cat = session.get(UsCategory, slug)
@@ -198,22 +233,37 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     # TW reacts to the prior US session -> correlate TW[t] with US basket[t-lag].
     basket_lagged = basket.shift(lag)
 
+    # Semi categories: weight by SOX-adjusted partial corr (strip sector beta).
+    is_semi = cat.cluster in SEMI_CLUSTERS
+    sox_lagged = returns[SOX_SYMBOL].shift(lag) if SOX_SYMBOL in returns.columns else None
+
     nodes = []
     for n in scored_nodes:
         sym = resolve_tw_symbol(n.ticker, tw_cache)
-        corr = None
+        corr_raw = corr_sox = corr_partial = None
         if sym and sym in returns.columns and not basket.empty:
-            pair = pd.concat([basket_lagged.rename("b"), returns[sym].rename("n")], axis=1).dropna()
-            if len(pair) > 5:
-                c = pair["b"].corr(pair["n"])
-                corr = None if pd.isna(c) else float(c)
+            node_ret = returns[sym]
+            corr_raw = _corr(basket_lagged, node_ret)
+            if is_semi and sox_lagged is not None:
+                corr_sox = _corr(sox_lagged, node_ret)
+                corr_partial = _partial_corr(node_ret, basket_lagged, sox_lagged)
+
+        # Effective weight: partial (semi) else raw. Fall back to raw if SOX
+        # is unavailable so a fetch glitch doesn't silently zero a whole sector.
+        if is_semi and sox_lagged is not None:
+            method, eff = "partial-sox", corr_partial
+        else:
+            method, eff = ("raw-fallback(no-SOX)" if is_semi else "raw"), corr_raw
+
         purity = PURITY_OVERRIDES.get(n.ticker, 1.0)
         readthrough = None
-        if corr is not None:
-            readthrough = move * corr * prior * purity * cat_penalty
+        if eff is not None:
+            # Negative specific linkage -> no read-through (clamp to 0).
+            readthrough = move * max(eff, 0.0) * prior * purity * cat_penalty
         nodes.append({
             "ticker": n.ticker, "name": n.name, "role": n.role,
-            "corr": corr, "purity": purity, "readthrough": readthrough,
+            "corr": eff, "corr_raw": corr_raw, "corr_sox": corr_sox,
+            "method": method, "purity": purity, "readthrough": readthrough,
         })
 
     nodes.sort(key=lambda x: abs(x["readthrough"]) if x["readthrough"] is not None else -1,
@@ -233,7 +283,8 @@ def _all_symbols(session: Session, slugs: list[str], tw_cache: dict) -> list[str
         TwLinkageNode.category_slug.in_(slugs),
         TwLinkageNode.exclude_from_scoring == False)).all()  # noqa: E712
     tw = [resolve_tw_symbol(t, tw_cache) for t in set(tw_ids)]
-    return list(set(us)) + [s for s in tw if s]
+    # Always include the SOX factor so semi categories can compute partial corr.
+    return list(set(us)) + [s for s in tw if s] + [SOX_SYMBOL]
 
 
 def compute_movers(session: Session, clusters: list[str] | None = None,

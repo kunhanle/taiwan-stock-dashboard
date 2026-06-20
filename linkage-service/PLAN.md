@@ -46,3 +46,10 @@
 - 2026-06-19  Step 3 完成：linkage_engine.py（compute_movers / stock_readthrough）；
   日報酬相關+美股落後1日對齊時區（corr 0.1→0.3-0.44 驗證有效）；dual 排除、
   pure-play 折減（PURITY_OVERRIDES）、弱訊號降權；台股代號 .TW/.TWO 解析+快取。
+- 2026-06-20  資料新鮮度修補 `_repair_latest`（yfinance 單檔漏填最新K棒→即時報價回填）；
+  全市場 228 檔 ×2 次交叉稽核（39 美股 stale 皆可修、台股全 clean）。
+- 2026-06-20  半導體 cluster 改用 **SOX 偏相關**權重（Semi Manufacturing/Chip Design）：
+  raw corr 多為費半 sector beta（美股籃 vs SOX 0.77-0.92），partial 扣掉費半留子類專屬。
+  回歸驗證：memory 廠 partial≈+0.32-0.36 保留、WFE→晶圓廠 partial 轉負→read-through 歸0、
+  台積在各類 partial≈0（它就是費半）。負 partial 視為 0；非半導體類維持 raw。
+  節點輸出加 corr_raw/corr_sox/method 供前端對照。
