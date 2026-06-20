@@ -38,6 +38,9 @@
   linkage: strong
   us_tickers: [AMAT, LRCX, KLAC, ASML, ENTG, ACLS, ONTO]
   tw_linkage:
+    - {t: "6196", n: 帆宣 Marketech (設備/系統整合), role: up}
+    - {t: "3413", n: 京鼎 Foxsemicon (AMAT 模組代工/子公司), role: up}
+    - {t: "2404", n: 漢唐 Hantang (廠務/無塵室), role: up}
     - {t: "2330", n: 台積電 TSMC, role: down}
     - {t: "2303", n: 聯電 UMC, role: down}
     - {t: "2408", n: 南亞科 Nanya, role: down}
