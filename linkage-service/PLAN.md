@@ -32,6 +32,11 @@
 - **弱訊號類別**：`medical-devices`、`aerospace-defense` 台股節點僅 1 檔，關聯弱，引擎應降權或標註。
 - **pure-play 加權**：純度低的節點（如 ev-battery 的台泥1101）訊號應折減。
 - **下市漂移**：ticker 會下市（JNPR→HPE 已修），步驟 6 需排程定期重驗。
+- **資料新鮮度（重要）**：yfinance 歷史日線會「單檔零星」漏填最新一根（NaN），
+  靜默 dropna 會誤用 T-1 收盤、漏掉最新異動（觀察到 MOD 2026-06-18）。
+  引擎 `_repair_latest()` 用即時報價 `fast_info.last_price` 回填並 WARNING。
+  根因＝別信單一 feed 的「最後一根」當最新值；步驟 6/7 應改用可靠 EOD 源並
+  與即時端點交叉驗證。殘留限制：整段最新交易日全缺時需市場行事曆才能補（未做）。
 
 ## 進度紀錄
 - 2026-06-18  Step 1 完成：seed + 驗證腳本 + 報告；JNPR→HPE 修正；yfinance 重試防限流；

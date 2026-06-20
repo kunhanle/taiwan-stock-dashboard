@@ -98,6 +98,39 @@ def resolve_tw_symbol(tw_id: str, cache: dict) -> str | None:
     return None
 
 
+def _repair_latest(close_df: pd.DataFrame) -> list[str]:
+    """yfinance's daily history feed sometimes omits the most recent session for
+    a SINGLE ticker (NaN bar) while its realtime quote already has that close
+    (observed: MOD 2026-06-18 NaN in history, but fast_info=297.37). Silently
+    dropping the NaN would use a stale T-1 close and miss the latest move — the
+    exact signal this engine exists to catch. Fill such gaps from the realtime
+    quote and return the list of patched symbols so the caller can surface it.
+
+    Caveat: if run during an OPEN session this injects the intraday last price as
+    the day's "close"; intended for end-of-day runs. Does not handle the case
+    where the entire latest session is absent from the index (needs a market
+    calendar — production should use a reliable EOD source; see PLAN step 6)."""
+    if close_df.empty:
+        return []
+    target = close_df.index.max()
+    patched = []
+    for sym in close_df.columns:
+        s = close_df[sym]
+        valid = s.dropna()
+        if valid.empty:
+            continue
+        if pd.isna(s.loc[target]) or valid.index.max() < target:
+            try:
+                lp = yf.Ticker(sym).fast_info.last_price
+            except Exception:
+                lp = None
+            # Only accept the quote if it's genuinely newer than the last bar.
+            if lp and float(lp) != float(valid.iloc[-1]):
+                close_df.loc[target, sym] = float(lp)
+                patched.append(sym)
+    return patched
+
+
 def fetch_returns(symbols: list[str], period: str = "1y") -> pd.DataFrame:
     """Daily simple returns for each symbol, columns = symbols, NaNs kept
     (pairwise dropna happens at correlation time)."""
@@ -119,7 +152,12 @@ def fetch_returns(symbols: list[str], period: str = "1y") -> pd.DataFrame:
         return pd.DataFrame()
     close_df = pd.DataFrame(closes)
     close_df.index = pd.to_datetime(close_df.index).tz_localize(None)
-    return close_df.sort_index().pct_change().dropna(how="all")
+    close_df = close_df.sort_index()
+    patched = _repair_latest(close_df)
+    if patched:
+        print(f"[fetch_returns] WARNING: stale latest bar repaired from realtime "
+              f"quote for: {', '.join(patched)}", file=sys.stderr)
+    return close_df.pct_change().dropna(how="all")
 
 
 # --------------------------------------------------------------------------- #
