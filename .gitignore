@@ -34,3 +34,5 @@ linkage-service/seed/tw_symbol_map.json
 # B-layer caches (SEC EDGAR US revenue + CIK map; refresh from source, go stale each earnings)
 linkage-service/seed/us_revenue_cache.json
 linkage-service/seed/sec_cik_map.json
+# Nightly pre-computed two-layer snapshot (rebuilt by refresh_linkage.py)
+linkage-service/seed/linkage_snapshot.json

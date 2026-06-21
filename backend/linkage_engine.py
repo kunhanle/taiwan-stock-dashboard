@@ -166,7 +166,7 @@ def fetch_returns(symbols: list[str], period: str = "1y") -> pd.DataFrame:
     if patched:
         print(f"[fetch_returns] WARNING: stale latest bar repaired from realtime "
               f"quote for: {', '.join(patched)}", file=sys.stderr)
-    return close_df.pct_change().dropna(how="all")
+    return close_df.pct_change(fill_method=None).dropna(how="all")
 
 
 # --------------------------------------------------------------------------- #

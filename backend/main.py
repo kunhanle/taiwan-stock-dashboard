@@ -65,6 +65,30 @@ def on_startup():
     from database import create_db_and_tables
     create_db_and_tables()
 
+
+def _linkage_refresh_loop():
+    """In-process scheduler (Step 6): rebuild the linkage snapshot when it's
+    stale, re-checking hourly. Self-contained so the snapshot lives on the web
+    service's own filesystem (a separate Render cron wouldn't share it)."""
+    import refresh_linkage
+    snap = os.path.join(os.path.dirname(__file__), "..", "linkage-service", "seed", "linkage_snapshot.json")
+    while True:
+        try:
+            age = (time.time() - os.path.getmtime(snap)) if os.path.exists(snap) else 1e9
+            if age > 20 * 3600:  # ~daily
+                print("[linkage] snapshot stale, refreshing...")
+                refresh_linkage.main()
+        except Exception as e:  # noqa: BLE001
+            print(f"[linkage] refresh failed: {e}")
+        time.sleep(3600)
+
+
+@app.on_event("startup")
+def _start_linkage_refresh():
+    if os.getenv("LINKAGE_REFRESH", "1") != "0":
+        import threading
+        threading.Thread(target=_linkage_refresh_loop, daemon=True).start()
+
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,

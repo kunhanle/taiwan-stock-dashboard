@@ -12,7 +12,9 @@ The two-layer / movers computations hit yfinance + SEC EDGAR + FinLab and are
 slow on a cold cache, so results are TTL-cached. For production, a scheduled job
 should pre-warm these (see PLAN step 6).
 """
+import json
 import time
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
@@ -26,6 +28,27 @@ router = APIRouter()
 
 _CACHE: dict[str, tuple] = {}
 HEAVY_TTL = 1800  # 30 min — revenue/price data changes slowly
+
+# Nightly snapshot (refresh_linkage.py). Served instantly when fresh; falls back
+# to live compute if absent or stale (so a missed job degrades, not breaks).
+SNAPSHOT = Path(__file__).resolve().parent.parent / "linkage-service" / "seed" / "linkage_snapshot.json"
+SNAPSHOT_MAX_AGE = 36 * 3600  # 36h
+_snap = {"data": None, "mtime": 0.0}
+
+
+def _snapshot():
+    if not SNAPSHOT.exists():
+        return None
+    mtime = SNAPSHOT.stat().st_mtime
+    if time.time() - mtime > SNAPSHOT_MAX_AGE:
+        return None
+    if _snap["mtime"] != mtime:
+        try:
+            _snap["data"] = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+            _snap["mtime"] = mtime
+        except Exception:
+            _snap["data"] = None
+    return _snap["data"]
 
 
 def _cached(key: str, ttl: int, fn):
@@ -52,6 +75,10 @@ def category_two_layer(slug: str, refresh: bool = Query(False),
                        session: Session = Depends(get_session)):
     if session.get(UsCategory, slug) is None:
         raise HTTPException(status_code=404, detail=f"unknown category: {slug}")
+    if not refresh:
+        snap = _snapshot()
+        if snap and slug in snap.get("categories", {}):
+            return snap["categories"][slug]
     key = f"two:{slug}"
     if refresh:
         _CACHE.pop(key, None)
@@ -62,6 +89,11 @@ def category_two_layer(slug: str, refresh: bool = Query(False),
 def movers(clusters: str = Query(None, description="comma-separated cluster filter"),
            refresh: bool = Query(False), session: Session = Depends(get_session)):
     cl = [c.strip() for c in clusters.split(",")] if clusters else None
+    if not refresh:
+        snap = _snapshot()
+        if snap:
+            mv = snap.get("movers", [])
+            return [m for m in mv if not cl or m["cluster"] in cl]
     key = f"movers:{clusters or 'all'}"
     if refresh:
         _CACHE.pop(key, None)

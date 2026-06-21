@@ -21,8 +21,8 @@
 | 3 | Linkage engine（核心） | ① 美股類別「龍頭異動」聚合 ② 依 role 加權映射台股節點（排除 dual）③ 日報酬相關度（**美股落後1日**對齊台股時區）當權重 ④ 套用投資原則：pure-play 加權、弱訊號類別降權 | ✅ 完成 |
 | 4 | Backend API | `linkage_api.py` router 掛 `/api/linkage`：`/categories`、`/category/{slug}`(兩層綜合)、`/movers`、`/stock/{tw_id}`；TTL 快取(30min, refresh 參數)。TestClient 驗證通過(cache 1.6s→0s) | ✅ 完成 |
 | 5 | Frontend UI | 既有 React(index.html) 新增「美台連動」分頁 `LinkageView`：類別選擇器(按cluster分組)+兩層表格(A股價/讀數/B營收/領先落後/判定徽章)+台股反查。瀏覽器端到端驗證渲染正確 | ✅ 完成 |
-| 6 | 資料更新 + 排程 | 每日刷新美股收盤/台股；定期重跑 `validate_tickers.py` 抓下市漂移（如 JNPR）；接既有 `monitor/` 排程 | ⬜ |
-| 7 | 部署 + 收尾 | render/vercel/docker 上線；環境變數（注意 `FINLAB_API_TOKEN` 的 `#` 截斷問題）；煙霧測試 | ⬜ |
+| 6 | 資料更新 + 排程 | `refresh_linkage.py`：重跑驗證抓下市漂移 + 預算全42類兩層→`linkage_snapshot.json`。API 有新鮮快照(<36h)即秒回否則 live。**站內排程**(main.py 背景執行緒，快照>20h才重算，每時檢查)——非 Render cron(獨立container不共用FS)。驗證:snapshot 0.014s vs live 1.45s | ✅ 完成 |
+| 7 | 部署 + 收尾 | render/vercel/docker 上線；環境變數（注意 `FINLAB_API_TOKEN` 的 `#` 截斷問題）；煙霧測試 | 🔨 進行中 |
 
 **可選第 8 步（加值）**：用既有 Claude/Gemini 生成敘事讀數（例：「AVGO +8% 客製 ASIC → 留意欣興3037 載板」）+ 透過既有 monitor 推播警報。
 
@@ -47,6 +47,9 @@
   與即時端點交叉驗證。殘留限制：整段最新交易日全缺時需市場行事曆才能補（未做）。
 
 ## 進度紀錄
+- 2026-06-21  Step 6 完成：`refresh_linkage.py`(驗證漂移+預算42類兩層快照)；API 接快照(<36h秒回,
+  否則live)；main.py 站內背景排程(快照>20h重算/每時檢查,env LINKAGE_REFRESH=0 可關)；
+  linkage_engine pct_change fill_method=None 消 warning。實測:151US/88TW無漂移、snapshot 0.014s。
 - 2026-06-21  Step 4 完成：`linkage_api.py` FastAPI router 掛進 main.py(`/api/linkage`)，
   4 端點(categories/category/movers/stock)+TTL 快取(30min)。TestClient 驗證：
   /categories 42類、/category/{slug} 回兩層綜合 JSON、404 處理、快取 1.6s→0.00s。
