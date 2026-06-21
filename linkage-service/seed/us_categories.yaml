@@ -198,6 +198,23 @@
   flags: "MU = only US-listed DRAM/HBM maker (Samsung/SK Hynix not US-listed). SNDK spun from WDC Feb-2025; WDC now mostly HDD."
 
 # -----------------------------------------------------------------------------
+# CLUSTER 2b — Passive Components (global leaders JP/KR/TW; US thin)
+# -----------------------------------------------------------------------------
+- id: passive-components
+  name_en: Passive Components (MLCC / Resistors / Inductors)
+  name_zh: 被動元件（MLCC／電阻／電感）
+  cluster: Components
+  linkage: medium
+  us_tickers: [VSH, KN, CTS]
+  tw_linkage:
+    - {t: "2327", n: 國巨 Yageo (全球龍頭, 併KEMET/Pulse), role: peer}
+    - {t: "2492", n: 華新科 Walsin Tech, role: peer}
+    - {t: "3026", n: 禾伸堂 Holystone, role: peer}
+    - {t: "6173", n: 信昌電 HEC (MLCC), role: peer}
+    - {t: "2478", n: 大毅 TA-I (chip resistor), role: peer}
+  flags: "US 薄: VSH 唯一廣譜純play(電容占營收~20-25%), KN/CTS 部分。全球龍頭非美上市: Murata/TDK/Taiyo Yuden(JP)、Samsung EM(KR)。KEMET→Yageo(2327)、AVX→Kyocera、Pulse→Yageo 皆併購下市。驅動: AI伺服器 MLCC 用量('next HBM')。TW 為全球 peer 非下游。"
+
+# -----------------------------------------------------------------------------
 # CLUSTER 3 — AI Datacenter Networking & Infrastructure
 # -----------------------------------------------------------------------------
 - id: dc-ethernet-switching

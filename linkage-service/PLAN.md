@@ -47,6 +47,7 @@
   與即時端點交叉驗證。殘留限制：整段最新交易日全缺時需市場行事曆才能補（未做）。
 
 ## 進度紀錄
+- 2026-06-20  新增 `passive-components` 類（cluster=Components，非半導體）：US=VSH(+KN/CTS，美股這塊薄、龍頭多被台日併購)；TW peer=國巨2327/華新科2492/禾伸堂3026/信昌電6173/大毅2478。驗證抓到奇力新2456已下市(併入國巨)並換掉。兩層皆成立：4/5 tradeable+fundamental(A 0.22-0.24, B 0.35-0.44)。報告刷新 US 151 / TW 88 全有效。
 - 2026-06-18  Step 1 完成：seed + 驗證腳本 + 報告；JNPR→HPE 修正；yfinance 重試防限流；
   新增 `dual` role 並補 6 檔台股節點（華邦電/旺宏/光聖/上詮/中興電/亞力）。
 - 2026-06-19  Step 2 完成：linkage 資料表（models.py）+ 冪等 ingest（ingest_linkage.py）；
