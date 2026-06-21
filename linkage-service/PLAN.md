@@ -47,6 +47,10 @@
   與即時端點交叉驗證。殘留限制：整段最新交易日全缺時需市場行事曆才能補（未做）。
 
 ## 進度紀錄
+- 2026-06-21  使用者回饋三項：(1)前端加美股籃成員(漲幅+營收YoY) (2)角色 up/down/peer/dual 圖例
+  (3)**Alert 相對強度系統**：族群 basket move 對基準(半導體→SOX,其餘→S&P500)的超額(excess)
+  ≥3% 才警示——「族群跟費半同幅」不報。`/api/linkage/alerts` 從快照即時算。
+  驗證:記憶體超額+14.6%(族群+23.4%vs費半+8.9%)入警示、GPU超額−1.2%正確不報。前端 live 渲染通過。
 - 2026-06-21  Step 6 完成：`refresh_linkage.py`(驗證漂移+預算42類兩層快照)；API 接快照(<36h秒回,
   否則live)；main.py 站內背景排程(快照>20h重算/每時檢查,env LINKAGE_REFRESH=0 可關)；
   linkage_engine pct_change fill_method=None 消 warning。實測:151US/88TW無漂移、snapshot 0.014s。

@@ -76,9 +76,19 @@ def category_two_layer(session: Session, slug: str, price_period: str = "3mo") -
     order = {"tradeable+fundamental": 0, "tradeable-only": 1, "fundamental-only": 2,
              "semi-cycle": 3, "weak": 4}
     nodes.sort(key=lambda x: (order[x["verdict"]], -abs(x["b_corr"] or x["b_corr_raw"] or 0)))
+
+    # US basket members: window move (A) + latest revenue YoY (B), so the UI
+    # shows the US side too, not just the TW read-through.
+    rev_map = b.get("us_members_rev", {})
+    us_members = [{"ticker": m["ticker"], "move": m["move"], "rev_yoy": rev_map.get(m["ticker"])}
+                  for m in a.get("us_members", [])]
+
     return {
         "slug": slug, "cluster": cat.cluster, "name_zh": cat.name_zh,
         "a_move": a["move"], "a_z": a["z"],
+        "benchmark": a.get("benchmark"), "benchmark_move": a.get("benchmark_move"),
+        "excess": a.get("excess"),
+        "us_members": us_members,
         "us_coverage": b["us_coverage"], "us_missing": b["us_tickers_missing"],
         "us_yoy_latest": b["us_yoy_latest"],
         "nodes": nodes,

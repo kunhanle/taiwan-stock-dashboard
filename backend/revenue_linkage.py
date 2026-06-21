@@ -270,11 +270,13 @@ def category_revenue_linkage(session: Session, slug: str) -> dict:
         })
     nodes.sort(key=lambda x: abs(x.get("corr_b") or 0), reverse=True)
     missing = [t for t in us_tickers if t not in us_yoys]
+    us_members = {t: (float(s.iloc[-1]) if not s.empty else None) for t, s in us_yoys.items()}
     return {
         "slug": slug, "cluster": cat.cluster,
         "us_coverage": f"{len(us_yoys)}/{len(us_tickers)}",
         "us_tickers_with_data": list(us_yoys),
         "us_tickers_missing": missing,  # #4: usually foreign filers (20-F/IFRS)
+        "us_members_rev": us_members,  # per-US-ticker latest revenue YoY
         "us_yoy_latest": float(us_agg.iloc[-1]) if not us_agg.empty else None,
         "us_yoy_recent": {str(p): round(float(v), 3) for p, v in us_agg.tail(8).items()},
         "nodes": nodes,

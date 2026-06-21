@@ -100,6 +100,32 @@ def movers(clusters: str = Query(None, description="comma-separated cluster filt
     return _cached(key, HEAVY_TTL, lambda: le.compute_movers(session, clusters=cl))
 
 
+@router.get("/alerts")
+def alerts(threshold: float = Query(None, description="min excess over benchmark"),
+           session: Session = Depends(get_session)):
+    """Categories whose US basket OUT-moved its benchmark (semi->SOX, else S&P)
+    by >= threshold — i.e. relative-strength breakouts, not just market beta.
+    Served from the snapshot; each alert lists the TW nodes worth watching."""
+    th = le.ALERT_EXCESS_THRESHOLD if threshold is None else threshold
+    snap = _snapshot()
+    if not snap:
+        return {"ready": False, "detail": "snapshot not built yet; try again shortly"}
+    out = []
+    for c in snap.get("categories", {}).values():
+        exc = c.get("excess")
+        if exc is None or exc < th:
+            continue
+        watch = [{"ticker": n["ticker"], "name": n["name"], "verdict": n["verdict"],
+                  "b_corr": n.get("b_corr"), "readthrough": n.get("readthrough")}
+                 for n in c.get("nodes", []) if n["verdict"] in
+                 ("tradeable+fundamental", "fundamental-only")][:5]
+        out.append({"slug": c["slug"], "name_zh": c["name_zh"], "cluster": c["cluster"],
+                    "a_move": c["a_move"], "benchmark": c.get("benchmark"),
+                    "benchmark_move": c.get("benchmark_move"), "excess": exc, "watch": watch})
+    out.sort(key=lambda x: x["excess"], reverse=True)
+    return {"ready": True, "threshold": th, "generated_at": snap.get("generated_at"), "alerts": out}
+
+
 @router.get("/stock/{tw_id}")
 def stock_readthrough(tw_id: str, refresh: bool = Query(False),
                       session: Session = Depends(get_session)):

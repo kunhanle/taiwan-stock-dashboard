@@ -71,6 +71,12 @@ LOW_SIGNAL_PENALTY = 0.5
 SOX_SYMBOL = "^SOX"
 SEMI_CLUSTERS = {"Semi Manufacturing", "Chip Design"}
 
+# Relative-strength benchmark for alerts: a category only "alerts" when its
+# basket out-moves its benchmark (semi -> SOX, else broad market -> S&P 500).
+# A group rising 6% while SOX rises 6% has ~0 excess and should NOT alert.
+SPX_SYMBOL = "^GSPC"
+ALERT_EXCESS_THRESHOLD = 0.03  # |basket move - benchmark move| over the window
+
 # On-disk cache of resolved TW yahoo symbols (avoids re-probing .TW/.TWO).
 TW_SYMBOL_CACHE = BACKEND_DIR.parent / "linkage-service" / "seed" / "tw_symbol_map.json"
 
@@ -225,6 +231,19 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     basket = _basket_return(returns, us_syms)
     move, z = _move_and_z(basket, window)
 
+    # Relative strength vs benchmark (semi -> SOX, else S&P 500): the alert signal.
+    is_semi = cat.cluster in SEMI_CLUSTERS
+    bench_sym = SOX_SYMBOL if is_semi else SPX_SYMBOL
+    bench_move = (_move_and_z(returns[bench_sym], window)[0]
+                  if bench_sym in returns.columns else 0.0)
+    excess = move - bench_move
+
+    # Per-US-member moves over the window (so the UI can show the US side too).
+    us_members = []
+    for s in us_syms:
+        m = _move_and_z(returns[s], window)[0] if s in returns.columns else None
+        us_members.append({"ticker": s, "move": m})
+
     prior = LINKAGE_PRIOR.get(cat.linkage, 0.5)
     scored_nodes = [n for n in cat.tw_nodes if not n.exclude_from_scoring]
     low_signal = len(scored_nodes) < MIN_NODES_FOR_SIGNAL
@@ -234,7 +253,6 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     basket_lagged = basket.shift(lag)
 
     # Semi categories: weight by SOX-adjusted partial corr (strip sector beta).
-    is_semi = cat.cluster in SEMI_CLUSTERS
     sox_lagged = returns[SOX_SYMBOL].shift(lag) if SOX_SYMBOL in returns.columns else None
 
     nodes = []
@@ -272,7 +290,8 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
         "slug": slug, "name_zh": cat.name_zh, "name_en": cat.name_en,
         "cluster": cat.cluster, "linkage": cat.linkage,
         "move": move, "z": z, "low_signal": low_signal,
-        "us_tickers": us_syms, "nodes": nodes,
+        "benchmark": bench_sym, "benchmark_move": bench_move, "excess": excess,
+        "us_tickers": us_syms, "us_members": us_members, "nodes": nodes,
     }
 
 
@@ -283,8 +302,8 @@ def _all_symbols(session: Session, slugs: list[str], tw_cache: dict) -> list[str
         TwLinkageNode.category_slug.in_(slugs),
         TwLinkageNode.exclude_from_scoring == False)).all()  # noqa: E712
     tw = [resolve_tw_symbol(t, tw_cache) for t in set(tw_ids)]
-    # Always include the SOX factor so semi categories can compute partial corr.
-    return list(set(us)) + [s for s in tw if s] + [SOX_SYMBOL]
+    # Always include SOX (semi partial corr) + S&P 500 (relative-strength benchmark).
+    return list(set(us)) + [s for s in tw if s] + [SOX_SYMBOL, SPX_SYMBOL]
 
 
 def compute_movers(session: Session, clusters: list[str] | None = None,
