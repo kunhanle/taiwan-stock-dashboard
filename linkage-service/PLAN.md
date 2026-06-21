@@ -56,6 +56,10 @@
   pure-play 折減（PURITY_OVERRIDES）、弱訊號降權；台股代號 .TW/.TWO 解析+快取。
 - 2026-06-20  資料新鮮度修補 `_repair_latest`（yfinance 單檔漏填最新K棒→即時報價回填）；
   全市場 228 檔 ×2 次交叉稽核（39 美股 stale 皆可修、台股全 clean）。
+- 2026-06-20  B 層精修 + 兩層綜合 `linkage_synthesis.py`：(#2)半導體類 B 改用「扣半導體營收
+  共同因子(排除自身成分股)」偏相關→memory partial 存活0.47-0.67(真專屬)、GPU washout(就是大盤循環)；
+  (#3)領先/落後加穩健門檻(n≥16且增益≥0.12才採信)；(#4)US 營收覆蓋率透明(缺ONON等外國發行人);
+  (#5)每節點三類訊號判定：tradeable+fundamental / fundamental-only / semi-cycle / weak。
 - 2026-06-20  **B 基本面層** `revenue_linkage.py`：美股季營收(SEC EDGAR XBRL frame，~8年)
   + 台股月營收(finlab)→季 YoY；每節點對類股美股營收 YoY 算同期相關+最佳領先/落後(±2季)。
   驗證 semi-wfe/memory（n≈24-33季）：聯電0.83/京鼎0.59/南亞科0.74，帆宣領先2季。

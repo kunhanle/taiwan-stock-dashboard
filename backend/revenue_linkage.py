@@ -31,7 +31,8 @@ from sqlmodel import Session, select
 BACKEND_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BACKEND_DIR))
 
-from models import TwLinkageNode, UsCategoryTicker  # noqa: E402
+from models import TwLinkageNode, UsCategory, UsCategoryTicker  # noqa: E402
+from linkage_engine import SEMI_CLUSTERS  # reuse the semi-cluster definition  # noqa: E402
 
 SEED_DIR = BACKEND_DIR.parent / "linkage-service" / "seed"
 US_REV_CACHE = SEED_DIR / "us_revenue_cache.json"
@@ -157,25 +158,79 @@ def tw_revenue_yoy_series(stock_id: str, freq: str = "Q") -> pd.Series:
 # --------------------------------------------------------------------------- #
 # Linkage
 # --------------------------------------------------------------------------- #
-def _best_leadlag(us: pd.Series, tw: pd.Series, max_lag: int = 2) -> dict:
-    """Correlate tw vs us at quarterly shifts. lag>0 = TW lags US (US leads)."""
+# #3 lead/lag gating: contemporaneous is primary; a non-zero lead/lag is only
+# reported when it's both robust (enough quarters) and a material improvement —
+# otherwise best-of-5-shifts overfits noise (and can pick implausible signs).
+LEADLAG_MIN_N = 16        # quarters required to trust a shifted correlation
+LEADLAG_MIN_GAIN = 0.12   # |corr@lag| must beat |corr@0| by this much
+
+
+def _leadlag(us: pd.Series, tw: pd.Series, max_lag: int = 2) -> dict:
+    """corr_same = contemporaneous; lead_lag reported only if confident.
+    lag>0 = TW lags US (US leads); lag<0 = TW leads US."""
     base = pd.DataFrame({"us": us, "tw": tw}).dropna()
     c0 = float(base["us"].corr(base["tw"])) if len(base) >= 5 else None
-    best = {"lag": 0, "corr": c0, "n": len(base)}
+    best_lag, best_c, best_n = 0, c0, len(base)
     for k in range(-max_lag, max_lag + 1):
         if k == 0:
             continue
         d = pd.DataFrame({"us": us, "tw": tw.shift(k)}).dropna()
         if len(d) >= 5:
             ck = float(d["us"].corr(d["tw"]))
-            if best["corr"] is None or abs(ck) > abs(best["corr"]):
-                best = {"lag": k, "corr": ck, "n": len(d)}
-    return {"corr_same": c0, **{f"best_{k}": v for k, v in best.items()}}
+            if best_c is None or abs(ck) > abs(best_c):
+                best_lag, best_c, best_n = k, ck, len(d)
+    confident = (best_lag != 0 and c0 is not None and best_n >= LEADLAG_MIN_N
+                 and abs(best_c) - abs(c0) >= LEADLAG_MIN_GAIN)
+    return {
+        "corr_same": c0, "n": len(base),
+        "lead_lag": best_lag if confident else 0,
+        "lead_lag_corr": best_c if confident else c0,
+        "lead_lag_confident": confident,
+    }
+
+
+def _partial_corr_q(tw: pd.Series, us: pd.Series, factor: pd.Series):
+    """Partial corr(tw, us | factor) on quarter-aligned series. #2: strips the
+    broad semi-revenue-cycle factor so we see CATEGORY-specific revenue linkage."""
+    df = pd.DataFrame({"tw": tw, "us": us, "f": factor}).dropna()
+    if len(df) <= 8:
+        return None
+    r_tu, r_tf, r_uf = df["tw"].corr(df["us"]), df["tw"].corr(df["f"]), df["us"].corr(df["f"])
+    if any(pd.isna(x) for x in (r_tu, r_tf, r_uf)):
+        return None
+    denom = ((1 - r_tf ** 2) * (1 - r_uf ** 2)) ** 0.5
+    return float((r_tu - r_tf * r_uf) / denom) if denom > 1e-6 else None
+
+
+_SEMI_UNIVERSE = None  # cached {ticker: revenue-YoY series} for all semi US names
+
+
+def _semi_revenue_factor(session: Session, cache: dict, ciks: dict,
+                         exclude: set | None = None) -> pd.Series:
+    """Equal-weight mean revenue YoY across the semiconductor US universe,
+    EXCLUDING the category's own tickers (else the basket is collinear with the
+    factor and the partial is undefined). = the 'rest of the semi cycle'."""
+    global _SEMI_UNIVERSE
+    if _SEMI_UNIVERSE is None:
+        slugs = session.exec(select(UsCategory.slug).where(
+            UsCategory.cluster.in_(SEMI_CLUSTERS))).all()
+        tickers = session.exec(select(UsCategoryTicker.ticker).where(
+            UsCategoryTicker.category_slug.in_(slugs))).all()
+        uni = {}
+        for t in sorted(set(tickers)):
+            s = us_revenue_yoy_series(t, cache, ciks)
+            if not s.empty:
+                uni[t] = s
+        _SEMI_UNIVERSE = uni
+    cols = {t: s for t, s in _SEMI_UNIVERSE.items() if t not in (exclude or set())}
+    return pd.DataFrame(cols).mean(axis=1) if cols else pd.Series(dtype="float64")
 
 
 def category_revenue_linkage(session: Session, slug: str) -> dict:
-    """B-layer view for one category: US-leader revenue YoY + each TW node's
-    revenue YoY with correlation and best lead/lag."""
+    """B-layer view: US-leader revenue YoY + each TW node's revenue-YoY linkage.
+    Semi categories use SOX-equivalent partial (control for the semi revenue
+    cycle); non-semi use raw. Reports coverage and gated lead/lag."""
+    cat = session.get(UsCategory, slug)
     us_tickers = session.exec(select(UsCategoryTicker.ticker).where(
         UsCategoryTicker.category_slug == slug)).all()
     tw_nodes = session.exec(select(TwLinkageNode).where(
@@ -183,29 +238,43 @@ def category_revenue_linkage(session: Session, slug: str) -> dict:
         TwLinkageNode.exclude_from_scoring == False)).all()  # noqa: E712
 
     cache, ciks = _load_json(US_REV_CACHE), _cik_map()
-    # Aggregate US revenue YoY = equal-weight mean of available tickers' YoY.
     us_yoys = {}
     for t in us_tickers:
         s = us_revenue_yoy_series(t, cache, ciks)
         if not s.empty:
             us_yoys[t] = s
-    US_REV_CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
     us_agg = pd.DataFrame(us_yoys).mean(axis=1) if us_yoys else pd.Series(dtype="float64")
+
+    is_semi = cat.cluster in SEMI_CLUSTERS
+    factor = (_semi_revenue_factor(session, cache, ciks, exclude=set(us_tickers))
+              if is_semi else None)
+    US_REV_CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+    has_factor = is_semi and factor is not None and not factor.empty
 
     nodes = []
     for n in tw_nodes:
         tw = tw_revenue_yoy_series(n.ticker, freq="Q")
-        ll = _best_leadlag(us_agg, tw) if (not us_agg.empty and not tw.empty) else {}
+        ll = _leadlag(us_agg, tw) if (not us_agg.empty and not tw.empty) else {}
+        raw = ll.get("corr_same")
+        # #2 effective B corr: partial-out semi factor for semi categories.
+        partial = (_partial_corr_q(tw, us_agg, factor)
+                   if (has_factor and not tw.empty and not us_agg.empty) else None)
+        eff = partial if has_factor else raw
         nodes.append({
             "ticker": n.ticker, "name": n.name, "role": n.role,
             "tw_yoy_latest": float(tw.iloc[-1]) if not tw.empty else None,
             "tw_yoy_recent": {str(p): round(float(v), 3) for p, v in tw.tail(6).items()},
+            "corr_b": eff, "corr_b_raw": raw,
+            "method_b": "partial-semi" if has_factor else "raw",
             **ll,
         })
-    nodes.sort(key=lambda x: abs(x.get("best_corr") or 0), reverse=True)
+    nodes.sort(key=lambda x: abs(x.get("corr_b") or 0), reverse=True)
+    missing = [t for t in us_tickers if t not in us_yoys]
     return {
-        "slug": slug,
+        "slug": slug, "cluster": cat.cluster,
+        "us_coverage": f"{len(us_yoys)}/{len(us_tickers)}",
         "us_tickers_with_data": list(us_yoys),
+        "us_tickers_missing": missing,  # #4: usually foreign filers (20-F/IFRS)
         "us_yoy_latest": float(us_agg.iloc[-1]) if not us_agg.empty else None,
         "us_yoy_recent": {str(p): round(float(v), 3) for p, v in us_agg.tail(8).items()},
         "nodes": nodes,
