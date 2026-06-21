@@ -163,11 +163,13 @@
   linkage: medium
   us_tickers: ["ON", WOLF, NVTS, POWI, ALGM]
   tw_linkage:
-    - {t: "3105", n: 穩懋 WIN Semi (GaN foundry), role: up}
-    - {t: "5347", n: 世界先進 VIS, role: up}
+    - {t: "2481", n: 強茂 Pan Jit (功率分立, 轉SiC/GaN), role: peer}
+    - {t: "3675", n: 德微 Devtech (功率分立/MOSFET, SiC), role: peer}
+    - {t: "8261", n: 富鼎 APEC (功率MOSFET), role: peer}
+    - {t: "5471", n: 漢磊 Episil (SiC/GaN 代工), role: up}
     - {t: "2330", n: 台積電 TSMC (GaN-on-Si), role: up}
-    - {t: "2308", n: 台達電 Delta, role: down}
-  flags: "WOLF post-Ch.11 restructured (high risk). NVTS small-cap volatile."
+    - {t: "2308", n: 台達電 Delta (下游應用), role: down}
+  flags: "TW power-discrete makers (強茂/德微/富鼎) are the real peers, moving into SiC/GaN; Episil(漢磊) is the actual SiC/GaN foundry. 穩懋 dropped here (its GaN is RF — see rf-connectivity); VIS dropped (not SiC/GaN). WOLF post-Ch.11 (high risk). NVTS small-cap volatile."
 
 - id: rf-connectivity
   name_en: RF / Connectivity / Wireless
