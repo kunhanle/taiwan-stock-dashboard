@@ -82,8 +82,13 @@ app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 async def read_index():
     return FileResponse(os.path.join(frontend_dir, 'index.html'))
 
-# FinLab Login
+# FinLab Login — env var first, then ~/.finlab_token file (local dev convenience)
 API_TOKEN = os.getenv("FINLAB_API_TOKEN")
+if not API_TOKEN:
+    _tok_file = os.path.join(os.path.expanduser("~"), ".finlab_token")
+    if os.path.exists(_tok_file):
+        with open(_tok_file, encoding="utf-8") as _f:
+            API_TOKEN = _f.read().strip()
 if API_TOKEN:
     login(api_token=API_TOKEN)
 else:

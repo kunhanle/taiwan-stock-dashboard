@@ -1851,6 +1851,147 @@
             );
         };
 
+        // --- US-TW Linkage View (A price read-through + B revenue linkage) ---
+        const LK_VERDICT = {
+            "tradeable+fundamental": { label: "可交易+基本面", cls: "bg-emerald-500/15 text-emerald-300 border-emerald-500/40" },
+            "fundamental-only": { label: "僅基本面", cls: "bg-blue-500/15 text-blue-300 border-blue-500/40" },
+            "tradeable-only": { label: "僅可交易(題材)", cls: "bg-amber-500/15 text-amber-300 border-amber-500/40" },
+            "semi-cycle": { label: "半導體景氣", cls: "bg-slate-500/15 text-slate-300 border-slate-500/40" },
+            "weak": { label: "弱", cls: "bg-slate-600/10 text-slate-500 border-slate-600/30" },
+        };
+        const lkFmt = (x) => (x === null || x === undefined) ? "—" : (x >= 0 ? "+" : "") + x.toFixed(2);
+        const lkPct = (x) => (x === null || x === undefined) ? "—" : (x >= 0 ? "+" : "") + (x * 100).toFixed(1) + "%";
+
+        const LinkageView = () => {
+            const [cats, setCats] = useState([]);
+            const [slug, setSlug] = useState(null);
+            const [data, setData] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [twId, setTwId] = useState("");
+            const [rev, setRev] = useState(null);
+
+            useEffect(() => { axios.get('/api/linkage/categories').then(r => setCats(r.data)).catch(() => { }); }, []);
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [data, cats, rev, loading]);
+
+            const load = async (s) => {
+                setSlug(s); setLoading(true); setData(null);
+                try { const r = await axios.get(`/api/linkage/category/${s}`); setData(r.data); }
+                catch (e) { setData({ error: true }); }
+                setLoading(false);
+            };
+            const lookup = async () => {
+                const id = twId.trim(); if (!id) return; setRev({ loading: true });
+                try { const r = await axios.get(`/api/linkage/stock/${id}`); setRev(r.data); }
+                catch (e) { setRev({ error: true }); }
+            };
+
+            const byCluster = useMemo(() => {
+                const m = {}; cats.forEach(c => { (m[c.cluster] = m[c.cluster] || []).push(c); }); return m;
+            }, [cats]);
+
+            return (
+                <div className="space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h2 className="text-xl font-bold text-white border-l-4 border-teal-500 pl-4">美台連動 (US ↔ TW Linkage)</h2>
+                            <p className="text-sm text-slate-400 pl-5 mt-1">A 層=股價讀數(短線)，B 層=營收 YoY 連動(景氣)。判定見下方圖例。</p>
+                        </div>
+                        <div className="glass-panel rounded-xl px-3 py-2 flex items-center gap-2">
+                            <i data-lucide="search" className="w-4 h-4 text-teal-400"></i>
+                            <input value={twId} onChange={e => setTwId(e.target.value)} onKeyDown={e => e.key === 'Enter' && lookup()}
+                                placeholder="台股反查 e.g. 2327" className="bg-transparent text-sm text-slate-200 outline-none w-28 placeholder-slate-500" />
+                            <button onClick={lookup} className="text-xs px-2 py-1 rounded bg-slate-700 text-teal-300 hover:bg-slate-600">查</button>
+                        </div>
+                    </div>
+
+                    {/* verdict legend */}
+                    <div className="flex flex-wrap gap-2 pl-5">
+                        {Object.entries(LK_VERDICT).map(([k, v]) => (
+                            <span key={k} className={`text-xs px-2 py-0.5 rounded-full border ${v.cls}`}>{v.label}</span>
+                        ))}
+                    </div>
+
+                    {/* reverse lookup result */}
+                    {rev && (
+                        <section className="glass-panel rounded-2xl p-4">
+                            {rev.loading ? <span className="text-slate-400 text-sm">查詢中…</span> :
+                                rev.error || !rev.drivers ? <span className="text-slate-500 text-sm">查無此台股的連動（或非清單內）。</span> :
+                                    <div>
+                                        <div className="text-sm text-slate-300 mb-2">台股 <span className="text-teal-300 font-semibold">{rev.tw_id}</span> 被這些美股主題驅動：</div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {rev.drivers.map(d => (
+                                                <button key={d.slug} onClick={() => load(d.slug)}
+                                                    className="text-xs px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:border-teal-500">
+                                                    {d.name_zh} · 讀數{lkFmt(d.readthrough)}</button>
+                                            ))}
+                                        </div>
+                                    </div>}
+                        </section>
+                    )}
+
+                    {/* category picker grouped by cluster */}
+                    <section className="glass-panel rounded-2xl p-4 space-y-3">
+                        {Object.keys(byCluster).map(cl => (
+                            <div key={cl}>
+                                <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">{cl}</div>
+                                <div className="flex flex-wrap gap-2">
+                                    {byCluster[cl].map(c => (
+                                        <button key={c.slug} onClick={() => load(c.slug)}
+                                            className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${slug === c.slug ? "bg-teal-600/20 border-teal-500 text-teal-200" : "bg-slate-800/60 border-slate-700 text-slate-300 hover:border-slate-500"}`}>
+                                            {c.name_zh}</button>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </section>
+
+                    {loading && <div className="text-center text-slate-400 py-8"><i data-lucide="loader" className="w-6 h-6 animate-spin inline"></i><div className="text-sm mt-2">計算兩層連動中…(首次較慢)</div></div>}
+
+                    {data && !data.error && (
+                        <section className="glass-panel rounded-2xl p-6 space-y-4">
+                            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                                <h3 className="text-lg font-semibold text-white">{data.name_zh} <span className="text-slate-500 text-sm">[{data.cluster}]</span></h3>
+                                <span className="text-sm text-slate-300">A 5日: <b className={data.a_move >= 0 ? "text-red-400" : "text-green-400"}>{lkPct(data.a_move)}</b> (z {lkFmt(data.a_z)})</span>
+                                <span className="text-sm text-slate-300">美股營收YoY: <b className="text-slate-100">{lkPct(data.us_yoy_latest)}</b></span>
+                                <span className="text-sm text-slate-400">US 覆蓋 {data.us_coverage}{data.us_missing && data.us_missing.length ? ` (缺 ${data.us_missing.join(",")})` : ""}</span>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead><tr className="text-slate-400 border-b border-slate-700">
+                                        <th className="text-left py-2 font-medium">台股</th>
+                                        <th className="text-center font-medium">角色</th>
+                                        <th className="text-right font-medium">A 股價</th>
+                                        <th className="text-right font-medium">讀數</th>
+                                        <th className="text-right font-medium">B 營收</th>
+                                        <th className="text-center font-medium">領先/落後</th>
+                                        <th className="text-right font-medium">判定</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        {data.nodes.map(n => {
+                                            const v = LK_VERDICT[n.verdict] || LK_VERDICT.weak;
+                                            return (
+                                                <tr key={n.ticker} className="border-b border-slate-800/60">
+                                                    <td className="py-2 text-slate-200"><span className="text-slate-500 mr-1">{n.ticker}</span>{n.name}</td>
+                                                    <td className="text-center text-slate-400 text-xs">{n.role}</td>
+                                                    <td className="text-right tabular-nums text-slate-300">{lkFmt(n.a_corr)}</td>
+                                                    <td className="text-right tabular-nums text-slate-400">{n.readthrough == null ? "—" : n.readthrough.toFixed(3)}</td>
+                                                    <td className="text-right tabular-nums text-slate-300">{lkFmt(n.b_corr)}</td>
+                                                    <td className="text-center text-xs text-slate-400">{n.lead_lag ? (n.lead_lag > 0 ? `落後${n.lead_lag}季` : `領先${-n.lead_lag}季`) : "同步"}</td>
+                                                    <td className="text-right"><span className={`text-xs px-2 py-0.5 rounded-full border ${v.cls}`}>{v.label}</span></td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    )}
+                    {data && data.error && <div className="text-center text-red-400 py-6 text-sm">載入失敗</div>}
+                    {!slug && !loading && <div className="text-center text-slate-500 py-8 text-sm">選一個類別查看美↔台兩層連動</div>}
+                </div>
+            );
+        };
+
         // --- App ---
         const App = () => {
             const [view, setView] = useState("dashboard"); // dashboard | detail
@@ -1964,12 +2105,23 @@
                                     >
                                         Correlation
                                     </button>
+                                    <button
+                                        onClick={() => setActiveTab("linkage")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "linkage" ? "bg-slate-700 text-teal-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        美台連動
+                                    </button>
                                 </div>
 
 
                                 {/* Financials Section */}
                                 <div className={activeTab === 'financials' ? 'block' : 'hidden'}>
                                     <FinancialsTab />
+                                </div>
+
+                                {/* US-TW Linkage Section */}
+                                <div className={activeTab === 'linkage' ? 'block' : 'hidden'}>
+                                    <LinkageView />
                                 </div>
 
                                 {/* Market Breadth Section */}
