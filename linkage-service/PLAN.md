@@ -26,6 +26,14 @@
 
 **可選第 8 步（加值）**：用既有 Claude/Gemini 生成敘事讀數（例：「AVGO +8% 客製 ASIC → 留意欣興3037 載板」）+ 透過既有 monitor 推播警報。
 
+## 兩層架構（重要）
+這個 App 有兩個本質不同的連動層，並列呈現：
+- **A 讀數層（短線交易）**：美股動→台股短期跟。用**股價相關**（`linkage_engine.py`；半導體扣 SOX 偏相關）。
+- **B 基本面層（景氣方向）**：誰供誰、上下游景氣同步。用**營收 YoY 連動 + 領先/落後**
+  （`revenue_linkage.py`；美股季營收=SEC EDGAR、台股月營收=finlab）。
+  驗證：設備鏈台股對 AMAT 營收 YoY 連動 0.5-0.83（聯電0.83/京鼎0.59/帆宣領先2季），
+  股價只 0.03-0.19——景氣連動股價撈不到、營收撈得到。
+
 ## 關鍵設計約束
 - **`dual` role 必須排除於關聯計分**：TSM↔2330、UMC↔2303 是同一公司雙重掛牌，算進去是自我相關、會虛胖訊號。
   ingest 在 DB 層標 `exclude_from_scoring=True`，引擎（步驟 3）據此略過。
@@ -48,6 +56,10 @@
   pure-play 折減（PURITY_OVERRIDES）、弱訊號降權；台股代號 .TW/.TWO 解析+快取。
 - 2026-06-20  資料新鮮度修補 `_repair_latest`（yfinance 單檔漏填最新K棒→即時報價回填）；
   全市場 228 檔 ×2 次交叉稽核（39 美股 stale 皆可修、台股全 clean）。
+- 2026-06-20  **B 基本面層** `revenue_linkage.py`：美股季營收(SEC EDGAR XBRL frame，~8年)
+  + 台股月營收(finlab)→季 YoY；每節點對類股美股營收 YoY 算同期相關+最佳領先/落後(±2季)。
+  驗證 semi-wfe/memory（n≈24-33季）：聯電0.83/京鼎0.59/南亞科0.74，帆宣領先2季。
+  US 營收快取+CIK map gitignore。下一步：A/B 兩層接 API + 前端並列視圖。
 - 2026-06-20  半導體 cluster 改用 **SOX 偏相關**權重（Semi Manufacturing/Chip Design）：
   raw corr 多為費半 sector beta（美股籃 vs SOX 0.77-0.92），partial 扣掉費半留子類專屬。
   回歸驗證：memory 廠 partial≈+0.32-0.36 保留、WFE→晶圓廠 partial 轉負→read-through 歸0、

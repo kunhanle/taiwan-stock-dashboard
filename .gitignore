@@ -31,3 +31,6 @@ config.js
 
 # Linkage runtime cache (resolved TW .TW/.TWO symbols; self-heals, pre-warm on deploy)
 linkage-service/seed/tw_symbol_map.json
+# B-layer caches (SEC EDGAR US revenue + CIK map; refresh from source, go stale each earnings)
+linkage-service/seed/us_revenue_cache.json
+linkage-service/seed/sec_cik_map.json
