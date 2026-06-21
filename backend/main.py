@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from financials import router as financials_router
+from linkage_api import router as linkage_router
 from finlab import data, login
 import pandas as pd
 import datetime
@@ -1159,6 +1160,7 @@ def fetch_stock_news(req: FetchNewsRequest):
 
 
 app.include_router(financials_router, prefix="/api/financials", tags=["financials"])
+app.include_router(linkage_router, prefix="/api/linkage", tags=["linkage"])
 
 if __name__ == "__main__":
     import uvicorn

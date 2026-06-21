@@ -19,8 +19,8 @@
 | 1 | Seed taxonomy + validation | `seed/us_categories.yaml`（41類/148美股/80台股）、`validate_tickers.py`、驗證報告、`dual` role | ✅ 完成 |
 | 2 | Data model + seed ingest | 新增 linkage 資料表（UsCategory / UsCategoryTicker / TwLinkageNode）；`ingest` 把 YAML 灌進 DB（冪等）；`role==dual` 標記 `exclude_from_scoring` | ✅ 完成 |
 | 3 | Linkage engine（核心） | ① 美股類別「龍頭異動」聚合 ② 依 role 加權映射台股節點（排除 dual）③ 日報酬相關度（**美股落後1日**對齊台股時區）當權重 ④ 套用投資原則：pure-play 加權、弱訊號類別降權 | ✅ 完成 |
-| 4 | Backend API | `/linkage/movers`（今日觸發類別）、`/linkage/category/{slug}`、`/linkage/stock/{tw_id}`（反查驅動主題）；接既有 TTL 快取 | 🔨 進行中 |
-| 5 | Frontend UI | 連動儀表板：美股類別漲跌榜 → 下鑽台股節點；台股反查；整合進既有 frontend | ⬜ |
+| 4 | Backend API | `linkage_api.py` router 掛 `/api/linkage`：`/categories`、`/category/{slug}`(兩層綜合)、`/movers`、`/stock/{tw_id}`；TTL 快取(30min, refresh 參數)。TestClient 驗證通過(cache 1.6s→0s) | ✅ 完成 |
+| 5 | Frontend UI | 連動儀表板：美股類別漲跌榜 → 下鑽台股節點(A/B 兩層+判定)；台股反查；整合進既有 frontend | 🔨 進行中 |
 | 6 | 資料更新 + 排程 | 每日刷新美股收盤/台股；定期重跑 `validate_tickers.py` 抓下市漂移（如 JNPR）；接既有 `monitor/` 排程 | ⬜ |
 | 7 | 部署 + 收尾 | render/vercel/docker 上線；環境變數（注意 `FINLAB_API_TOKEN` 的 `#` 截斷問題）；煙霧測試 | ⬜ |
 
@@ -47,6 +47,9 @@
   與即時端點交叉驗證。殘留限制：整段最新交易日全缺時需市場行事曆才能補（未做）。
 
 ## 進度紀錄
+- 2026-06-21  Step 4 完成：`linkage_api.py` FastAPI router 掛進 main.py(`/api/linkage`)，
+  4 端點(categories/category/movers/stock)+TTL 快取(30min)。TestClient 驗證：
+  /categories 42類、/category/{slug} 回兩層綜合 JSON、404 處理、快取 1.6s→0.00s。
 - 2026-06-20  新增 `passive-components` 類（cluster=Components，非半導體）：US=VSH(+KN/CTS，美股這塊薄、龍頭多被台日併購)；TW peer=國巨2327/華新科2492/禾伸堂3026/信昌電6173/大毅2478。驗證抓到奇力新2456已下市(併入國巨)並換掉。兩層皆成立：4/5 tradeable+fundamental(A 0.22-0.24, B 0.35-0.44)。報告刷新 US 151 / TW 88 全有效。
 - 2026-06-18  Step 1 完成：seed + 驗證腳本 + 報告；JNPR→HPE 修正；yfinance 重試防限流；
   新增 `dual` role 並補 6 檔台股節點（華邦電/旺宏/光聖/上詮/中興電/亞力）。
