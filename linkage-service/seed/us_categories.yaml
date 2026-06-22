@@ -40,10 +40,6 @@
   tw_linkage:
     - {t: "6196", n: 帆宣 Marketech (設備/系統整合), role: up}
     - {t: "3413", n: 京鼎 Foxsemicon (AMAT 模組代工/子公司), role: up}
-    - {t: "2404", n: 漢唐 Hantang (廠務/無塵室), role: up}
-    - {t: "2303", n: 聯電 UMC, role: down}
-    - {t: "2408", n: 南亞科 Nanya, role: down}
-    - {t: "6770", n: 力積電 PSMC, role: down}
   flags: "ASML=NL ADR (EUV monopoly). Advanced-packaging/HBM equip (CoWoS) folded here — same leaders. ACMR dropped (China exposure)."
 
 - id: semi-backend-equip
@@ -55,7 +51,6 @@
   tw_linkage:
     - {t: "3711", n: 日月光投控 ASE, role: down}
     - {t: "6239", n: 力成 Powertech, role: down}
-    - {t: "8150", n: 南茂 ChipMOS, role: down}
     - {t: "2449", n: 京元電 King Yuan, role: down}
   flags: "CAMT=Israel ADR. Advantest (ATE co-leader) Tokyo-listed, excluded."
 
@@ -68,6 +63,7 @@
   tw_linkage:
     - {t: "6488", n: 環球晶 GlobalWafers, role: peer}
     - {t: "5483", n: 中美晶 SAS, role: peer}
+    - {t: "3532", n: 台勝科 TSC (矽晶圓), role: peer}
   flags: "DD=conglomerate, electronics-materials exposure only. No US pure-play photoresist (JP/DE dominated). GlobalWafers is TW-listed, not US."
 
 - id: semi-foundry-idm
@@ -80,8 +76,6 @@
     - {t: "2330", n: 台積電 TSMC, role: dual}
     - {t: "2303", n: 聯電 UMC, role: dual}
     - {t: "5347", n: 世界先進 VIS, role: peer}
-    - {t: "3661", n: 世芯-KY Alchip, role: up}
-    - {t: "3443", n: 創意 GUC, role: up}
   flags: "TSM=ADR of 2330, UMC=ADR of 2303 (direct mirrors). INTC US-gov ~10% stake."
 
 # -----------------------------------------------------------------------------
