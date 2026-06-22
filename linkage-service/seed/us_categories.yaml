@@ -414,3 +414,47 @@
     - {t: "6510", n: 中華精測 (探針卡), role: up}
     - {t: "2360", n: 致茂 Chroma (測試設備), role: peer}
   flags: "下游材料/載具/測試介面. 美股 FORM(探針卡). 山太士=興櫃."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Specialty Chemicals  (財報狗 特用化學品 tag 細分; 半導體材料國產替代)
+# -----------------------------------------------------------------------------
+- id: spchem-frontend-materials
+  name_en: Specialty Chem — Semi Front-end Key Materials
+  name_zh: 特用化學品｜半導體前段關鍵材料
+  cluster: Specialty Chemicals
+  linkage: strong
+  us_tickers: [ENTG, APD, LIN]
+  tw_linkage:
+    - {t: "4749", n: 新應材 (微影Rinse/EBR/BARC, TSMC 2nm), role: up}
+    - {t: "4772", n: 台特化 (高純矽烷/前驅物), role: up}
+    - {t: "2227", n: 三福化 (濕製程/TMAH再生), role: up}
+    - {t: "1773", n: 勝一 (電子級溶劑), role: up}
+  flags: "上游核心(受惠最高:新應材,TSMC 2nm). 美股 ENTG/APD/LIN(氣體). TSMC在地採購2030->68%."
+
+- id: spchem-resin-glass-copper
+  name_en: Specialty Chem — Resin / Glass Cloth / Copper Foil
+  name_zh: 特用化學品｜高階樹脂、玻纖與銅箔材料
+  cluster: Specialty Chemicals
+  linkage: medium
+  us_tickers: [DD, "4182.T"]
+  tw_linkage:
+    - {t: "4722", n: 國精化 (特化), role: up}
+    - {t: "1303", n: 南亞 (電子材料), role: up}
+    - {t: "1802", n: 台玻 (玻纖布), role: up}
+    - {t: "8358", n: 金居 (HVLP銅箔), role: up}
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "3388", n: 崇越電 (電子材料通路), role: up}
+  flags: "上游. DD + 日三菱瓦斯化學4182.T(BT樹脂,lag=0). 與 CCL 上游材料重疊(允許)."
+
+- id: spchem-packaging-materials
+  name_en: Specialty Chem — Advanced Packaging & Substrate Materials
+  name_zh: 特用化學品｜先進封裝與載板特化材料
+  cluster: Specialty Chemicals
+  linkage: medium
+  us_tickers: [ESI]
+  tw_linkage:
+    - {t: "1717", n: 長興 (封裝樹脂), role: up}
+    - {t: "5234", n: 達興材料 (PSPI/CoWoS), role: up}
+    - {t: "1711", n: 永光 (特化), role: up}
+    - {t: "4766", n: 南寶 (樹脂/膠材), role: up}
+  flags: "中游. 美股 ESI(Element Solutions). 芝普待補正確代號(8101=華冠,非芝普)."
