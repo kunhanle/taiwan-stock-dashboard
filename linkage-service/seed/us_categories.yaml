@@ -360,3 +360,57 @@
     - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
     - {t: "6510", n: 中華精測 CHPT (探針卡), role: up}
   flags: "擴散受惠. 無美/日觸發 -> 純台股觀察清單."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Advanced Packaging  (財報狗 先進封裝 tag 細分; CoWoS/SoIC)
+# -----------------------------------------------------------------------------
+- id: ap-foundry-platform
+  name_en: Adv Packaging — Foundry & Packaging Platform
+  name_zh: 先進封裝｜晶圓代工與先進封裝平台
+  cluster: Advanced Packaging
+  linkage: strong
+  us_tickers: [INTC]
+  tw_linkage:
+    - {t: "2330", n: 台積電 TSMC (CoWoS/SoIC/CoPoS), role: peer}
+  flags: "上游平台(受惠最高:台積). 觸發=INTC(EMIB/Foveros). 台積為此題核心,使用者破例列入(他類仍只留代工)."
+
+- id: ap-osat-panel
+  name_en: Adv Packaging — OSAT & Panel-level Packaging
+  name_zh: 先進封裝｜委外封測與面板級封裝
+  cluster: Advanced Packaging
+  linkage: strong
+  us_tickers: [AMKR]
+  tw_linkage:
+    - {t: "3711", n: 日月光投控 ASE (全球最大OSAT), role: peer}
+    - {t: "6239", n: 力成 Powertech (FOPLP/HBM封測), role: peer}
+    - {t: "2449", n: 京元電 King Yuan (測試), role: peer}
+  flags: "中游OSAT. 觸發=AMKR(Amkor). 日月光承接台積CoWoS外溢."
+
+- id: ap-equipment-automation
+  name_en: Adv Packaging — Equipment & Automation
+  name_zh: 先進封裝｜先進封裝設備與自動化
+  cluster: Advanced Packaging
+  linkage: strong
+  us_tickers: [AMAT, KLAC]
+  tw_linkage:
+    - {t: "3131", n: 弘塑 GPM (CoWoS濕製程), role: up}
+    - {t: "3583", n: 辛耘 Scientech, role: up}
+    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
+    - {t: "6187", n: 萬潤 (封裝設備), role: up}
+    - {t: "6640", n: 均華 (封裝設備), role: up}
+  flags: "中游設備. 美股 AMAT/KLAC. 弘塑為台積CoWoS/SoIC濕製程主供應."
+
+- id: ap-materials-carrier-test
+  name_en: Adv Packaging — Materials / Carrier / Test Interface
+  name_zh: 先進封裝｜材料、載具與測試介面
+  cluster: Advanced Packaging
+  linkage: medium
+  us_tickers: [FORM]
+  tw_linkage:
+    - {t: "6223", n: 旺矽 MPI (探針), role: up}
+    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
+    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
+    - {t: "3595", n: 山太士 (先進封裝材料,興櫃), role: up}
+    - {t: "6510", n: 中華精測 (探針卡), role: up}
+    - {t: "2360", n: 致茂 Chroma (測試設備), role: peer}
+  flags: "下游材料/載具/測試介面. 美股 FORM(探針卡). 山太士=興櫃."
