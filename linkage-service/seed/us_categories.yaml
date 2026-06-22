@@ -494,5 +494,67 @@
   us_tickers: [WOLF, "SOI.PA"]
   tw_linkage:
     - {t: "3016", n: 嘉晶 EpiStar-rel (磊晶), role: peer}
-    - {t: "5471", n: 漢磊 Episil (SiC), role: peer}
+    - {t: "3707", n: 漢磊 Episil (SiC/GaN代工), role: peer}
   flags: "間接受惠. 美股 WOLF(SiC) + 法 Soitec SOI.PA(SOI龍頭,歐股lag=1)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — GaN  (財報狗 氮化鎵 tag 細分; 第三代半導體, AI 800V HVDC)
+# -----------------------------------------------------------------------------
+- id: gan-power-ic-idm
+  name_en: GaN — Power IC & International IDM
+  name_zh: 氮化鎵｜GaN功率IC與國際IDM
+  cluster: GaN
+  linkage: strong
+  us_tickers: [NVTS, IFNNY, POWI, "ON", STM, "6723.T"]
+  tw_linkage: []
+  flags: "直接受惠(受惠最高:NVTS Navitas). 國際IDM主導,台股無純對應. 含日瑞薩6723.T(少數,lag1). NVIDIA MGX/800V HVDC."
+
+- id: gan-foundry
+  name_en: GaN — Foundry & Mature Process Transfer
+  name_zh: 氮化鎵｜GaN晶圓代工與成熟製程轉單
+  cluster: GaN
+  linkage: medium
+  us_tickers: [GFS]
+  tw_linkage:
+    - {t: "6770", n: 力積電 PSMC (GaN-on-Si轉單), role: peer}
+  flags: "直接受惠. 美股 GFS(GlobalFoundries)."
+
+- id: gan-epi-substrate-compound
+  name_en: GaN — Epitaxy / Substrate / Compound Semi
+  name_zh: 氮化鎵｜磊晶、基板與化合物半導體製造
+  cluster: GaN
+  linkage: medium
+  us_tickers: [WOLF]
+  tw_linkage:
+    - {t: "3707", n: 漢磊 Episil (GaN/SiC代工), role: peer}
+    - {t: "3105", n: 穩懋 WIN Semi (GaN代工), role: peer}
+    - {t: "2455", n: 全新 VPEC (GaN/GaAs磊晶), role: peer}
+  flags: "間接受惠. 美股 WOLF(SiC)."
+
+- id: gan-packaging-leadframe-test
+  name_en: GaN — Packaging / Leadframe / Reliability Test
+  name_zh: 氮化鎵｜封測、導線架與可靠度測試
+  cluster: GaN
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6525", n: 捷敏-KY GEM (功率封測,全球前三), role: up}
+    - {t: "5285", n: 界霖 Jih Lin (導線架), role: up}
+    - {t: "6548", n: 長科 Chang Wah (導線架/材料), role: up}
+  flags: "間接受惠. 無美/外觸發 -> 純台股觀察清單. 導線架三雄:順德/界霖/長科."
+
+- id: gan-ai-power-pmic
+  name_en: GaN — AI Power System / PMIC / Power Spillover
+  name_zh: 氮化鎵｜AI電源系統、PMIC與功率元件外溢
+  cluster: GaN
+  linkage: medium
+  us_tickers: [MPWR, POWI]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (電源), role: peer}
+    - {t: "2301", n: 光寶科 Lite-On (電源), role: peer}
+    - {t: "6415", n: 矽力-KY Silergy (PMIC), role: peer}
+    - {t: "6719", n: 力智 RichTek-rel (PMIC), role: peer}
+    - {t: "2481", n: 強茂 Pan Jit (功率分立), role: peer}
+    - {t: "3675", n: 德微 Devtech (功率分立), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立), role: peer}
+  flags: "擴散受惠. 美股 MPWR/POWI."
