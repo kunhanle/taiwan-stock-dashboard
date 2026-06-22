@@ -459,3 +459,40 @@
     - {t: "4766", n: 南寶 (樹脂/膠材), role: up}
     - {t: "7858", n: 芝普 E-Chem (封裝特化), role: up}
   flags: "中游. 美股 ESI(Element Solutions)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Silicon Wafer  (財報狗 矽晶圓 tag 細分; 全球寡占,日德台主導)
+# -----------------------------------------------------------------------------
+- id: wafer-12in-oligopoly
+  name_en: Silicon Wafer — 12-inch High-end & Global Oligopoly
+  name_zh: 矽晶圓｜12吋高階矽晶圓與全球寡占供應商
+  cluster: Silicon Wafer
+  linkage: strong
+  us_tickers: ["4063.T", "3436.T", "WAF.DE"]
+  tw_linkage:
+    - {t: "6488", n: 環球晶 GlobalWafers (全球前三), role: peer}
+    - {t: "3532", n: 台勝科 TSC, role: peer}
+  flags: "直接受惠(受惠最高:環球晶). 觸發=日信越4063.T/SUMCO3436.T(lag=0)+德Siltronic WAF.DE(lag=1,少數). 前五大寡占>90%, 無美廠."
+
+- id: wafer-8in-power
+  name_en: Silicon Wafer — 8-inch Mature & Power/Analog
+  name_zh: 矽晶圓｜8吋成熟製程與功率/類比用晶圓
+  cluster: Silicon Wafer
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6182", n: 合晶 Wafer Works (8吋), role: peer}
+    - {t: "6488", n: 環球晶 GlobalWafers, role: peer}
+    - {t: "3532", n: 台勝科 TSC, role: peer}
+  flags: "8吋成熟製程. 無美/外觸發 -> 純台股觀察清單. 8吋多為台/中廠."
+
+- id: wafer-epi-soi-compound
+  name_en: Silicon Wafer — Epitaxy / SOI / Compound Substrates
+  name_zh: 矽晶圓｜磊晶、SOI與化合物半導體基板
+  cluster: Silicon Wafer
+  linkage: medium
+  us_tickers: [WOLF, "SOI.PA"]
+  tw_linkage:
+    - {t: "3016", n: 嘉晶 EpiStar-rel (磊晶), role: peer}
+    - {t: "5471", n: 漢磊 Episil (SiC), role: peer}
+  flags: "間接受惠. 美股 WOLF(SiC) + 法 Soitec SOI.PA(SOI龍頭,歐股lag=1)."
