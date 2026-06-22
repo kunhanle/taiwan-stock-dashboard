@@ -41,7 +41,6 @@
     - {t: "6196", n: 帆宣 Marketech (設備/系統整合), role: up}
     - {t: "3413", n: 京鼎 Foxsemicon (AMAT 模組代工/子公司), role: up}
     - {t: "2404", n: 漢唐 Hantang (廠務/無塵室), role: up}
-    - {t: "2330", n: 台積電 TSMC, role: down}
     - {t: "2303", n: 聯電 UMC, role: down}
     - {t: "2408", n: 南亞科 Nanya, role: down}
     - {t: "6770", n: 力積電 PSMC, role: down}
@@ -69,7 +68,6 @@
   tw_linkage:
     - {t: "6488", n: 環球晶 GlobalWafers, role: peer}
     - {t: "5483", n: 中美晶 SAS, role: peer}
-    - {t: "2330", n: 台積電 TSMC, role: down}
   flags: "DD=conglomerate, electronics-materials exposure only. No US pure-play photoresist (JP/DE dominated). GlobalWafers is TW-listed, not US."
 
 - id: semi-foundry-idm
@@ -109,7 +107,6 @@
   linkage: strong
   us_tickers: [NVDA, AMD, AVGO, MRVL]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (3nm + CoWoS), role: up}
     - {t: "3711", n: 日月光投控 ASE, role: up}
     - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
     - {t: "2383", n: 台光電 EMC (AI 伺服器 CCL), role: up}
@@ -125,7 +122,6 @@
   linkage: strong
   us_tickers: [NVDA, AMD, INTC, QCOM]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC, role: up}
     - {t: "2376", n: 技嘉 Gigabyte (板卡), role: down}
     - {t: "2377", n: 微星 MSI, role: down}
     - {t: "2357", n: 華碩 Asus, role: down}
@@ -138,7 +134,6 @@
   linkage: strong
   us_tickers: [AMD, INTC, ARM]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC, role: up}
     - {t: "2382", n: 廣達 Quanta, role: down}
     - {t: "3231", n: 緯創 Wistron, role: down}
     - {t: "2356", n: 英業達 Inventec, role: down}
@@ -167,7 +162,6 @@
     - {t: "3675", n: 德微 Devtech (功率分立/MOSFET, SiC), role: peer}
     - {t: "8261", n: 富鼎 APEC (功率MOSFET), role: peer}
     - {t: "5471", n: 漢磊 Episil (SiC/GaN 代工), role: up}
-    - {t: "2330", n: 台積電 TSMC (GaN-on-Si), role: up}
     - {t: "2308", n: 台達電 Delta (下游應用), role: down}
   flags: "TW power-discrete makers (強茂/德微/富鼎) are the real peers, moving into SiC/GaN; Episil(漢磊) is the actual SiC/GaN foundry. 穩懋 dropped here (its GaN is RF — see rf-connectivity); VIS dropped (not SiC/GaN). WOLF post-Ch.11 (high risk). NVTS small-cap volatile."
 
@@ -179,7 +173,6 @@
   us_tickers: [QCOM, AVGO, SWKS, QRVO, CRUS]
   tw_linkage:
     - {t: "3105", n: 穩懋 WIN Semi (GaAs/GaN RF foundry), role: up}
-    - {t: "2330", n: 台積電 TSMC (RF SOI), role: up}
     - {t: "3711", n: 日月光投控 ASE, role: up}
     - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
   flags: "SWKS + QRVO ~$22B merger expected close early-2027."
@@ -195,7 +188,6 @@
     - {t: "6770", n: 力積電 PSMC, role: peer}
     - {t: "2344", n: 華邦電 Winbond (niche DRAM/NOR), role: peer}
     - {t: "2337", n: 旺宏 Macronix (NOR/NAND flash), role: peer}
-    - {t: "2330", n: 台積電 TSMC (HBM CoWoS), role: up}
     - {t: "3711", n: 日月光投控 ASE, role: up}
   flags: "MU = only US-listed DRAM/HBM maker (Samsung/SK Hynix not US-listed). SNDK spun from WDC Feb-2025; WDC now mostly HDD."
 
@@ -259,7 +251,6 @@
     - {t: "3023", n: 信邦 Sinbon, role: up}
     - {t: "2308", n: 台達電 Delta, role: up}
     - {t: "2392", n: 正崴 Cheng Uei, role: up}
-    - {t: "2330", n: 台積電 TSMC, role: up}
   flags: ""
 
 - id: dc-server-odm
@@ -313,7 +304,6 @@
     - {t: "2382", n: 廣達 Quanta, role: down}
     - {t: "3231", n: 緯創 Wistron, role: down}
     - {t: "6669", n: 緯穎 Wiwynn, role: down}
-    - {t: "2330", n: 台積電 TSMC, role: down}
   flags: "Single largest demand driver (~$660-725B 2026 AI capex). Their custom ASICs (TPU/Trainium/Maia/MTIA) also via TSMC."
 
 - id: dc-reit-colo
@@ -337,7 +327,6 @@
   tw_linkage:
     - {t: "2382", n: 廣達 Quanta, role: down}
     - {t: "6669", n: 緯穎 Wiwynn, role: down}
-    - {t: "2330", n: 台積電 TSMC, role: down}
   flags: "NBIS=NL-domiciled, Nasdaq-listed."
 
 # -----------------------------------------------------------------------------
@@ -466,7 +455,6 @@
   linkage: strong
   us_tickers: [NXPI, TXN, "ON", STM, ADI, MCHP, ALGM]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (auto foundry), role: up}
     - {t: "2454", n: 聯發科 MediaTek (cockpit SoC), role: peer}
     - {t: "3034", n: 聯詠 Novatek (auto driver), role: up}
     - {t: "6533", n: 晶心科 Andes (RISC-V IP), role: up}
@@ -479,7 +467,6 @@
   linkage: medium
   us_tickers: [MBLY, OUST, AEVA, INVZ, MVIS]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (ADAS SoC), role: up}
     - {t: "3008", n: 大立光 Largan (auto lens), role: up}
     - {t: "3406", n: 玉晶光 GSEO, role: up}
     - {t: "6533", n: 晶心科 Andes, role: up}
@@ -590,7 +577,6 @@
   linkage: medium
   us_tickers: [MDT, ABT, SYK, BSX, ISRG, BDX, GEHC]
   tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (device chips), role: up}
   flags: "Devices embed semis/PCB/sensors — strongest non-tech linkage (ISRG/GEHC)."
 
 - id: aerospace-defense
