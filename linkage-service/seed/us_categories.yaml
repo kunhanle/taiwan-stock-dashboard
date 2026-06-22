@@ -457,4 +457,5 @@
     - {t: "5234", n: 達興材料 (PSPI/CoWoS), role: up}
     - {t: "1711", n: 永光 (特化), role: up}
     - {t: "4766", n: 南寶 (樹脂/膠材), role: up}
-  flags: "中游. 美股 ESI(Element Solutions). 芝普待補正確代號(8101=華冠,非芝普)."
+    - {t: "7858", n: 芝普 E-Chem (封裝特化), role: up}
+  flags: "中游. 美股 ESI(Element Solutions)."
