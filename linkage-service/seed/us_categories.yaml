@@ -299,30 +299,16 @@
     - {t: "3034", n: 聯詠 Novatek (driver IC), role: peer}
   flags: "HIMX=Himax, TW-HQ fabless ADR."
 
-- id: wearables
-  name_en: Wearables / Smartwatch
-  name_zh: 穿戴裝置與智慧手錶
-  cluster: Consumer Electronics
-  linkage: medium
-  us_tickers: [AAPL, GRMN, GOOGL]
-  tw_linkage:
-    - {t: "2317", n: 鴻海 Hon Hai, role: down}
-    - {t: "4938", n: 和碩 Pegatron, role: down}
-    - {t: "2474", n: 可成 Catcher, role: up}
-  flags: "Garmin (GRMN) is TW-founded, US/Swiss-listed."
-
 - id: ar-vr-headsets
   name_en: AR / VR Headsets & Microdisplays
   name_zh: AR／VR 頭戴裝置與微顯示器
   cluster: Consumer Electronics
   linkage: medium
-  us_tickers: [META, AAPL, KOPN, VUZI, HIMX]
+  us_tickers: [META, AAPL, KOPN, VUZI]
   tw_linkage:
-    - {t: "2382", n: 廣達 Quanta, role: down}
-    - {t: "4938", n: 和碩 Pegatron, role: down}
     - {t: "3008", n: 大立光 Largan (optics), role: up}
     - {t: "3406", n: 玉晶光 GSEO, role: up}
-  flags: "KOPN/VUZI speculative small-cap. HIMX supplies LCoS."
+  flags: "KOPN/VUZI speculative small-cap."
 
 - id: imaging-optics
   name_en: Imaging / Camera / Optical Sensors
@@ -333,33 +319,7 @@
   tw_linkage:
     - {t: "3008", n: 大立光 Largan (Apple main lens), role: up}
     - {t: "3406", n: 玉晶光 GSEO, role: up}
-    - {t: "6239", n: 力成 Powertech (CIS test), role: up}
   flags: "SONY=ADR (dominant CMOS sensor proxy). OmniVision delisted."
-
-- id: gaming-hardware
-  name_en: Gaming Hardware / Consoles
-  name_zh: 遊戲主機與硬體
-  cluster: Consumer Electronics
-  linkage: medium
-  us_tickers: [SONY, MSFT, NTDOY, CRSR, LOGI]
-  tw_linkage:
-    - {t: "2382", n: 廣達 Quanta, role: down}
-    - {t: "4938", n: 和碩 Pegatron, role: down}
-    - {t: "2376", n: 技嘉 Gigabyte, role: up}
-    - {t: "2377", n: 微星 MSI, role: up}
-  flags: "NTDOY=ADR (liquidity)."
-
-- id: audio-peripherals
-  name_en: Audio / Accessories / Peripherals
-  name_zh: 音訊、配件與週邊
-  cluster: Consumer Electronics
-  linkage: medium
-  us_tickers: [LOGI, SONO, GPRO, TBCH, CRSR]
-  tw_linkage:
-    - {t: "2439", n: 美律 Merry (acoustic ODM), role: up}
-    - {t: "2392", n: 正崴 Cheng Uei, role: up}
-    - {t: "2317", n: 鴻海 Hon Hai, role: down}
-  flags: ""
 
 # -----------------------------------------------------------------------------
 # CLUSTER 5 — EV / Auto / Mobility
