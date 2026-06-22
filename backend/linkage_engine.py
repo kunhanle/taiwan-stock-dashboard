@@ -234,7 +234,7 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
 
     # Asian leaders (.T = Tokyo) trade the SAME session as TW -> no lag; US leads
     # TW by one session -> lag 1. Mixed basket: majority rules.
-    eff_lag = 0 if (us_syms and sum(s.endswith(".T") for s in us_syms) * 2 >= len(us_syms)) else lag
+    eff_lag = 0 if (us_syms and sum(s.endswith((".T", ".KS", ".KQ", ".HK")) for s in us_syms) * 2 >= len(us_syms)) else lag
 
     if has_trigger:
         move, z = _move_and_z(basket, window)

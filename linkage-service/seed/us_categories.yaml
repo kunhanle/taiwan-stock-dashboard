@@ -175,3 +175,68 @@
     - {t: "3455", n: 由田 (AOI檢測), role: up}
     - {t: "8074", n: 鉅橡 (PCB製程設備), role: up}
   flags: "下游設備. 無美股/日股觸發 -> 純台股觀察清單(無 A 層讀數)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Passive Components  (財報狗 被動元件 tag 細分; 美/日/韓/台)
+# 龍頭多在日韓(.T/.KS, 引擎 lag=0); 上游材料日商掌握
+# -----------------------------------------------------------------------------
+- id: passive-upstream-materials
+  name_en: Passive — Dielectric Powder & Conductive Materials
+  name_zh: 被動元件｜上游 介電粉末與導電材料
+  cluster: Passive Components
+  linkage: medium
+  us_tickers: ["4078.T"]
+  tw_linkage:
+    - {t: "6173", n: 信昌電 HEC (自製介電瓷粉), role: up}
+    - {t: "4760", n: 勤凱 (材料), role: up}
+  flags: "上游材料日商掌握(>7成). 觸發=堺化學4078.T(MLCC介電瓷粉龍頭,日股lag=0,無EDGAR營收->無B層)."
+
+- id: mlcc-makers
+  name_en: Passive — MLCC & Integrated Passive Manufacturing
+  name_zh: 被動元件｜中游 MLCC與綜合被動元件製造
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: ["6981.T", "6762.T", "6976.T", "009150.KS"]
+  tw_linkage:
+    - {t: "2327", n: 國巨 Yageo (全球龍頭), role: peer}
+    - {t: "3026", n: 禾伸堂 Holystone (利基MLCC), role: peer}
+    - {t: "2492", n: 華新科 Walsin Tech, role: peer}
+  flags: "中游核心. 觸發=日韓龍頭 Murata6981.T/TDK6762.T/TaiyoYuden6976.T/三星電機009150.KS (lag=0,無EDGAR營收->無B層)."
+
+- id: aluminum-tantalum-cap
+  name_en: Passive — Aluminum / Solid / Tantalum Capacitors
+  name_zh: 被動元件｜中游 鋁電容、固態電容與鉭電容
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: [VSH, "6997.T", "6996.T"]
+  tw_linkage:
+    - {t: "2472", n: 立隆 Lelon (鋁電容), role: peer}
+    - {t: "8042", n: 金山電 (鋁電容), role: peer}
+    - {t: "6449", n: 鈺邦 Apaq (固態/高分子電容), role: peer}
+  flags: "VSH(鉭) + 日股 ChemiCon6997.T/Nichicon6996.T(鋁電容,lag=0). 凱美已被國巨併下市."
+
+- id: inductor-resistor-magnetics
+  name_en: Passive — Inductors / Resistors / Magnetics
+  name_zh: 被動元件｜中游 電感、電阻與磁性元件
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: [VSH, BELFB, "6762.T", "6981.T", "6976.T"]
+  tw_linkage:
+    - {t: "6862", n: 三集瑞-KY (磁性/電感), role: peer}
+    - {t: "3357", n: 臺慶科 (AI電感), role: peer}
+    - {t: "3236", n: 千如 (電感), role: peer}
+    - {t: "2478", n: 大毅 TA-I (電阻), role: peer}
+    - {t: "6834", n: 天二科技 (電感/磁性), role: peer}
+  flags: "VSH(電阻)/BELFB(磁性) + 日股 TDK6762.T/Murata6981.T/TaiyoYuden6976.T (亞洲多數->lag=0). 奇力新/美磊未列(下市/查無)."
+
+- id: passive-distribution
+  name_en: Passive — Distribution & Channel
+  name_zh: 被動元件｜下游 通路代理與庫存配置
+  cluster: Passive Components
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3090", n: 日電貿 (高階被動全線代理), role: down}
+    - {t: "8043", n: 蜜望實 (通路), role: down}
+    - {t: "3537", n: 堡達 (被動元件通路), role: down}
+  flags: "下游通路. 無美/日觸發 -> 純台股觀察清單(缺貨期庫存價差受惠)."
