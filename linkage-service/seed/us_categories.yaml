@@ -564,15 +564,6 @@
 # -----------------------------------------------------------------------------
 # CLUSTER 8 — Broader Market (selective — medium linkage only)
 # -----------------------------------------------------------------------------
-- id: medical-devices
-  name_en: Medical Devices
-  name_zh: 醫療器材
-  cluster: Broader Market
-  linkage: medium
-  us_tickers: [MDT, ABT, SYK, BSX, ISRG, BDX, GEHC]
-  tw_linkage:
-  flags: "Devices embed semis/PCB/sensors — strongest non-tech linkage (ISRG/GEHC)."
-
 - id: aerospace-defense
   name_en: Aerospace & Defense
   name_zh: 航太與國防
