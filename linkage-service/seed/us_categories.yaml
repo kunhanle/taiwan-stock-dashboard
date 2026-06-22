@@ -191,14 +191,9 @@
   name_zh: 資料中心乙太網路交換
   cluster: AI Datacenter
   linkage: strong
-  us_tickers: [ANET, CSCO, AVGO, NVDA, HPE]
+  us_tickers: [ANET, CSCO]
   tw_linkage:
     - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
-    - {t: "2376", n: 技嘉 Gigabyte, role: down}
-    - {t: "6669", n: 緯穎 Wiwynn, role: down}
-    - {t: "3037", n: 欣興 Unimicron (high-layer PCB), role: up}
-    - {t: "2368", n: 金像電 GCE (PCB), role: up}
-    - {t: "6213", n: 聯茂 ITEQ (high-speed CCL), role: up}
   flags: ""
 
 - id: dc-optical-transceivers
@@ -221,11 +216,9 @@
   name_zh: 高速連接（主動電纜／重定時器）
   cluster: AI Datacenter
   linkage: strong
-  us_tickers: [CRDO, ALAB, MRVL]
+  us_tickers: [CRDO, ALAB]
   tw_linkage:
-    - {t: "3023", n: 信邦 Sinbon, role: up}
-    - {t: "2308", n: 台達電 Delta, role: up}
-    - {t: "2392", n: 正崴 Cheng Uei, role: up}
+    - {t: "3665", n: 貿聯-KY BizLink (高速線纜/連接), role: up}
   flags: ""
 
 - id: dc-server-odm
@@ -238,8 +231,6 @@
     - {t: "2317", n: 鴻海 Hon Hai, role: peer}
     - {t: "2382", n: 廣達 Quanta, role: peer}
     - {t: "3231", n: 緯創 Wistron, role: peer}
-    - {t: "6669", n: 緯穎 Wiwynn, role: peer}
-    - {t: "2356", n: 英業達 Inventec, role: peer}
   flags: "Dell/HPE outsource much L10/L11 rack build to these TW ODMs."
 
 - id: dc-liquid-cooling
@@ -251,7 +242,7 @@
   tw_linkage:
     - {t: "3017", n: 奇鋐 AVC, role: peer}
     - {t: "3324", n: 雙鴻 Auras, role: peer}
-    - {t: "2421", n: 建準 Sunonwealth, role: up}
+    - {t: "3653", n: 健策 Jentech (均熱片/散熱), role: peer}
   flags: "VRT/NVT also span Power infra below."
 
 - id: dc-power-infra
@@ -261,48 +252,11 @@
   linkage: strong
   us_tickers: [ETN, VRT, GEV, POWL, NVT]
   tw_linkage:
-    - {t: "2308", n: 台達電 Delta (PSU/PDU/busbar), role: peer}
     - {t: "1519", n: 華城 Fortune Electric, role: up}
     - {t: "1503", n: 士電 Shihlin, role: up}
     - {t: "1513", n: 中興電 CHEM (GIS/switchgear), role: up}
     - {t: "1514", n: 亞力 Allis (switchgear/transformer), role: up}
   flags: "Delta directly supplies & competes with Vertiv/Eaton."
-
-- id: hyperscale-cloud
-  name_en: Hyperscale Cloud (Capex Buyers)
-  name_zh: 超大規模雲（資本支出買方）
-  cluster: AI Datacenter
-  linkage: strong
-  us_tickers: [MSFT, AMZN, GOOGL, META, ORCL]
-  tw_linkage:
-    - {t: "2317", n: 鴻海 Hon Hai, role: down}
-    - {t: "2382", n: 廣達 Quanta, role: down}
-    - {t: "3231", n: 緯創 Wistron, role: down}
-    - {t: "6669", n: 緯穎 Wiwynn, role: down}
-  flags: "Single largest demand driver (~$660-725B 2026 AI capex). Their custom ASICs (TPU/Trainium/Maia/MTIA) also via TSMC."
-
-- id: dc-reit-colo
-  name_en: Datacenter REITs / Colocation
-  name_zh: 資料中心 REIT／主機代管
-  cluster: AI Datacenter
-  linkage: medium
-  us_tickers: [EQIX, DLR, IRM]
-  tw_linkage:
-    - {t: "2308", n: 台達電 Delta, role: up}
-    - {t: "3017", n: 奇鋐 AVC, role: up}
-    - {t: "3324", n: 雙鴻 Auras, role: up}
-  flags: "AMT excluded (tower REIT, only partial DC exposure)."
-
-- id: neocloud
-  name_en: Neocloud / GPU Cloud Operators
-  name_zh: 新雲端／GPU 算力租賃
-  cluster: AI Datacenter
-  linkage: medium
-  us_tickers: [CRWV, NBIS, IREN]
-  tw_linkage:
-    - {t: "2382", n: 廣達 Quanta, role: down}
-    - {t: "6669", n: 緯穎 Wiwynn, role: down}
-  flags: "NBIS=NL-domiciled, Nasdaq-listed."
 
 # -----------------------------------------------------------------------------
 # CLUSTER 4 — Consumer Electronics & Devices
