@@ -558,3 +558,60 @@
     - {t: "3675", n: 德微 Devtech (功率分立), role: peer}
     - {t: "5425", n: 台半 TSC (功率分立), role: peer}
   flags: "擴散受惠. 美股 MPWR/POWI."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — IC Design  (財報狗 IC設計 tag 細分; AI ASIC/高速傳輸/IP/PMIC驅動)
+# -----------------------------------------------------------------------------
+- id: icdesign-ai-asic-service
+  name_en: IC Design — AI ASIC & Design Service
+  name_zh: IC設計｜AI ASIC與設計服務
+  cluster: IC Design
+  linkage: strong
+  us_tickers: [AVGO, MRVL]
+  tw_linkage:
+    - {t: "3661", n: 世芯-KY Alchip (ASIC設計服務), role: down}
+    - {t: "3443", n: 創意 GUC (ASIC設計服務), role: down}
+    - {t: "2454", n: 聯發科 MediaTek (AI ASIC跨入), role: peer}
+    - {t: "3035", n: 智原 Faraday (ASIC/IP), role: down}
+    - {t: "8227", n: 巨有 (ASIC設計服務,興櫃), role: down}
+  flags: "直接受惠(受惠最高). 美CSP自研ASIC: AVGO/MRVL. 台ASIC三雄世芯/創意/智原."
+
+- id: icdesign-server-mgmt-highspeed
+  name_en: IC Design — Server Mgmt & High-Speed Transmission
+  name_zh: IC設計｜伺服器管理與高速傳輸晶片
+  cluster: IC Design
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "4966", n: 譜瑞-KY Parade (高速傳輸/retimer), role: peer}
+    - {t: "5269", n: 祥碩 Asmedia (高速IO), role: peer}
+    - {t: "6104", n: 創惟 Genesys Logic (USB/高速IO), role: peer}
+    - {t: "6756", n: 威鋒電子 VIA Labs (USB4/高速IO), role: peer}
+    - {t: "2379", n: 瑞昱 Realtek (網通/介面), role: peer}
+  flags: "直接受惠. 無美觸發(台廠自有利基,A層為主) -> 純台股觀察清單."
+
+- id: icdesign-ip-silicon
+  name_en: IC Design — Silicon IP & Advanced Node Support
+  name_zh: IC設計｜IP矽智財與先進節點支援
+  cluster: IC Design
+  linkage: medium
+  us_tickers: [SNPS, CDNS, ARM]
+  tw_linkage:
+    - {t: "3529", n: 力旺 eMemory (NVM IP), role: peer}
+    - {t: "6643", n: M31 (IP矽智財), role: peer}
+    - {t: "3443", n: 創意 GUC (IP/ASIC), role: peer}
+  flags: "間接受惠. 美EDA/IP: SNPS/CDNS/ARM(ARM為UK 20-F,無EDGAR季營收->A層). 台IP:力旺/M31."
+
+- id: icdesign-pmic-driver-edge
+  name_en: IC Design — PMIC / Driver IC / Edge AI Control
+  name_zh: IC設計｜PMIC、驅動IC與邊緣AI控制
+  cluster: IC Design
+  linkage: medium
+  us_tickers: [HIMX]
+  tw_linkage:
+    - {t: "6415", n: 矽力-KY Silergy (PMIC), role: peer}
+    - {t: "8081", n: 致新 Global Mixed (PMIC), role: peer}
+    - {t: "3034", n: 聯詠 Novatek (驅動IC/SoC), role: peer}
+    - {t: "4961", n: 天鈺 Fitipower (驅動IC), role: peer}
+    - {t: "3227", n: 原相 PixArt (感測/邊緣控制), role: peer}
+  flags: "間接受惠. 美觸發 HIMX(奇景,台廠ADR 20-F無EDGAR->A層). 台PMIC/驅動IC群."
