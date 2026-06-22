@@ -88,33 +88,17 @@
   linkage: strong
   us_tickers: [SNPS, CDNS, ARM, CEVA]
   tw_linkage:
-    - {t: "2454", n: 聯發科 MediaTek, role: down}
     - {t: "6533", n: 晶心科 Andes (RISC-V IP), role: peer}
     - {t: "3443", n: 創意 GUC, role: down}
     - {t: "3661", n: 世芯-KY Alchip, role: down}
   flags: "ARM=UK ADS, SoftBank-controlled. CEVA small-cap. Siemens EDA inside Siemens AG, excluded."
-
-- id: ai-training-gpu
-  name_en: AI Accelerators / Datacenter GPU
-  name_zh: AI 加速器／資料中心 GPU
-  cluster: Chip Design
-  linkage: strong
-  us_tickers: [NVDA, AMD, AVGO, MRVL]
-  tw_linkage:
-    - {t: "3711", n: 日月光投控 ASE, role: up}
-    - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
-    - {t: "2383", n: 台光電 EMC (AI 伺服器 CCL), role: up}
-    - {t: "2382", n: 廣達 Quanta, role: down}
-    - {t: "2317", n: 鴻海 Hon Hai, role: down}
-    - {t: "6669", n: 緯穎 Wiwynn, role: down}
-  flags: "Merchant GPU (NVDA/AMD) + custom ASIC (AVGO/MRVL) merged — same TW chain."
 
 - id: client-compute-chips
   name_en: PC / Client Compute Chips (CPU/GPU/SoC)
   name_zh: PC／消費端處理器（CPU/GPU/SoC）
   cluster: Chip Design
   linkage: strong
-  us_tickers: [NVDA, AMD, INTC, QCOM]
+  us_tickers: [AMD, INTC, QCOM]
   tw_linkage:
     - {t: "2376", n: 技嘉 Gigabyte (板卡), role: down}
     - {t: "2377", n: 微星 MSI, role: down}
@@ -142,7 +126,6 @@
   tw_linkage:
     - {t: "2303", n: 聯電 UMC, role: up}
     - {t: "5347", n: 世界先進 VIS, role: up}
-    - {t: "6770", n: 力積電 PSMC, role: up}
   flags: "MPWR is key NVIDIA power supplier. NXPI/STM US-listed but NL-incorporated."
 
 - id: power-semi-sic-gan
@@ -156,7 +139,6 @@
     - {t: "3675", n: 德微 Devtech (功率分立/MOSFET, SiC), role: peer}
     - {t: "8261", n: 富鼎 APEC (功率MOSFET), role: peer}
     - {t: "5471", n: 漢磊 Episil (SiC/GaN 代工), role: up}
-    - {t: "2308", n: 台達電 Delta (下游應用), role: down}
   flags: "TW power-discrete makers (強茂/德微/富鼎) are the real peers, moving into SiC/GaN; Episil(漢磊) is the actual SiC/GaN foundry. 穩懋 dropped here (its GaN is RF — see rf-connectivity); VIS dropped (not SiC/GaN). WOLF post-Ch.11 (high risk). NVTS small-cap volatile."
 
 - id: rf-connectivity
@@ -167,8 +149,8 @@
   us_tickers: [QCOM, AVGO, SWKS, QRVO, CRUS]
   tw_linkage:
     - {t: "3105", n: 穩懋 WIN Semi (GaAs/GaN RF foundry), role: up}
-    - {t: "3711", n: 日月光投控 ASE, role: up}
-    - {t: "3037", n: 欣興 Unimicron (substrate), role: up}
+    - {t: "2455", n: 全新 VPEC (VCSEL/GaAs 磊晶), role: up}
+    - {t: "8086", n: 宏捷科 AWSC (GaAs 代工), role: up}
   flags: "SWKS + QRVO ~$22B merger expected close early-2027."
 
 - id: memory
@@ -182,7 +164,6 @@
     - {t: "6770", n: 力積電 PSMC, role: peer}
     - {t: "2344", n: 華邦電 Winbond (niche DRAM/NOR), role: peer}
     - {t: "2337", n: 旺宏 Macronix (NOR/NAND flash), role: peer}
-    - {t: "3711", n: 日月光投控 ASE, role: up}
   flags: "MU = only US-listed DRAM/HBM maker (Samsung/SK Hynix not US-listed). SNDK spun from WDC Feb-2025; WDC now mostly HDD."
 
 # -----------------------------------------------------------------------------
