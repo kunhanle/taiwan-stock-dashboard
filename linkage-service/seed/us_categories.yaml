@@ -240,3 +240,56 @@
     - {t: "8043", n: 蜜望實 (通路), role: down}
     - {t: "3537", n: 堡達 (被動元件通路), role: down}
   flags: "下游通路. 無美/日觸發 -> 純台股觀察清單(缺貨期庫存價差受惠)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Liquid Cooling  (財報狗 液冷散熱 tag 細分; AI伺服器水冷)
+# -----------------------------------------------------------------------------
+- id: lc-coldplate-module
+  name_en: Liquid Cooling — Cold Plate & Module Leaders
+  name_zh: 液冷散熱｜水冷板與液冷模組龍頭
+  cluster: Liquid Cooling
+  linkage: strong
+  us_tickers: [VRT, MOD, NVT]
+  tw_linkage:
+    - {t: "3017", n: 奇鋐 AVC (GB水冷板40-50%), role: peer}
+    - {t: "3324", n: 雙鴻 Auras (全套液冷), role: peer}
+    - {t: "3653", n: 健策 Jentech (均熱片), role: peer}
+    - {t: "6831", n: 邁科 (3D VC/液冷/浸沒), role: peer}
+  flags: "直接受惠(受惠最高:奇鋐). 美股 Vertiv/Modine/nVent."
+
+- id: lc-cdu-heat-exchange
+  name_en: Liquid Cooling — CDU & Heat Exchange
+  name_zh: 液冷散熱｜CDU、熱交換與系統級液冷設備
+  cluster: Liquid Cooling
+  linkage: strong
+  us_tickers: [VRT, NVT]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (CDU), role: peer}
+    - {t: "8996", n: 高力 (CDU/熱交換器), role: peer}
+  flags: "直接受惠. 美股 Vertiv/nVent."
+
+- id: lc-qd-manifold
+  name_en: Liquid Cooling — Quick Disconnect / Manifold / Precision Parts
+  name_zh: 液冷散熱｜快接頭、分歧管與精密零組件
+  cluster: Liquid Cooling
+  linkage: medium
+  us_tickers: [PH, ETN]
+  tw_linkage:
+    - {t: "6805", n: 富世達 (UQD液冷快接頭), role: up}
+    - {t: "3013", n: 晟銘電 (水冷機櫃/Sidecar), role: up}
+    - {t: "8210", n: 勤誠 Chenbro (伺服器機殼), role: up}
+    - {t: "2421", n: 建準 Sunonwealth (風扇), role: up}
+  flags: "間接受惠. 美股 Parker(PH 流體接頭/manifold)/Eaton."
+
+- id: lc-server-integration
+  name_en: Liquid Cooling — Server Integration & AI Infra
+  name_zh: 液冷散熱｜伺服器整機與AI基礎建設整合
+  cluster: Liquid Cooling
+  linkage: medium
+  us_tickers: [SMCI, DELL, HPE]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+  flags: "擴散受惠. 美股伺服器整機 SMCI/DELL/HPE."
