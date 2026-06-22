@@ -293,3 +293,70 @@
     - {t: "6669", n: 緯穎 Wiwynn, role: down}
     - {t: "3231", n: 緯創 Wistron, role: down}
   flags: "擴散受惠. 美股伺服器整機 SMCI/DELL/HPE."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Glass Substrate / TGV  (財報狗 玻璃基板 tag 細分; 下一代先進封裝)
+# -----------------------------------------------------------------------------
+- id: glass-tgv-equipment
+  name_en: Glass Substrate — TGV & Advanced Packaging Equipment
+  name_zh: 玻璃基板｜TGV與先進封裝設備
+  cluster: Glass Substrate
+  linkage: strong
+  us_tickers: [AMAT, KLAC, ONTO]
+  tw_linkage:
+    - {t: "8027", n: 鈦昇 (TGV雷射開孔), role: up}
+    - {t: "3131", n: 弘塑 GPM (濕製程), role: up}
+    - {t: "3583", n: 辛耘 Scientech, role: up}
+    - {t: "6664", n: 群翊 (含浸/烘烤), role: up}
+    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
+    - {t: "3167", n: 大量 (鑽孔/成型), role: up}
+  flags: "直接受惠(受惠最高:鈦昇,已出貨美客戶). 美股先進封裝設備 AMAT/KLAC/ONTO."
+
+- id: glass-core-panel-substrate
+  name_en: Glass Substrate — Glass Core / Panel-level / Substrate Integration
+  name_zh: 玻璃基板｜玻璃核心、面板級封裝與載板整合
+  cluster: Glass Substrate
+  linkage: strong
+  us_tickers: ["011790.KS", "4062.T"]
+  tw_linkage:
+    - {t: "3481", n: 群創 Innolux (FOPLP), role: peer}
+    - {t: "3037", n: 欣興 Unimicron (載板), role: peer}
+  flags: "直接受惠. 觸發=韓SKC011790.KS(Absolics母)/日Ibiden4062.T(亞洲lag=0,EDGAR無營收->無B層). TSMC CoPoS依規則不列."
+
+- id: glass-abf-transition
+  name_en: Glass Substrate — High-end ABF & Pre-transition Demand
+  name_zh: 玻璃基板｜高階ABF載板與替代前過渡需求
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: ["4062.T"]
+  tw_linkage:
+    - {t: "3037", n: 欣興 Unimicron (ABF載板), role: up}
+    - {t: "8046", n: 南電 Nan Ya PCB (ABF載板), role: up}
+    - {t: "3189", n: 景碩 Kinsus (ABF載板), role: up}
+  flags: "間接受惠. 觸發=日Ibiden4062.T(ABF載板龍頭,lag=0,無B層). 與 CCL-ABF 類重疊(允許)."
+
+- id: glass-materials
+  name_en: Glass Substrate — Glass / Fiber Cloth / Packaging Materials
+  name_zh: 玻璃基板｜玻璃材料、玻纖布與封裝材料
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: [GLW, DD, "5201.T", "5214.T"]
+  tw_linkage:
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "1802", n: 台玻 (玻璃/玻纖布), role: up}
+    - {t: "4768", n: 晶呈科技 (玻璃/半導體材料), role: up}
+    - {t: "5475", n: 德宏 (玻纖布/石英布), role: up}
+    - {t: "1717", n: 長興 (封裝樹脂), role: up}
+  flags: "間接受惠. 美股 GLW(Corning玻璃)/DD + 日 AGC5201.T/NEG5214.T(玻璃,lag=0). 與 CCL/被動玻纖布重疊(允許)."
+
+- id: glass-ai-packaging-test
+  name_en: Glass Substrate — AI Packaging Demand & Test Spillover
+  name_zh: 玻璃基板｜AI封裝需求平台與測試外溢
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "2449", n: 京元電 King Yuan (測試), role: down}
+    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
+    - {t: "6510", n: 中華精測 CHPT (探針卡), role: up}
+  flags: "擴散受惠. 無美/日觸發 -> 純台股觀察清單."
