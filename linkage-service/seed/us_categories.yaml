@@ -102,3 +102,76 @@
   tw_linkage:
     - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
   flags: "擴散受惠. AVGO Tomahawk6 CPO+DSP, NVDA Spectrum-X/Quantum-X 也相關."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Copper Clad Laminate / PCB  (財報狗 銅箔基板CCL tag 細分)
+# 含日股(.T)觸發與純台股(無觸發)子類; JP/.T -> 引擎自動 lag=0
+# -----------------------------------------------------------------------------
+- id: ccl-makers
+  name_en: CCL — High-end Low-loss Laminate (big-three)
+  name_zh: 銅箔基板CCL｜中游 高階低損耗CCL三雄
+  cluster: CCL / PCB
+  linkage: strong
+  us_tickers: [ROG]
+  tw_linkage:
+    - {t: "2383", n: 台光電 EMC (全球CCL龍頭), role: peer}
+    - {t: "6274", n: 台燿 TUC, role: peer}
+    - {t: "6213", n: 聯茂 ITEQ, role: peer}
+    - {t: "1303", n: 南亞 Nan Ya (CCL/銅箔), role: peer}
+  flags: "中游直接受惠(受惠最高:台光電). 美股僅 ROG(Rogers 高頻層壓板)."
+
+- id: ccl-upstream-materials
+  name_en: CCL — Upstream Materials (copper foil / glass cloth / resin)
+  name_zh: 銅箔基板CCL｜上游 銅箔、玻纖布與樹脂瓶頸材料
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "8358", n: 金居 (HVLP銅箔,全球前三), role: up}
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "1802", n: 台玻 (玻纖布), role: up}
+    - {t: "5475", n: 德宏 (玻纖布/石英布), role: up}
+    - {t: "5340", n: 建榮 (玻纖布), role: up}
+    - {t: "1717", n: 長興 (低損耗樹脂), role: up}
+    - {t: "1303", n: 南亞 (銅箔/電子材料), role: up}
+  flags: "上游瓶頸材料. 無美股/日股觸發 -> 純台股觀察清單(無 A 層讀數)."
+
+- id: ai-server-pcb
+  name_en: CCL — AI Server High-layer PCB
+  name_zh: 銅箔基板CCL｜下游 AI伺服器高多層PCB
+  cluster: CCL / PCB
+  linkage: strong
+  us_tickers: [TTMI]
+  tw_linkage:
+    - {t: "2368", n: 金像電 GCE (AI server PCB), role: peer}
+    - {t: "4958", n: 臻鼎-KY ZDT (全球最大PCB/FPC), role: peer}
+    - {t: "3044", n: 健鼎 Tripod, role: peer}
+    - {t: "2313", n: 華通 Compeq, role: peer}
+    - {t: "6577", n: 定穎投控 Dynamic, role: peer}
+  flags: "下游. 美股僅 TTMI(TTM Technologies)."
+
+- id: abf-substrate
+  name_en: CCL — ABF Substrate & Packaging Materials
+  name_zh: 銅箔基板CCL｜下游 ABF載板與封裝材料外溢
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: ["2802.T", "4182.T", "4004.T"]
+  tw_linkage:
+    - {t: "3037", n: 欣興 Unimicron (ABF載板), role: up}
+    - {t: "8046", n: 南電 Nan Ya PCB (ABF載板), role: up}
+    - {t: "3189", n: 景碩 Kinsus (ABF載板), role: up}
+  flags: "下游. 觸發=日股 ABF 材料龍頭: 味之素2802.T(ABF film)/三菱瓦斯化學4182.T/Resonac4004.T. 日股A層(.T,lag=0); 日股EDGAR無營收->本類無B層."
+
+- id: pcb-drill-equipment
+  name_en: CCL — Drill Bits / Impregnation / Process Equipment
+  name_zh: 銅箔基板CCL｜下游 鑽針、含浸與精密製程設備
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "4536", n: 尖點 Tct (PCB鑽針), role: up}
+    - {t: "6727", n: 亞泰金屬 (精密機構件/鑽針), role: up}
+    - {t: "3167", n: 大量 (PCB鑽孔/成型設備), role: up}
+    - {t: "3455", n: 由田 (AOI檢測), role: up}
+    - {t: "8074", n: 鉅橡 (PCB製程設備), role: up}
+  flags: "下游設備. 無美股/日股觸發 -> 純台股觀察清單(無 A 層讀數)."

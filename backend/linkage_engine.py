@@ -228,15 +228,26 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     if cat is None:
         return None
     us_syms = [t.ticker for t in cat.us_tickers]
+    has_trigger = bool(us_syms)
     basket = _basket_return(returns, us_syms)
-    move, z = _move_and_z(basket, window)
-
-    # Relative strength vs benchmark (semi -> SOX, else S&P 500): the alert signal.
     is_semi = cat.cluster in SEMI_CLUSTERS
-    bench_sym = SOX_SYMBOL if is_semi else SPX_SYMBOL
-    bench_move = (_move_and_z(returns[bench_sym], window)[0]
-                  if bench_sym in returns.columns else 0.0)
-    excess = move - bench_move
+
+    # Asian leaders (.T = Tokyo) trade the SAME session as TW -> no lag; US leads
+    # TW by one session -> lag 1. Mixed basket: majority rules.
+    eff_lag = 0 if (us_syms and sum(s.endswith(".T") for s in us_syms) * 2 >= len(us_syms)) else lag
+
+    if has_trigger:
+        move, z = _move_and_z(basket, window)
+        # Relative strength vs benchmark (semi->SOX, else S&P 500): the alert signal.
+        bench_sym = SOX_SYMBOL if is_semi else SPX_SYMBOL
+        bench_move = (_move_and_z(returns[bench_sym], window)[0]
+                      if bench_sym in returns.columns else 0.0)
+        excess = move - bench_move
+    else:
+        # No US/JP trigger (e.g. TW-only material/equipment groups): a watchlist,
+        # not a read-through — no basket move, no alert.
+        move = z = excess = None
+        bench_sym = bench_move = None
 
     # Per-US-member moves over the window (so the UI can show the US side too).
     us_members = []
@@ -249,11 +260,11 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     low_signal = len(scored_nodes) < MIN_NODES_FOR_SIGNAL
     cat_penalty = LOW_SIGNAL_PENALTY if low_signal else 1.0
 
-    # TW reacts to the prior US session -> correlate TW[t] with US basket[t-lag].
-    basket_lagged = basket.shift(lag)
+    # Correlate TW[t] with US basket[t-eff_lag] (0 for Asian leaders).
+    basket_lagged = basket.shift(eff_lag)
 
     # Semi categories: weight by SOX-adjusted partial corr (strip sector beta).
-    sox_lagged = returns[SOX_SYMBOL].shift(lag) if SOX_SYMBOL in returns.columns else None
+    sox_lagged = returns[SOX_SYMBOL].shift(eff_lag) if SOX_SYMBOL in returns.columns else None
 
     nodes = []
     for n in scored_nodes:
@@ -275,7 +286,7 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
 
         purity = PURITY_OVERRIDES.get(n.ticker, 1.0)
         readthrough = None
-        if eff is not None:
+        if eff is not None and move is not None:
             # Negative specific linkage -> no read-through (clamp to 0).
             readthrough = move * max(eff, 0.0) * prior * purity * cat_penalty
         nodes.append({
@@ -325,7 +336,7 @@ def compute_movers(session: Session, clusters: list[str] | None = None,
         r = score_category(session, slug, returns, tw_cache, window=window, lag=lag)
         if r:
             out.append(r)
-    out.sort(key=lambda x: abs(x["z"]), reverse=True)
+    out.sort(key=lambda x: abs(x["z"] or 0), reverse=True)
     return out
 
 
