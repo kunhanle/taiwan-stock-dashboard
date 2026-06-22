@@ -259,6 +259,81 @@
   flags: "Delta directly supplies & competes with Vertiv/Eaton."
 
 # -----------------------------------------------------------------------------
+# CLUSTER 3b — Silicon Photonics / CPO  (財報狗 tag 細分: 直接/間接/擴散受惠)
+# -----------------------------------------------------------------------------
+- id: cpo-laser-source
+  name_en: CPO — High-power Lasers & External Light Source
+  name_zh: 矽光子CPO｜高功率雷射與外部光源
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [COHR, LITE, POET]
+  tw_linkage:
+    - {t: "3081", n: 聯亞 LandMark (InP雷射磊晶), role: up}
+    - {t: "3234", n: 光環 (雷射/光收發), role: up}
+    - {t: "4908", n: 前鼎 (雷射二極體), role: up}
+    - {t: "4971", n: IET-KY 英特磊 (InP/GaAs磊晶), role: up}
+    - {t: "4977", n: 眾達-KY, role: peer}
+  flags: "直接受惠. POET=矽光子光引擎(投機,EDGAR無營收). LITE EDGAR營收偏短."
+
+- id: cpo-fau-passive
+  name_en: CPO — FAU Coupling & Passive Optics
+  name_zh: 矽光子CPO｜FAU耦光與被動光學元件
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [HIMX]
+  tw_linkage:
+    - {t: "3363", n: 上詮 (FAU龍頭/光學封裝), role: up}
+    - {t: "3163", n: 波若威 Browave (光纖套件/濾光片), role: up}
+    - {t: "6442", n: 光聖 Gloria (光連接), role: up}
+    - {t: "6789", n: 采鈺 VisEra (微透鏡), role: up}
+  flags: "直接受惠(財報狗評受惠最高:上詮). 美股僅HIMX(台裔ADR,EDGAR無營收)->本類A層為主、無B層."
+
+- id: cpo-module-integration
+  name_en: CPO — Optical Module & SiPh Transceiver
+  name_zh: 矽光子CPO｜光模組與矽光子收發整合
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [FN, AAOI, CIEN]
+  tw_linkage:
+    - {t: "4979", n: 華星光 Luxnet, role: peer}
+    - {t: "3234", n: 光環 (光收發), role: peer}
+    - {t: "3450", n: 聯鈞 (磊晶/封測), role: up}
+  flags: "間接受惠. FN=Fabrinet(代工), AAOI, CIEN."
+
+- id: cpo-siph-packaging
+  name_en: CPO — SiPh Platform & Advanced Packaging
+  name_zh: 矽光子CPO｜SiPh平台與先進封裝
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [TSEM]
+  tw_linkage:
+    - {t: "6451", n: 訊芯-KY (SiP封裝), role: up}
+    - {t: "3265", n: 台星科 (晶圓級封裝/測試), role: up}
+  flags: "間接受惠. 美股僅TSEM(以色列20-F,EDGAR僅4季)->本類A層為主. TSMC COUPE平台依規則不列(只留代工)."
+
+- id: cpo-test-inspection
+  name_en: CPO — Optoelectronic Test & Inspection
+  name_zh: 矽光子CPO｜光電測試與檢量測設備
+  cluster: Silicon Photonics / CPO
+  linkage: medium
+  us_tickers: [KEYS, FORM, TER, AEHR]
+  tw_linkage:
+    - {t: "2360", n: 致茂 Chroma (測試設備), role: peer}
+    - {t: "6223", n: 旺矽 MPI (光電探針), role: up}
+    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
+  flags: "擴散受惠. KEYS EDGAR營收偏短,靠FORM/TER/AEHR撐B層."
+
+- id: cpo-switch-dsp
+  name_en: CPO — Switch / DSP / Networking
+  name_zh: 矽光子CPO｜交換器、DSP與系統網通
+  cluster: Silicon Photonics / CPO
+  linkage: medium
+  us_tickers: [AVGO, MRVL, ANET, CRDO]
+  tw_linkage:
+    - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
+  flags: "擴散受惠. AVGO Tomahawk6 CPO+DSP, NVDA Spectrum-X/Quantum-X 也相關."
+
+# -----------------------------------------------------------------------------
 # CLUSTER 4 — Consumer Electronics & Devices
 # -----------------------------------------------------------------------------
 - id: smartphone-oem
