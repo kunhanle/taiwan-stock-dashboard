@@ -1937,7 +1937,7 @@
                             <div className="flex items-center gap-2 mb-3">
                                 <i data-lucide="zap" className="w-4 h-4 text-amber-400"></i>
                                 <span className="text-sm font-semibold text-amber-300">相對強度警示</span>
-                                <span className="text-xs text-slate-500">美股族群超漲贏其基準（費半/科技QQQ/大盤，excess ≥ {(alerts.threshold * 100).toFixed(0)}%），非單純跟漲</span>
+                                <span className="text-xs text-slate-500">≥2 檔美股族群超漲贏其基準（費半/科技QQQ/大盤，excess ≥ {(alerts.threshold * 100).toFixed(0)}%）；單一美股類別不列入(雜訊)，可在下方排行榜查看</span>
                             </div>
                             <div className="space-y-2">
                                 {alerts.alerts.map(a => (
@@ -1988,7 +1988,7 @@
                                                     <td className="py-1.5 text-slate-200">{c.name_zh} <span className="text-slate-600 text-xs">{c.cluster}</span></td>
                                                     <td className="text-center text-xs text-slate-400">{tier}</td>
                                                     <td className={`text-right tabular-nums ${(c.a_move || 0) >= 0 ? 'text-red-400' : 'text-green-400'}`}>{c.a_move == null ? '—' : lkPct(c.a_move)}</td>
-                                                    <td className={`text-right tabular-nums font-semibold ${c.excess == null ? 'text-slate-600' : (c.excess >= 0.03 ? 'text-amber-300' : (c.excess >= 0 ? 'text-slate-300' : 'text-green-400'))}`}>{c.excess == null ? '—' : lkPct(c.excess)}</td>
+                                                    <td className={`text-right tabular-nums font-semibold ${c.excess == null ? 'text-slate-600' : (c.excess >= 0.03 ? 'text-amber-300' : (c.excess >= 0 ? 'text-slate-300' : 'text-green-400'))}`}>{c.excess == null ? '—' : lkPct(c.excess)}{c.us_count === 1 && c.excess != null && <span className="ml-1 text-[10px] text-slate-500" title="單一美股籃子，超額易受個股雜訊影響">單</span>}</td>
                                                     <td className="text-left pl-3 text-xs text-slate-400">{c.top_node ? `${c.top_node.name.split(' ')[0]} ${c.top_node.readthrough.toFixed(3)}` : (c.has_trigger ? '—' : '純台股')}</td>
                                                 </tr>
                                             );

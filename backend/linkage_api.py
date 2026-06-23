@@ -102,6 +102,7 @@ def movers(clusters: str = Query(None, description="comma-separated cluster filt
 
 @router.get("/alerts")
 def alerts(threshold: float = Query(None, description="min excess over benchmark"),
+           min_breadth: int = Query(2, description="min US trigger count (basket breadth)"),
            session: Session = Depends(get_session)):
     """Categories whose US basket OUT-moved its benchmark (semi->SOX, tech->QQQ,
     else S&P) by >= threshold — relative-strength breakouts, not just market beta.
@@ -115,15 +116,23 @@ def alerts(threshold: float = Query(None, description="min excess over benchmark
         exc = c.get("excess")
         if exc is None or exc < th:
             continue
+        # Breadth gate: a 1-stock "basket" move IS that stock's move -> any volatile
+        # single name clears the threshold on its own and isn't a group rotation.
+        # Require >= MIN_ALERT_BREADTH triggers for a real relative-strength alert.
+        us_count = len(c.get("us_members", []))
+        if us_count < min_breadth:
+            continue
         watch = [{"ticker": n["ticker"], "name": n["name"], "verdict": n["verdict"],
                   "b_corr": n.get("b_corr"), "readthrough": n.get("readthrough")}
                  for n in c.get("nodes", []) if n["verdict"] in
                  ("tradeable+fundamental", "fundamental-only")][:5]
         out.append({"slug": c["slug"], "name_zh": c["name_zh"], "cluster": c["cluster"],
                     "a_move": c["a_move"], "benchmark": c.get("benchmark"),
-                    "benchmark_move": c.get("benchmark_move"), "excess": exc, "watch": watch})
+                    "benchmark_move": c.get("benchmark_move"), "excess": exc,
+                    "us_count": us_count, "watch": watch})
     out.sort(key=lambda x: x["excess"], reverse=True)
-    return {"ready": True, "threshold": th, "generated_at": snap.get("generated_at"), "alerts": out}
+    return {"ready": True, "threshold": th, "min_breadth": min_breadth,
+            "generated_at": snap.get("generated_at"), "alerts": out}
 
 
 @router.get("/overview")
@@ -148,6 +157,7 @@ def overview():
             "benchmark": c.get("benchmark"), "a_move": c.get("a_move"),
             "a_z": c.get("a_z"), "excess": c.get("excess"),
             "has_trigger": c.get("excess") is not None,
+            "us_count": len(c.get("us_members", [])),
             "tw_count": len(nodes), "top_node": top,
         })
     # excess desc; None (no-trigger watchlists) sink to the bottom
