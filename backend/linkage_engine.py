@@ -100,6 +100,7 @@ TECH_CLUSTERS = {
     "Passive Components",
     "Liquid Cooling",
     "LEO Satellite",
+    "Optical Lens",
 }
 
 

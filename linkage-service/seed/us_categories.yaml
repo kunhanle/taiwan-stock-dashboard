@@ -776,3 +776,66 @@
     - {t: "4967", n: 十銓 Team Group (記憶體模組), role: down}
     - {t: "8271", n: 宇瞻 Apacer (記憶體模組/工業), role: down}
   flags: "擴散受惠. 無觸發 -> 純台股觀察清單. 短線彈性大,循環反轉庫存跌價風險最高."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Optical Lens  (財報狗 光學鏡頭 tag 細分; 潛望式/車用/AI眼鏡/微光學)
+# tech-not-semi -> QQQ benchmark
+# -----------------------------------------------------------------------------
+- id: optical-phone-periscope
+  name_en: Optical Lens — High-end Phone & Periscope
+  name_zh: 光學鏡頭｜高階手機鏡頭與潛望式主線
+  cluster: Optical Lens
+  linkage: strong
+  us_tickers: ["2382.HK"]
+  tw_linkage:
+    - {t: "3008", n: 大立光 Largan (高階塑膠鏡頭龍頭,受惠最高), role: up}
+    - {t: "3406", n: 玉晶光 GSEO (潛望式/iPhone), role: up}
+    - {t: "3019", n: 亞光 Asia Optical (鏡頭), role: up}
+  flags: "直接受惠(受惠最高:大立光). 港股舜宇光學2382.HK(lag0). iPhone潛望式/可變光圈/G+P規格升級."
+
+- id: optical-auto-drone-vision
+  name_en: Optical Lens — Auto / Drone / Industrial Vision
+  name_zh: 光學鏡頭｜車用、無人機與工業視覺鏡頭
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: ["2382.HK"]
+  tw_linkage:
+    - {t: "3019", n: 亞光 Asia Optical (車載5家客戶/ADAS), role: up}
+    - {t: "6209", n: 今國光 Kinik-rel (車用/紅外), role: up}
+    - {t: "3441", n: 聯一光 (光學元件), role: up}
+  flags: "直接受惠. 港股舜宇光學2382.HK(lag0). 車用ADAS/無人機/機器人視覺."
+
+- id: optical-module-biometric
+  name_en: Optical Lens — Module / NB / Biometric
+  name_zh: 光學鏡頭｜鏡頭模組、NB與生物辨識應用
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3362", n: 先進光 AOET (鏡頭模組/光學), role: up}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單."
+
+- id: optical-ai-glasses-arvr
+  name_en: Optical Lens — AI Glasses / AR-VR / Wearable Optics
+  name_zh: 光學鏡頭｜AI眼鏡、AR/VR與智慧穿戴光學
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: [META, VUZI]
+  tw_linkage:
+    - {t: "3406", n: 玉晶光 GSEO (智慧眼鏡,蘋果/Meta鏈), role: up}
+    - {t: "6209", n: 今國光 Kinik-rel (穿戴光學), role: up}
+    - {t: "3019", n: 亞光 Asia Optical (穿戴/光學), role: up}
+    - {t: "3362", n: 先進光 AOET (光學模組), role: up}
+  flags: "間接受惠. 美股 META(Ray-Ban Meta)/VUZI(Vuzix). 玉晶光AI眼鏡布局最深."
+
+- id: optical-cpo-microoptics
+  name_en: Optical Lens — CPO / Silicon Photonics / Micro-optics
+  name_zh: 光學鏡頭｜CPO、矽光子與先進微光學
+  cluster: Optical Lens
+  linkage: weak
+  us_tickers: [COHR, LITE]
+  tw_linkage:
+    - {t: "3008", n: 大立光 Largan (微光學/CPO切入), role: up}
+    - {t: "3406", n: 玉晶光 GSEO (微光學), role: up}
+    - {t: "6789", n: 采鈺 VisEra (WLO晶圓級光學), role: peer}
+  flags: "擴散受惠. 美股 COHR/LITE(光通訊). 與 CPO cluster 重疊(允許)."
