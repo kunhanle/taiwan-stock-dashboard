@@ -103,8 +103,8 @@ def movers(clusters: str = Query(None, description="comma-separated cluster filt
 @router.get("/alerts")
 def alerts(threshold: float = Query(None, description="min excess over benchmark"),
            session: Session = Depends(get_session)):
-    """Categories whose US basket OUT-moved its benchmark (semi->SOX, else S&P)
-    by >= threshold — i.e. relative-strength breakouts, not just market beta.
+    """Categories whose US basket OUT-moved its benchmark (semi->SOX, tech->QQQ,
+    else S&P) by >= threshold — relative-strength breakouts, not just market beta.
     Served from the snapshot; each alert lists the TW nodes worth watching."""
     th = le.ALERT_EXCESS_THRESHOLD if threshold is None else threshold
     snap = _snapshot()

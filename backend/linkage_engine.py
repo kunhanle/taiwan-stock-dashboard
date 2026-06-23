@@ -86,10 +86,31 @@ SEMI_CLUSTERS = {
     "Memory",
 }
 
-# Relative-strength benchmark for alerts: a category only "alerts" when its
-# basket out-moves its benchmark (semi -> SOX, else broad market -> S&P 500).
-# A group rising 6% while SOX rises 6% has ~0 excess and should NOT alert.
+# Relative-strength benchmark for alerts: a category only "alerts" when its basket
+# out-moves its benchmark. Three tiers: semiconductor -> SOX; tech-but-not-semi
+# (PCB / passives / cooling / satellite — they ride the Nasdaq-100 tech tape) ->
+# QQQ; everything genuinely non-tech (future footwear / aerospace / auto-parts /
+# hand-tool themes) -> S&P 500. A group rising 6% while its tape rises 6% has ~0
+# excess and should NOT alert.
 SPX_SYMBOL = "^GSPC"
+QQQ_SYMBOL = "QQQ"
+# Tech hardware that is NOT a chip play -> benchmark against Nasdaq-100, not SPX.
+TECH_CLUSTERS = {
+    "CCL / PCB",
+    "Passive Components",
+    "Liquid Cooling",
+    "LEO Satellite",
+}
+
+
+def _benchmark_for(cluster: str) -> str:
+    if cluster in SEMI_CLUSTERS:
+        return SOX_SYMBOL
+    if cluster in TECH_CLUSTERS:
+        return QQQ_SYMBOL
+    return SPX_SYMBOL
+
+
 ALERT_EXCESS_THRESHOLD = 0.03  # |basket move - benchmark move| over the window
 
 # On-disk cache of resolved TW yahoo symbols (avoids re-probing .TW/.TWO).
@@ -253,8 +274,8 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
 
     if has_trigger:
         move, z = _move_and_z(basket, window)
-        # Relative strength vs benchmark (semi->SOX, else S&P 500): the alert signal.
-        bench_sym = SOX_SYMBOL if is_semi else SPX_SYMBOL
+        # Relative strength vs benchmark (semi->SOX, tech->QQQ, else S&P 500).
+        bench_sym = _benchmark_for(cat.cluster)
         bench_move = (_move_and_z(returns[bench_sym], window)[0]
                       if bench_sym in returns.columns else 0.0)
         excess = move - bench_move
@@ -328,8 +349,9 @@ def _all_symbols(session: Session, slugs: list[str], tw_cache: dict) -> list[str
         TwLinkageNode.category_slug.in_(slugs),
         TwLinkageNode.exclude_from_scoring == False)).all()  # noqa: E712
     tw = [resolve_tw_symbol(t, tw_cache) for t in set(tw_ids)]
-    # Always include SOX (semi partial corr) + S&P 500 (relative-strength benchmark).
-    return list(set(us)) + [s for s in tw if s] + [SOX_SYMBOL, SPX_SYMBOL]
+    # Always include the three benchmark tapes: SOX (semi partial corr) + QQQ
+    # (tech relative strength) + S&P 500 (broad relative strength).
+    return list(set(us)) + [s for s in tw if s] + [SOX_SYMBOL, QQQ_SYMBOL, SPX_SYMBOL]
 
 
 def compute_movers(session: Session, clusters: list[str] | None = None,
