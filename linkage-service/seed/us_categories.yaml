@@ -839,3 +839,43 @@
     - {t: "3406", n: 玉晶光 GSEO (微光學), role: up}
     - {t: "6789", n: 采鈺 VisEra (WLO晶圓級光學), role: peer}
   flags: "擴散受惠. 美股 COHR/LITE(光通訊). 與 CPO cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Power Management IC  (財報狗 電源管理IC tag 細分; AI伺服器48V/800V HVDC)
+# -----------------------------------------------------------------------------
+- id: pmic-design
+  name_en: Power Management IC — PMIC & Power Control IC Design
+  name_zh: 電源管理IC｜PMIC與電源控制IC設計
+  cluster: Power Management IC
+  linkage: strong
+  us_tickers: [MPWR, POWI]
+  tw_linkage:
+    - {t: "6415", n: 矽力-KY Silergy (PMIC全能龍頭), role: peer}
+    - {t: "6719", n: 力智 RichTek-rel (GPU電源PMIC), role: peer}
+    - {t: "8081", n: 致新 Global Mixed (DDR5 Server PMIC), role: peer}
+    - {t: "6138", n: 茂達 Anpec (DDR5/風扇48V三相IC), role: peer}
+  flags: "中游核心(受惠最高). 美股 MPWR(MPS)/POWI. AI伺服器48V/800V HVDC帶多相控制器/DDR5 PMIC."
+
+- id: pmic-power-discrete
+  name_en: Power Management IC — Power Discrete & Protection
+  name_zh: 電源管理IC｜功率元件與保護元件
+  cluster: Power Management IC
+  linkage: medium
+  us_tickers: ["ON", IFNNY, DIOD]
+  tw_linkage:
+    - {t: "2481", n: 強茂 Pan Jit (MOSFET/二極體/TVS/SiC), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立/二極體), role: peer}
+    - {t: "3675", n: 德微 Devtech (功率分立), role: peer}
+    - {t: "6435", n: 大中 Great Power (高階電源/MOSFET), role: peer}
+  flags: "中游. 美股 ON(Onsemi)/IFNNY(英飛凌)/DIOD(Diodes). 高壓化+報價回升. 與 GaN功率 cluster 重疊(允許)."
+
+- id: pmic-power-system-passive
+  name_en: Power Management IC — Power System & High-end Passives
+  name_zh: 電源管理IC｜電源系統與高階被動元件
+  cluster: Power Management IC
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (電源系統), role: down}
+    - {t: "3026", n: 禾伸堂 HEC (高階MLCC被動), role: peer}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單. AI電力基建升級間接受惠. 與被動 cluster 重疊(允許)."
