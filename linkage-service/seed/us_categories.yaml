@@ -362,58 +362,73 @@
   flags: "擴散受惠. 無美/日觸發 -> 純台股觀察清單."
 
 # -----------------------------------------------------------------------------
-# CLUSTER — Advanced Packaging  (財報狗 先進封裝 tag 細分; CoWoS/SoIC)
+# CLUSTER — Advanced Packaging  (財報狗 半導體封測 tag 細分; CoWoS/SoIC/OSAT/測試)
+#   取代舊「先進封裝」4 類; 台積電依規則不列(他類仍只留代工)
 # -----------------------------------------------------------------------------
-- id: ap-foundry-platform
-  name_en: Adv Packaging — Foundry & Packaging Platform
-  name_zh: 先進封裝｜晶圓代工與先進封裝平台
-  cluster: Advanced Packaging
-  linkage: strong
-  us_tickers: [INTC]
-  tw_linkage:
-    - {t: "2330", n: 台積電 TSMC (CoWoS/SoIC/CoPoS), role: peer}
-  flags: "上游平台(受惠最高:台積). 觸發=INTC(EMIB/Foveros). 台積為此題核心,使用者破例列入(他類仍只留代工)."
-
-- id: ap-osat-panel
-  name_en: Adv Packaging — OSAT & Panel-level Packaging
-  name_zh: 先進封裝｜委外封測與面板級封裝
+- id: pkgtest-osat-spillover
+  name_en: Adv Packaging — Advanced Packaging & OSAT Spillover
+  name_zh: 半導體封測｜先進封裝與OSAT外溢
   cluster: Advanced Packaging
   linkage: strong
   us_tickers: [AMKR]
   tw_linkage:
-    - {t: "3711", n: 日月光投控 ASE (全球最大OSAT), role: peer}
-    - {t: "6239", n: 力成 Powertech (FOPLP/HBM封測), role: peer}
-    - {t: "2449", n: 京元電 King Yuan (測試), role: peer}
-  flags: "中游OSAT. 觸發=AMKR(Amkor). 日月光承接台積CoWoS外溢."
+    - {t: "3711", n: 日月光投控 ASE (全球最大OSAT,承接CoWoS外溢), role: peer}
+    - {t: "6239", n: 力成 Powertech (FOPLP/記憶體封測), role: peer}
+    - {t: "6147", n: 頎邦 Chipbond (凸塊/RDL/驅動封測), role: up}
+  flags: "直接受惠(受惠最高:日月光). 觸發=AMKR(Amkor). 台積CoWoS供不應求->外溢OSAT. 台積電依規則不列."
 
-- id: ap-equipment-automation
-  name_en: Adv Packaging — Equipment & Automation
-  name_zh: 先進封裝｜先進封裝設備與自動化
+- id: pkgtest-ai-chip-test
+  name_en: Adv Packaging — AI Chip Test Service
+  name_zh: 半導體封測｜AI晶片測試服務
   cluster: Advanced Packaging
   linkage: strong
-  us_tickers: [AMAT, KLAC]
+  us_tickers: [TER]
   tw_linkage:
-    - {t: "3131", n: 弘塑 GPM (CoWoS濕製程), role: up}
-    - {t: "3583", n: 辛耘 Scientech, role: up}
-    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
-    - {t: "6187", n: 萬潤 (封裝設備), role: up}
-    - {t: "6640", n: 均華 (封裝設備), role: up}
-  flags: "中游設備. 美股 AMAT/KLAC. 弘塑為台積CoWoS/SoIC濕製程主供應."
+    - {t: "2449", n: 京元電 King Yuan (測試龍頭,FT/Burn-in/SLT), role: peer}
+    - {t: "3264", n: 欣銓 Sigurd (測試服務), role: peer}
+    - {t: "6257", n: 矽格 Sigurd-rel (測試/封裝), role: peer}
+  flags: "直接受惠. 觸發=TER(Teradyne測試機). AI晶片測試時間拉長->測試服務缺口."
 
-- id: ap-materials-carrier-test
-  name_en: Adv Packaging — Materials / Carrier / Test Interface
-  name_zh: 先進封裝｜材料、載具與測試介面
+- id: pkgtest-interface-probecard
+  name_en: Adv Packaging — Test Interface & Probe Card
+  name_zh: 半導體封測｜測試介面與探針卡
   cluster: Advanced Packaging
   linkage: medium
   us_tickers: [FORM]
   tw_linkage:
-    - {t: "6223", n: 旺矽 MPI (探針), role: up}
-    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
-    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
-    - {t: "3595", n: 山太士 (先進封裝材料,興櫃), role: up}
+    - {t: "6223", n: 旺矽 MPI (探針卡), role: up}
+    - {t: "6515", n: 穎崴 WinWay (測試介面/測試座), role: up}
     - {t: "6510", n: 中華精測 (探針卡), role: up}
+  flags: "間接受惠. 觸發=FORM(FormFactor探針卡). 探針卡/測試座/KGD=良率守門員,結構性ASP上升."
+
+- id: pkgtest-abf-substrate
+  name_en: Adv Packaging — ABF Carrier & Packaging Substrate
+  name_zh: 半導體封測｜ABF載板與封裝基板
+  cluster: Advanced Packaging
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3037", n: 欣興 Unimicron (ABF載板), role: up}
+    - {t: "8046", n: 南電 Nan Ya PCB (ABF載板), role: up}
+    - {t: "3189", n: 景碩 Kinsus (ABF載板), role: up}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單. 與 CCL-ABF/玻璃基板 cluster 重疊(允許)."
+
+- id: pkgtest-equipment-materials
+  name_en: Adv Packaging — Equipment & Materials
+  name_zh: 半導體封測｜先進封裝設備與材料
+  cluster: Advanced Packaging
+  linkage: weak
+  us_tickers: [AMAT, KLAC]
+  tw_linkage:
+    - {t: "3131", n: 弘塑 GPM (CoWoS濕製程), role: up}
+    - {t: "3583", n: 辛耘 Scientech (濕製程), role: up}
+    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
+    - {t: "6640", n: 均華 (封裝設備), role: up}
+    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
+    - {t: "6187", n: 萬潤 (封裝設備/AOI), role: up}
     - {t: "2360", n: 致茂 Chroma (測試設備), role: peer}
-  flags: "下游材料/載具/測試介面. 美股 FORM(探針卡). 山太士=興櫃."
+    - {t: "3595", n: 山太士 (先進封裝材料,興櫃), role: up}
+  flags: "擴散受惠. 美股 AMAT/KLAC. 弘塑為台積CoWoS/SoIC濕製程主供應. 設備擴產+材料瓶頸."
 
 # -----------------------------------------------------------------------------
 # CLUSTER — Specialty Chemicals  (財報狗 特用化學品 tag 細分; 半導體材料國產替代)
