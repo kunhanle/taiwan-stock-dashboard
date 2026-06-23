@@ -615,3 +615,55 @@
     - {t: "4961", n: 天鈺 Fitipower (驅動IC), role: peer}
     - {t: "3227", n: 原相 PixArt (感測/邊緣控制), role: peer}
   flags: "間接受惠. 美觸發 HIMX(奇景,台廠ADR 20-F無EDGAR->A層). 台PMIC/驅動IC群."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — LEO Satellite  (財報狗 低軌衛星 tag 細分; SpaceX/Amazon Leo/OneWeb)
+# -----------------------------------------------------------------------------
+- id: leo-payload-rf
+  name_en: LEO Satellite — Payload & High-Freq RF Components
+  name_zh: 低軌衛星｜衛星酬載與高頻射頻元件
+  cluster: LEO Satellite
+  linkage: strong
+  us_tickers: [MTSI]
+  tw_linkage:
+    - {t: "3491", n: 昇達科 SWSC (RF/OISL,受惠最高), role: up}
+    - {t: "6271", n: 同欣電 Tong Hsing (高頻封裝), role: up}
+    - {t: "5222", n: 全訊 ACTS (PA功率放大器), role: up}
+    - {t: "3105", n: 穩懋 WIN Semi (GaAs PA), role: up}
+    - {t: "8086", n: 宏捷科 AWSC (GaAs PA), role: up}
+  flags: "上游核心(受惠最高:昇達科). 美股 MTSI(MACOM微波). SpaceX/OneWeb/Telesat."
+
+- id: leo-pcb-substrate
+  name_en: LEO Satellite — PCB / HDI / CCL / Substrate
+  name_zh: 低軌衛星｜PCB、HDI、CCL與封裝基板
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [TTMI]
+  tw_linkage:
+    - {t: "2313", n: 華通 Compeq (HDI PCB,SpaceX), role: up}
+    - {t: "2367", n: 燿華 Unitech (PCB), role: up}
+  flags: "上游. 美股 TTMI(TTM Tech,衛星/航太PCB). 與 CCL/PCB cluster 重疊(允許)."
+
+- id: leo-antenna-ground-terminal
+  name_en: LEO Satellite — Phased Array Antenna / Ground Station / Terminal
+  name_zh: 低軌衛星｜相控陣天線、地面站與終端設備
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [STM]
+  tw_linkage:
+    - {t: "6285", n: 啟碁 Wistron NeWeb (相控陣天線/終端), role: up}
+    - {t: "2314", n: 台揚 Microelectronics (地面站/gateway), role: up}
+    - {t: "3138", n: 耀登 Auden (天線/RF), role: up}
+    - {t: "2485", n: 兆赫 Zinwell (衛星傳輸設備), role: up}
+  flags: "中游. 美股 STM(終端/衛星晶片). 啟碁相控陣天線/台揚地面站."
+
+- id: leo-optical-oisl
+  name_en: LEO Satellite — Optical Comms / OISL / High-Speed Space Network
+  name_zh: 低軌衛星｜光通訊、OISL與高速太空網路
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [COHR, LITE]
+  tw_linkage:
+    - {t: "7717", n: 萊德光電-KY (光纖被動/星間雷射), role: up}
+    - {t: "6426", n: 統新 (WDM濾光片/光通訊), role: up}
+  flags: "中游. 美股 COHR/LITE(光通訊). OISL星間雷射通訊. 與 CPO cluster 重疊(允許)."
