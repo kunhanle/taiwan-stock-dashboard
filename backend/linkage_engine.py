@@ -69,7 +69,22 @@ LOW_SIGNAL_PENALTY = 0.5
 # linkage from broad-semi co-movement. (Validated: memory makers survive,
 # WFE->foundry collapses to ~0, TSMC collapses everywhere — it IS the sector.)
 SOX_SYMBOL = "^SOX"
-SEMI_CLUSTERS = {"Semi Manufacturing", "Chip Design"}
+# StatementDog-rebuilt taxonomy: the clusters whose constituents ARE semiconductor
+# names (chip design / wafer / memory / back-end / semi materials) carry heavy SOX
+# beta, so we strip it via partial corr + benchmark alerts against SOX. PCB, passive
+# components, liquid cooling and LEO/satellite track AI-capex / industrial / broad
+# market rather than the chip cycle -> they keep the S&P 500 benchmark (raw corr).
+SEMI_CLUSTERS = {
+    "Silicon Photonics / CPO",
+    "Glass Substrate",
+    "Advanced Packaging",
+    "Specialty Chemicals",
+    "Silicon Wafer",
+    "GaN",
+    "IC Design",
+    "MCU",
+    "Memory",
+}
 
 # Relative-strength benchmark for alerts: a category only "alerts" when its
 # basket out-moves its benchmark (semi -> SOX, else broad market -> S&P 500).
