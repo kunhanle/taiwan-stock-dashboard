@@ -912,3 +912,49 @@
     - {t: "2360", n: 致茂 Chroma (檢測量測), role: peer}
     - {t: "6187", n: 萬潤 (自動化/AOI), role: up}
   flags: "中游. 無觸發 -> 純台股觀察清單. CoPoS近期增量先落在自動化/檢測/載具. 與封測 cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — SiC  (財報狗 碳化矽 tag; 第三代半導體,與 GaN 並列; EV/800V/快充)
+#   兄弟題材與 GaN cluster 重疊(漢磊/全新等)允許; 修正 GaN 越界收 SiC
+# -----------------------------------------------------------------------------
+- id: sic-substrate-wafer
+  name_en: SiC — Substrate & Wafer Materials
+  name_zh: 碳化矽｜SiC基板與晶圓材料
+  cluster: SiC
+  linkage: strong
+  us_tickers: [WOLF, COHR]
+  tw_linkage:
+    - {t: "6488", n: 環球晶 GlobalWafers (8吋SiC基板), role: peer}
+    - {t: "6930", n: 盛新材料 TaiSiC (SiC基板,興櫃yfinance未收->A層顯—), role: peer}
+  flags: "上游核心(受惠最高:WOLF垂直整合). 美股 WOLF(Wolfspeed)/COHR(II-VI SiC基板). 8吋升級. 基板+磊晶佔SiC成本~7成."
+
+- id: sic-epi-compound-foundry
+  name_en: SiC — Epitaxy & Compound Semi Foundry
+  name_zh: 碳化矽｜磊晶與化合物半導體代工
+  cluster: SiC
+  linkage: medium
+  us_tickers: ["XFAB.PA"]
+  tw_linkage:
+    - {t: "3016", n: 嘉晶 EpiStar-rel (SiC磊晶), role: peer}
+    - {t: "3707", n: 漢磊 Episil (SiC/GaN代工), role: peer}
+  flags: "中游. 法股 X-FAB(XFAB.PA,化合物半導體代工,歐股lag1,無EDGAR->A層). 與 GaN/矽晶圓 cluster 重疊(允許)."
+
+- id: sic-power-idm
+  name_en: SiC — Power Device & IDM Leaders
+  name_zh: 碳化矽｜SiC功率元件與IDM龍頭
+  cluster: SiC
+  linkage: strong
+  us_tickers: ["ON", STM, IFNNY, "6963.T"]
+  tw_linkage:
+    - {t: "2481", n: 強茂 Pan Jit (SiC/MOSFET/二極體), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立/SiC), role: peer}
+  flags: "中游. 美股 ON/STM/IFNNY + 日羅姆ROHM6963.T(SiC IDM). 籃子US主導->lag1. MOSFET平台+車規客戶. 與 GaN/PMIC 重疊(允許)."
+
+- id: sic-power-system-terminal
+  name_en: SiC — Power System / AI Power / Terminal
+  name_zh: 碳化矽｜電源系統、AI供電與終端應用
+  cluster: SiC
+  linkage: weak
+  us_tickers: [NVTS]
+  tw_linkage: []
+  flags: "下游. 美股 NVTS(Navitas,GaN/SiC功率). 純觸發,台廠對應在④電源(見GaN/PMIC). 800V EV/AI高壓供電."
