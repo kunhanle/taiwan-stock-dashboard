@@ -530,10 +530,9 @@
   linkage: medium
   us_tickers: [WOLF]
   tw_linkage:
-    - {t: "3707", n: 漢磊 Episil (GaN/SiC代工), role: peer}
     - {t: "3105", n: 穩懋 WIN Semi (GaN代工), role: peer}
     - {t: "2455", n: 全新 VPEC (GaN/GaAs磊晶), role: peer}
-  flags: "間接受惠. 美股 WOLF(SiC)."
+  flags: "間接受惠. 美股 WOLF(SiC). 漢磊改列 Silicon Wafer(磊晶SOI)避免三重重複."
 
 - id: gan-packaging-leadframe-test
   name_en: GaN — Packaging / Leadframe / Reliability Test
@@ -927,17 +926,6 @@
     - {t: "6488", n: 環球晶 GlobalWafers (8吋SiC基板), role: peer}
     - {t: "6930", n: 盛新材料 TaiSiC (SiC基板,興櫃yfinance未收->A層顯—), role: peer}
   flags: "上游核心(受惠最高:WOLF垂直整合). 美股 WOLF(Wolfspeed)/COHR(II-VI SiC基板). 8吋升級. 基板+磊晶佔SiC成本~7成."
-
-- id: sic-epi-compound-foundry
-  name_en: SiC — Epitaxy & Compound Semi Foundry
-  name_zh: 碳化矽｜磊晶與化合物半導體代工
-  cluster: SiC
-  linkage: medium
-  us_tickers: ["XFAB.PA"]
-  tw_linkage:
-    - {t: "3016", n: 嘉晶 EpiStar-rel (SiC磊晶), role: peer}
-    - {t: "3707", n: 漢磊 Episil (SiC/GaN代工), role: peer}
-  flags: "中游. 法股 X-FAB(XFAB.PA,化合物半導體代工,歐股lag1,無EDGAR->A層). 與 GaN/矽晶圓 cluster 重疊(允許)."
 
 - id: sic-power-idm
   name_en: SiC — Power Device & IDM Leaders

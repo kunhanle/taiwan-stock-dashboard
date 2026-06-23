@@ -1934,7 +1934,7 @@
                             <div className="flex items-center gap-2 mb-3">
                                 <i data-lucide="zap" className="w-4 h-4 text-amber-400"></i>
                                 <span className="text-sm font-semibold text-amber-300">相對強度警示</span>
-                                <span className="text-xs text-slate-500">美股族群超漲贏大盤/費半（excess ≥ {(alerts.threshold * 100).toFixed(0)}%），非單純跟漲</span>
+                                <span className="text-xs text-slate-500">美股族群超漲贏其基準（費半/科技QQQ/大盤，excess ≥ {(alerts.threshold * 100).toFixed(0)}%），非單純跟漲</span>
                             </div>
                             <div className="space-y-2">
                                 {alerts.alerts.map(a => (
@@ -1942,7 +1942,7 @@
                                         className="w-full text-left flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-amber-500">
                                         <span className="text-amber-300 font-semibold text-sm">超額 {lkPct(a.excess)}</span>
                                         <span className="text-slate-200 text-sm">{a.name_zh}</span>
-                                        <span className="text-xs text-slate-500">族群{lkPct(a.a_move)} vs {a.benchmark === '^SOX' ? '費半' : '大盤'}{lkPct(a.benchmark_move)}</span>
+                                        <span className="text-xs text-slate-500">族群{lkPct(a.a_move)} vs {a.benchmark === '^SOX' ? '費半' : (a.benchmark === 'QQQ' ? '科技' : '大盤')}{lkPct(a.benchmark_move)}</span>
                                         {a.watch.length > 0 && <span className="text-xs text-teal-400">→ 留意 {a.watch.map(w => w.name.split(' ')[0]).slice(0, 3).join('、')}</span>}
                                     </button>
                                 ))}
@@ -1995,7 +1995,7 @@
                                 <h3 className="text-lg font-semibold text-white">{data.name_zh} <span className="text-slate-500 text-sm">[{data.cluster}]</span></h3>
                                 <span className="text-sm text-slate-300">族群 5日: <b className={data.a_move >= 0 ? "text-red-400" : "text-green-400"}>{lkPct(data.a_move)}</b> (z {lkFmt(data.a_z)})</span>
                                 {data.excess !== null && data.excess !== undefined && (
-                                    <span className="text-sm text-slate-300">相對{data.benchmark === '^SOX' ? '費半' : '大盤'}: <b className={data.excess >= 0.03 ? "text-amber-300" : (data.excess >= 0 ? "text-slate-200" : "text-green-400")}>超額 {lkPct(data.excess)}</b></span>
+                                    <span className="text-sm text-slate-300">相對{data.benchmark === '^SOX' ? '費半' : (data.benchmark === 'QQQ' ? '科技(QQQ)' : '大盤')}: <b className={data.excess >= 0.03 ? "text-amber-300" : (data.excess >= 0 ? "text-slate-200" : "text-green-400")}>超額 {lkPct(data.excess)}</b></span>
                                 )}
                                 <span className="text-sm text-slate-300">美股營收YoY: <b className="text-slate-100">{lkPct(data.us_yoy_latest)}</b></span>
                                 <span className="text-sm text-slate-400">US 覆蓋 {data.us_coverage}{data.us_missing && data.us_missing.length ? ` (缺 ${data.us_missing.join(",")})` : ""}</span>
@@ -2018,6 +2018,11 @@
                             )}
 
                             <div className="text-xs uppercase tracking-wide text-slate-500">台股連動節點</div>
+                            {data.nodes.length === 0 ? (
+                                <div className="text-sm text-slate-500 py-3 px-1 border border-dashed border-slate-700 rounded-lg">
+                                    此類無台股對應 — 僅追蹤國際龍頭籃子的漲跌與相對強度，用以判讀該產業景氣方向。
+                                </div>
+                            ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead><tr className="text-slate-400 border-b border-slate-700">
@@ -2047,6 +2052,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            )}
                         </section>
                     )}
                     {data && data.error && <div className="text-center text-red-400 py-6 text-sm">載入失敗</div>}
