@@ -946,3 +946,81 @@
   us_tickers: [NVTS]
   tw_linkage: []
   flags: "下游. 美股 NVTS(Navitas,GaN/SiC功率). 純觸發,台廠對應在④電源(見GaN/PMIC). 800V EV/AI高壓供電."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Materials & Chemicals  (傳產原物料/化工; CSV量化分類, 非AI; 全球大宗連動)
+#   含美股+中國A/H觸發(.SS/.SZ/.HK同盤lag0); SPX基準
+# -----------------------------------------------------------------------------
+- id: mat-plastics-petrochem
+  name_en: Materials — Plastics & Petrochemicals
+  name_zh: 原物料｜塑膠原料與石化
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [DOW, LYB, WLK, "600028.SS", "600309.SS", "002493.SZ"]
+  tw_linkage:
+    - {t: "1301", n: 台塑 FPC (塑膠原料), role: peer}
+    - {t: "1303", n: 南亞 NanYa (塑膠/電子材料), role: peer}
+    - {t: "1304", n: 台聚 USI (聚乙烯), role: peer}
+    - {t: "1305", n: 華夏 China General (PVC), role: peer}
+    - {t: "1308", n: 亞聚 APC (EVA/LDPE), role: peer}
+    - {t: "1309", n: 台達化 TPCC (苯乙烯), role: peer}
+    - {t: "1310", n: 台苯 TSC (苯乙烯), role: peer}
+    - {t: "1312", n: 國喬 Grand Pacific (ABS/SM), role: peer}
+    - {t: "1313", n: 聯成 UPC (PVC增塑劑), role: peer}
+  flags: "石化油價連動. 美 DOW/LYB/WLK + 中國 中石化600028.SS/萬華化學600309.SS/榮盛石化002493.SZ(A股lag0). 籃子偏亞洲->lag0."
+
+- id: mat-cement
+  name_en: Materials — Cement
+  name_zh: 原物料｜水泥
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [VMC, MLM, "600585.SS"]
+  tw_linkage:
+    - {t: "1101", n: 台泥 TCC (水泥龍頭), role: peer}
+    - {t: "1102", n: 亞泥 ACC (水泥), role: peer}
+    - {t: "1103", n: 嘉泥 Chia Hsin (水泥), role: peer}
+    - {t: "1104", n: 環泥 USC (水泥), role: peer}
+    - {t: "1108", n: 幸福 Lucky Cement, role: peer}
+    - {t: "1109", n: 信大 Hsing Ta (水泥), role: peer}
+    - {t: "1110", n: 東泥 Tung Ho (水泥), role: peer}
+    - {t: "2504", n: 國產 Goldsun (預拌混凝土), role: peer}
+    - {t: "8936", n: 國統 Kungkuo (預鑄管), role: peer}
+  flags: "內需+中國房產連動. 美 VMC/MLM(骨材) + 中國 海螺水泥600585.SS(A股lag0). 籃子US主導->lag1."
+
+- id: mat-fertilizer
+  name_en: Materials — Fertilizer & Agrichemicals
+  name_zh: 原物料｜肥料與農化
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [NTR, CF, MOS, "000792.SZ", "600096.SS"]
+  tw_linkage:
+    - {t: "1722", n: 台肥 TFC (肥料龍頭), role: peer}
+    - {t: "1708", n: 東鹼 Tung HsCo (純鹼/化工), role: peer}
+    - {t: "4148", n: 全宇生技-KY (有機肥/農化), role: peer}
+  flags: "全球農化連動. 美 NTR/CF/MOS + 中國 鹽湖000792.SZ/雲天化600096.SS(A股lag0). 籃子US主導->lag1."
+
+- id: mat-paper
+  name_en: Materials — Paper & Packaging
+  name_zh: 原物料｜造紙與紙器
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [IP, SW, "2689.HK", "002078.SZ"]
+  tw_linkage:
+    - {t: "1907", n: 永豐餘 YFY (紙業龍頭), role: peer}
+    - {t: "1904", n: 正隆 Cheng Loong (工業用紙), role: peer}
+    - {t: "1909", n: 榮成 Long Chen (紙器), role: peer}
+    - {t: "1905", n: 華紙 CHP (文化用紙), role: peer}
+    - {t: "1903", n: 士紙 Shihlin Paper, role: peer}
+  flags: "包裝紙箱景氣連動. 美 IP/SW(Smurfit WestRock) + 中國 玖龍2689.HK/太陽紙業002078.SZ(亞洲lag0). 籃子偏亞->lag0."
+
+- id: mat-rubber
+  name_en: Materials — Synthetic Rubber
+  name_zh: 原物料｜橡膠原料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2103", n: 台橡 TSRC (合成橡膠), role: peer}
+    - {t: "2104", n: 中橡 China Synthetic Rubber, role: peer}
+    - {t: "2108", n: 南帝 Nantex (合成橡膠/乳膠), role: peer}
+  flags: "擴散受惠. 合成橡膠無純全球觸發(油價連動) -> 純台股觀察清單."

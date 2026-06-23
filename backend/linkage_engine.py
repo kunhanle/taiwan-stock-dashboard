@@ -272,9 +272,11 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     basket = _basket_return(returns, us_syms)
     is_semi = cat.cluster in SEMI_CLUSTERS
 
-    # Asian leaders (.T = Tokyo) trade the SAME session as TW -> no lag; US leads
-    # TW by one session -> lag 1. Mixed basket: majority rules.
-    eff_lag = 0 if (us_syms and sum(s.endswith((".T", ".KS", ".KQ", ".HK")) for s in us_syms) * 2 >= len(us_syms)) else lag
+    # Asian leaders (.T Tokyo / .KS Korea / .HK HK / .SS Shanghai / .SZ Shenzhen)
+    # trade the SAME session as TW -> no lag; US/EU lead TW by one session -> lag 1.
+    # Mixed basket: majority rules.
+    _ASIAN_SUFFIX = (".T", ".KS", ".KQ", ".HK", ".SS", ".SZ")
+    eff_lag = 0 if (us_syms and sum(s.endswith(_ASIAN_SUFFIX) for s in us_syms) * 2 >= len(us_syms)) else lag
 
     if has_trigger:
         move, z = _move_and_z(basket, window)
