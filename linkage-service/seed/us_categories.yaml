@@ -883,3 +883,32 @@
     - {t: "2308", n: 台達電 Delta (電源系統), role: down}
     - {t: "3026", n: 禾伸堂 HEC (高階MLCC被動), role: peer}
   flags: "擴散受惠. 無觸發 -> 純台股觀察清單. AI電力基建升級間接受惠. 與被動 cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — CoPoS  (財報狗 CoPoS tag 瘦版; 台積面板級封裝路線獨有刀,不重複玻璃基板)
+#   平台主導+試產驗證 / 自動化檢測; TGV設備與玻璃材料留在 Glass Substrate. 台積電不列
+# -----------------------------------------------------------------------------
+- id: copos-platform-pilot
+  name_en: CoPoS — Platform Lead & Pilot Validation
+  name_zh: CoPoS｜平台主導與試產驗證
+  cluster: CoPoS
+  linkage: strong
+  us_tickers: ["4062.T"]
+  tw_linkage:
+    - {t: "6789", n: 采鈺 VisEra (龍潭CoPoS試產線直接承接), role: peer}
+    - {t: "3481", n: 群創 Innolux (面板級玻璃處理/FOPLP), role: peer}
+  flags: "上游(受惠最高). 觸發=日Ibiden4062.T(CoPoS載板供應,lag0,無EDGAR->A層). 台積主導平台,采鈺早期驗證夥伴. 台積電依規則不列."
+
+- id: copos-automation-inspection
+  name_en: CoPoS — Automation / Carrier / Inspection & Metrology
+  name_zh: CoPoS｜自動化、載具與檢測量測
+  cluster: CoPoS
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6640", n: 均華 (面板級封裝設備/自動化), role: up}
+    - {t: "3455", n: 由田 YDT (AOI光學檢測), role: up}
+    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
+    - {t: "2360", n: 致茂 Chroma (檢測量測), role: peer}
+    - {t: "6187", n: 萬潤 (自動化/AOI), role: up}
+  flags: "中游. 無觸發 -> 純台股觀察清單. CoPoS近期增量先落在自動化/檢測/載具. 與封測 cluster 重疊(允許)."
