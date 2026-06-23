@@ -667,3 +667,52 @@
     - {t: "7717", n: 萊德光電-KY (光纖被動/星間雷射), role: up}
     - {t: "6426", n: 統新 (WDM濾光片/光通訊), role: up}
   flags: "中游. 美股 COHR/LITE(光通訊). OISL星間雷射通訊. 與 CPO cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — MCU  (財報狗 MCU tag 細分; 成熟製程漲價/中國轉單/車用工控BMC)
+# -----------------------------------------------------------------------------
+- id: mcu-taiwan-niche-design
+  name_en: MCU — Taiwan Niche Design & Control Chips
+  name_zh: MCU｜台系MCU設計與利基控制晶片
+  cluster: MCU
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "4919", n: 新唐 Nuvoton (MCU/車用工控BMC,受惠最高), role: peer}
+    - {t: "6202", n: 盛群 Holtek (8/32位利基MCU), role: peer}
+    - {t: "6716", n: 應廣 PADAUK (MCU/風扇馬達控制), role: peer}
+    - {t: "6907", n: 雅特力-KY Artery (32位MCU,智原子公司), role: peer}
+    - {t: "5471", n: 松翰 Sonix (MCU), role: peer}
+    - {t: "2401", n: 凌陽 Sunplus (MCU/SoC), role: peer}
+    - {t: "2436", n: 偉詮電 Weltrend (MCU/電源控制), role: peer}
+  flags: "直接受惠(受惠最高:新唐). 無美觸發(台系利基,A層為主) -> 純台股觀察清單. 中微半漲價15-50%帶轉單."
+
+- id: mcu-international-idm
+  name_en: MCU — International Auto/Industrial IDM
+  name_zh: MCU｜國際車用與工規MCU大廠
+  cluster: MCU
+  linkage: strong
+  us_tickers: [NXPI, STM, MCHP, IFNNY, "6723.T", TXN]
+  tw_linkage: []
+  flags: "直接受惠. 國際IDM主導(NXP/ST/Microchip/英飛凌/瑞薩6723.T含lag0/TI),台系對應在①. 純觸發,無台股read-through."
+
+- id: mcu-leadframe-materials
+  name_en: MCU — Leadframe & Materials
+  name_zh: MCU｜導線架材料
+  cluster: MCU
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6548", n: 長科 Chang Wah (導線架/材料), role: up}
+    - {t: "2351", n: 順德 SDI (導線架), role: up}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單. 導線架成本漲->MCU調價. 與 GaN封測 cluster 重疊(允許)."
+
+- id: mcu-iot-power-spillover
+  name_en: MCU — IoT / Power / Embedded Control Spillover
+  name_zh: MCU｜IoT、電源與嵌入式控制外溢應用
+  cluster: MCU
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2458", n: 義隆 Elan (觸控/MCU), role: peer}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單."
