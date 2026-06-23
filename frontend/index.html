@@ -1878,11 +1878,12 @@
             const [alerts, setAlerts] = useState(null);
             const [overview, setOverview] = useState(null);
             const [obench, setObench] = useState('all');
+            const [alertsOpen, setAlertsOpen] = useState(false);
 
             useEffect(() => { axios.get('/api/linkage/categories').then(r => setCats(r.data)).catch(() => { }); }, []);
             useEffect(() => { axios.get('/api/linkage/alerts').then(r => setAlerts(r.data)).catch(() => setAlerts({ ready: false })); }, []);
             useEffect(() => { axios.get('/api/linkage/overview').then(r => setOverview(r.data)).catch(() => setOverview({ ready: false })); }, []);
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [data, cats, rev, loading, overview]);
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [data, cats, rev, loading, overview, alertsOpen]);
 
             const load = async (s) => {
                 setSlug(s); setLoading(true); setData(null);
@@ -1931,25 +1932,30 @@
                         </div>
                     </div>
 
-                    {/* Alert: relative-strength breakouts */}
+                    {/* Alert: relative-strength breakouts (collapsible, default collapsed) */}
                     {alerts && alerts.ready && alerts.alerts.length > 0 && (
                         <section className="glass-panel rounded-2xl p-4 border border-amber-500/30">
-                            <div className="flex items-center gap-2 mb-3">
+                            <button onClick={() => setAlertsOpen(o => !o)}
+                                className="w-full flex items-center gap-2 text-left">
                                 <i data-lucide="zap" className="w-4 h-4 text-amber-400"></i>
                                 <span className="text-sm font-semibold text-amber-300">相對強度警示</span>
-                                <span className="text-xs text-slate-500">≥2 檔美股族群超漲贏其基準（費半/科技QQQ/大盤，excess ≥ {(alerts.threshold * 100).toFixed(0)}%）；單一美股類別不列入(雜訊)，可在下方排行榜查看</span>
-                            </div>
-                            <div className="space-y-2">
-                                {alerts.alerts.map(a => (
-                                    <button key={a.slug} onClick={() => load(a.slug)}
-                                        className="w-full text-left flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-amber-500">
-                                        <span className="text-amber-300 font-semibold text-sm">超額 {lkPct(a.excess)}</span>
-                                        <span className="text-slate-200 text-sm">{a.name_zh}</span>
-                                        <span className="text-xs text-slate-500">族群{lkPct(a.a_move)} vs {a.benchmark === '^SOX' ? '費半' : (a.benchmark === 'QQQ' ? '科技' : '大盤')}{lkPct(a.benchmark_move)}</span>
-                                        {a.watch.length > 0 && <span className="text-xs text-teal-400">→ 留意 {a.watch.map(w => w.name.split(' ')[0]).slice(0, 3).join('、')}</span>}
-                                    </button>
-                                ))}
-                            </div>
+                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">{alerts.alerts.length}</span>
+                                <span className="text-xs text-slate-500 hidden sm:inline">≥2 檔美股族群超漲贏基準（單一美股不列入，見下方排行榜）</span>
+                                <i data-lucide={alertsOpen ? "chevron-up" : "chevron-down"} className="w-4 h-4 text-slate-400 ml-auto"></i>
+                            </button>
+                            {alertsOpen && (
+                                <div className="space-y-2 mt-3">
+                                    {alerts.alerts.map(a => (
+                                        <button key={a.slug} onClick={() => load(a.slug)}
+                                            className="w-full text-left flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-amber-500">
+                                            <span className="text-amber-300 font-semibold text-sm">超額 {lkPct(a.excess)}</span>
+                                            <span className="text-slate-200 text-sm">{a.name_zh}</span>
+                                            <span className="text-xs text-slate-500">族群{lkPct(a.a_move)} vs {a.benchmark === '^SOX' ? '費半' : (a.benchmark === 'QQQ' ? '科技' : '大盤')}{lkPct(a.benchmark_move)}</span>
+                                            {a.watch.length > 0 && <span className="text-xs text-teal-400">→ 留意 {a.watch.map(w => w.name.split(' ')[0]).slice(0, 3).join('、')}</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </section>
                     )}
                     {alerts && alerts.ready && alerts.alerts.length === 0 && (
