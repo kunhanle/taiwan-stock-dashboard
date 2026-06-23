@@ -126,6 +126,35 @@ def alerts(threshold: float = Query(None, description="min excess over benchmark
     return {"ready": True, "threshold": th, "generated_at": snap.get("generated_at"), "alerts": out}
 
 
+@router.get("/overview")
+def overview():
+    """Cross-category leaderboard: ALL categories (not just alerts), each with its
+    benchmark tier, group move, relative-strength excess and the single strongest
+    read-through TW node. Sorted by excess desc (no-trigger watchlists last)."""
+    snap = _snapshot()
+    if not snap:
+        return {"ready": False, "detail": "snapshot not built yet; try again shortly"}
+    out = []
+    for c in snap.get("categories", {}).values():
+        nodes = c.get("nodes", [])
+        top = None
+        for n in nodes:  # nodes are pre-sorted by |readthrough| desc
+            if n.get("readthrough") is not None:
+                top = {"ticker": n["ticker"], "name": n["name"],
+                       "verdict": n["verdict"], "readthrough": n["readthrough"]}
+                break
+        out.append({
+            "slug": c["slug"], "name_zh": c["name_zh"], "cluster": c["cluster"],
+            "benchmark": c.get("benchmark"), "a_move": c.get("a_move"),
+            "a_z": c.get("a_z"), "excess": c.get("excess"),
+            "has_trigger": c.get("excess") is not None,
+            "tw_count": len(nodes), "top_node": top,
+        })
+    # excess desc; None (no-trigger watchlists) sink to the bottom
+    out.sort(key=lambda x: (x["excess"] is not None, x["excess"] or 0), reverse=True)
+    return {"ready": True, "generated_at": snap.get("generated_at"), "categories": out}
+
+
 @router.get("/stock/{tw_id}")
 def stock_readthrough(tw_id: str, refresh: bool = Query(False),
                       session: Session = Depends(get_session)):

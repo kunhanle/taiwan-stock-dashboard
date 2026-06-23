@@ -1876,10 +1876,13 @@
             const [twId, setTwId] = useState("");
             const [rev, setRev] = useState(null);
             const [alerts, setAlerts] = useState(null);
+            const [overview, setOverview] = useState(null);
+            const [obench, setObench] = useState('all');
 
             useEffect(() => { axios.get('/api/linkage/categories').then(r => setCats(r.data)).catch(() => { }); }, []);
             useEffect(() => { axios.get('/api/linkage/alerts').then(r => setAlerts(r.data)).catch(() => setAlerts({ ready: false })); }, []);
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [data, cats, rev, loading]);
+            useEffect(() => { axios.get('/api/linkage/overview').then(r => setOverview(r.data)).catch(() => setOverview({ ready: false })); }, []);
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [data, cats, rev, loading, overview]);
 
             const load = async (s) => {
                 setSlug(s); setLoading(true); setData(null);
@@ -1951,6 +1954,49 @@
                     )}
                     {alerts && alerts.ready && alerts.alerts.length === 0 && (
                         <div className="pl-5 text-xs text-slate-500">目前無相對強度警示（沒有族群明顯超漲贏大盤）。</div>
+                    )}
+
+                    {/* Cross-category relative-strength leaderboard */}
+                    {overview && overview.ready && (
+                        <section className="glass-panel rounded-2xl p-4">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                                <i data-lucide="bar-chart-3" className="w-4 h-4 text-teal-400"></i>
+                                <span className="text-sm font-semibold text-teal-300">跨類別相對強度排行</span>
+                                <span className="text-xs text-slate-500">全 {overview.categories.length} 類依超額排序（點列查兩層明細）</span>
+                                <div className="flex gap-1 ml-auto">
+                                    {[['all', '全部'], ['^SOX', '費半'], ['QQQ', '科技'], ['^GSPC', '大盤']].map(([k, lbl]) => (
+                                        <button key={k} onClick={() => setObench(k)}
+                                            className={`text-xs px-2 py-0.5 rounded border ${obench === k ? 'bg-teal-600/20 border-teal-500 text-teal-200' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}>{lbl}</button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                                <table className="w-full text-sm">
+                                    <thead className="sticky top-0 bg-slate-900/95"><tr className="text-slate-400 border-b border-slate-700">
+                                        <th className="text-left py-1.5 font-medium">類別</th>
+                                        <th className="text-center font-medium">基準</th>
+                                        <th className="text-right font-medium">族群%</th>
+                                        <th className="text-right font-medium">超額%</th>
+                                        <th className="text-left font-medium pl-3">領頭台股(讀數)</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        {overview.categories.filter(c => obench === 'all' || (obench === '^GSPC' ? (c.benchmark === '^GSPC' || !c.benchmark) : c.benchmark === obench)).map(c => {
+                                            const tier = c.benchmark === '^SOX' ? '費半' : (c.benchmark === 'QQQ' ? '科技' : (c.benchmark === '^GSPC' ? '大盤' : '—'));
+                                            return (
+                                                <tr key={c.slug} onClick={() => load(c.slug)}
+                                                    className={`border-b border-slate-800/60 cursor-pointer hover:bg-slate-800/40 ${slug === c.slug ? 'bg-teal-600/10' : ''}`}>
+                                                    <td className="py-1.5 text-slate-200">{c.name_zh} <span className="text-slate-600 text-xs">{c.cluster}</span></td>
+                                                    <td className="text-center text-xs text-slate-400">{tier}</td>
+                                                    <td className={`text-right tabular-nums ${(c.a_move || 0) >= 0 ? 'text-red-400' : 'text-green-400'}`}>{c.a_move == null ? '—' : lkPct(c.a_move)}</td>
+                                                    <td className={`text-right tabular-nums font-semibold ${c.excess == null ? 'text-slate-600' : (c.excess >= 0.03 ? 'text-amber-300' : (c.excess >= 0 ? 'text-slate-300' : 'text-green-400'))}`}>{c.excess == null ? '—' : lkPct(c.excess)}</td>
+                                                    <td className="text-left pl-3 text-xs text-slate-400">{c.top_node ? `${c.top_node.name.split(' ')[0]} ${c.top_node.readthrough.toFixed(3)}` : (c.has_trigger ? '—' : '純台股')}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
                     )}
 
                     {/* reverse lookup result */}
