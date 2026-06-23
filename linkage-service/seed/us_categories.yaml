@@ -716,3 +716,63 @@
   tw_linkage:
     - {t: "2458", n: 義隆 Elan (觸控/MCU), role: peer}
   flags: "擴散受惠. 無觸發 -> 純台股觀察清單."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Memory  (財報狗 記憶體 tag 細分; HBM/DDR5超級循環/成熟製程缺貨)
+# -----------------------------------------------------------------------------
+- id: memory-hbm-international
+  name_en: Memory — HBM & International Memory IDM
+  name_zh: 記憶體｜HBM與國際記憶體原廠
+  cluster: Memory
+  linkage: strong
+  us_tickers: [MU, "000660.KS", "005930.KS"]
+  tw_linkage: []
+  flags: "直接受惠(Critical). 三大原廠:美光MU/SK海力士000660.KS/三星005930.KS(韓股lag0). 純觸發,台廠對應在②③. HBM由SK(~60%)/三星/MU主導."
+
+- id: memory-tw-niche-dram-flash
+  name_en: Memory — Taiwan Niche DRAM & Mature Flash
+  name_zh: 記憶體｜台灣利基型DRAM與成熟Flash
+  cluster: Memory
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "2408", n: 南亞科 Nanya (利基DRAM,DDR4轉單), role: peer}
+    - {t: "2344", n: 華邦電 Winbond (利基DRAM/NOR), role: peer}
+    - {t: "6770", n: 力積電 PSMC (記憶體晶圓代工), role: up}
+    - {t: "2337", n: 旺宏 Macronix (NOR/SLC NAND), role: peer}
+  flags: "直接受惠. 無美觸發(台系利基,A層為主) -> 純台股觀察清單. 承接美光/三星/SK退DDR4轉單. LTA長約紅利."
+
+- id: memory-nand-essd-storage
+  name_en: Memory — NAND / eSSD / Datacenter Storage
+  name_zh: 記憶體｜NAND、eSSD與資料中心儲存
+  cluster: Memory
+  linkage: strong
+  us_tickers: [SNDK, "285A.T"]
+  tw_linkage:
+    - {t: "8299", n: 群聯 Phison (NAND控制IC/eSSD), role: peer}
+  flags: "直接受惠. 美SNDK(SanDisk) + 日Kioxia285A.T(NAND原廠,lag0,無EDGAR->A層). 群聯控制IC."
+
+- id: memory-packaging-test
+  name_en: Memory — Packaging & Test
+  name_zh: 記憶體｜記憶體封裝測試
+  cluster: Memory
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "8110", n: 華東 Walton (記憶體封測), role: down}
+    - {t: "8150", n: 南茂 ChipMOS (記憶體封測), role: down}
+    - {t: "8131", n: 福懋科 Walton Adv (記憶體封測), role: down}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單. 受惠原廠產能滿載與漲價外溢."
+
+- id: memory-module-substrate
+  name_en: Memory — Module / Substrate / Expansion Peripheral
+  name_zh: 記憶體｜模組、基板與擴產周邊
+  cluster: Memory
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3260", n: 威剛 ADATA (記憶體模組), role: down}
+    - {t: "2451", n: 創見 Transcend (記憶體模組), role: down}
+    - {t: "4967", n: 十銓 Team Group (記憶體模組), role: down}
+    - {t: "8271", n: 宇瞻 Apacer (記憶體模組/工業), role: down}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單. 短線彈性大,循環反轉庫存跌價風險最高."
