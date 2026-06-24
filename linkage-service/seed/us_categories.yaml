@@ -1024,3 +1024,191 @@
     - {t: "2104", n: 中橡 China Synthetic Rubber, role: peer}
     - {t: "2108", n: 南帝 Nantex (合成橡膠/乳膠), role: peer}
   flags: "擴散受惠. 合成橡膠無純全球觸發(油價連動) -> 純台股觀察清單."
+
+- id: mat-synthetic-resin
+  name_en: Materials — Synthetic Resin
+  name_zh: 原物料｜合成樹脂
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1316", n: Sun Yad Construction, role: peer}
+    - {t: "4770", n: Allied Supreme, role: peer}
+    - {t: "3708", n: Swancor Holding, LTD., role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-photocure
+  name_en: Materials — Photocure / UV Materials
+  name_zh: 原物料｜光固化材料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1711", n: Everlight Chemical Industrial, role: peer}
+    - {t: "1721", n: Sunko Ink, role: peer}
+    - {t: "3430", n: Chitec Technology, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-pesticide
+  name_en: Materials — Pesticide / Agrichemical
+  name_zh: 原物料｜農藥
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1712", n: Sinon, role: peer}
+    - {t: "6508", n: Huikwang, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-cleaning
+  name_en: Materials — Cleaning / Household
+  name_zh: 原物料｜清潔用品
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4707", n: Pan Asia Chemical, role: peer}
+    - {t: "1731", n: MAYWUFA CO, role: peer}
+    - {t: "1732", n: Mao Bao, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-battery-materials
+  name_en: Materials — Battery Materials
+  name_zh: 原物料｜電池材料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4721", n: Mechema Chemicals International, role: peer}
+    - {t: "4739", n: Coremax, role: peer}
+    - {t: "5227", n: Advanced Lithium Electrochemistry, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-building-materials
+  name_en: Materials — Building Materials
+  name_zh: 原物料｜建材
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1802", n: Taiwan Glass Ind., role: peer}
+    - {t: "1809", n: China Glaze, role: peer}
+    - {t: "8930", n: CKM Applied Materials, role: peer}
+    - {t: "1603", n: China Wire & Cable, role: peer}
+    - {t: "1806", n: Champion Building Materials, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-tape-adhesive
+  name_en: Materials — Tape / Adhesive
+  name_zh: 原物料｜膠帶
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6509", n: Taiwan Hopax Chemicals Manufacturing, role: peer}
+    - {t: "4306", n: Yem Chio, role: peer}
+    - {t: "8354", n: Koan Hao Technology, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Textile  (財報狗/CSV 紡織纖維; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: textile-textured-yarn
+  name_en: Textile — Textured Yarn
+  name_zh: 紡織｜加工絲
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1402", n: Far Eastern New Century, role: peer}
+    - {t: "1444", n: Lealea Enterprise, role: peer}
+    - {t: "1445", n: Universal Textile, role: peer}
+    - {t: "4440", n: Yi Shin Textile Industrial, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-cotton-spinning
+  name_en: Textile — Cotton Spinning
+  name_zh: 紡織｜棉紡
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1440", n: Tainan Spinning, role: peer}
+    - {t: "4440", n: Yi Shin Textile Industrial, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-nylon
+  name_en: Textile — Nylon
+  name_zh: 紡織｜尼龍
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1314", n: China Petrochemical Development, role: peer}
+    - {t: "1434", n: Formosa Taffeta, role: peer}
+    - {t: "1447", n: Li Peng Enterprise, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-polyester-fiber
+  name_en: Textile — Polyester Fiber
+  name_zh: 紡織｜聚酯纖維
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1402", n: Far Eastern New Century, role: peer}
+    - {t: "1718", n: China Man-Made Fiber, role: peer}
+    - {t: "1710", n: Oriental Union Chemical, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-weaving
+  name_en: Textile — Weaving
+  name_zh: 紡織｜織布
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1460", n: Everest Textile, role: peer}
+    - {t: "1445", n: Universal Textile, role: peer}
+    - {t: "1476", n: Eclat Textile, role: peer}
+    - {t: "1464", n: De Licacy Industrial, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-dyeing
+  name_en: Textile — Dyeing & Finishing
+  name_zh: 紡織｜染整
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1470", n: evertex fabrinology limited, role: peer}
+    - {t: "1463", n: CS Group Investment Holding, role: peer}
+    - {t: "1410", n: Nan Yang Dyeing & Finishing, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-nonwoven
+  name_en: Textile — Nonwoven
+  name_zh: 紡織｜不織布
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "9919", n: KNH Enterprise, role: peer}
+    - {t: "9944", n: Shinih Enterprise, role: peer}
+    - {t: "1325", n: Universal Incorporation, role: peer}
+    - {t: "6504", n: Nan Liu Enterprise, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-apparel
+  name_en: Textile — Apparel / Garment
+  name_zh: 紡織｜成衣
+  cluster: Textile
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2915", n: Ruentex Industries, role: peer}
+    - {t: "1417", n: Carnival Industrial, role: peer}
+    - {t: "8916", n: Kwong Lung Enterprise, role: peer}
+    - {t: "1477", n: Makalot Industrial, role: peer}
+    - {t: "1476", n: Eclat Textile, role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
