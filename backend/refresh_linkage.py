@@ -67,9 +67,18 @@ def build_snapshot(stamp: str) -> dict:
     cats_out, movers, missing_price = {}, [], []
     with Session(engine) as s:
         slugs = [c.slug for c in s.exec(select(UsCategory)).all()]
+        # Fetch the WHOLE universe ONCE so every category scores off the same clean
+        # frame: this gives the US market group ~40 symbols, enough for the phantom-
+        # bar consensus truncation to spot pre-market junk bars (a per-category fetch
+        # with 1-2 US names can't, and would read the junk as the latest move).
+        cache = le._load_tw_cache()
+        all_syms = le._all_symbols(s, slugs, cache)
+        le._save_tw_cache(cache)
+        shared = le.fetch_returns(all_syms, period="3mo")
+        print(f"      shared fetch: {len(all_syms)} symbols, {len(shared.columns)} with data")
         for i, slug in enumerate(slugs, 1):
             try:
-                r = ls.category_two_layer(s, slug)
+                r = ls.category_two_layer(s, slug, returns=shared)
             except Exception as e:  # noqa: BLE001
                 print(f"  [{i}/{len(slugs)}] {slug}: FAILED {e}")
                 continue

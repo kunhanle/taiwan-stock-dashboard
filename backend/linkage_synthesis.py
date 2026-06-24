@@ -44,11 +44,13 @@ def _classify(a_corr: float | None, b_corr: float | None,
     return "weak"
 
 
-def category_two_layer(session: Session, slug: str, price_period: str = "3mo") -> dict:
+def category_two_layer(session: Session, slug: str, price_period: str = "3mo",
+                       returns=None) -> dict:
     cache = le._load_tw_cache()
-    syms = le._all_symbols(session, [slug], cache)
-    ret = le.fetch_returns(syms, period=price_period)
-    a = le.score_category(session, slug, ret, cache, window=5)
+    if returns is None:
+        syms = le._all_symbols(session, [slug], cache)
+        returns = le.fetch_returns(syms, period=price_period)
+    a = le.score_category(session, slug, returns, cache, window=5)
     le._save_tw_cache(cache)
     b = rl.category_revenue_linkage(session, slug)
 

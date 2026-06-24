@@ -34,6 +34,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import yfinance as yf
 from sqlmodel import Session, select
@@ -153,6 +154,38 @@ def resolve_tw_symbol(tw_id: str, cache: dict) -> str | None:
     return None
 
 
+def _market(sym: str) -> str:
+    """Market key from the yfinance suffix (after the last dot); bare = US."""
+    return sym.rsplit(".", 1)[1] if "." in sym else "US"
+
+
+def _truncate_phantom(close_df: pd.DataFrame) -> None:
+    """Null out PHANTOM trailing bars in place. A mixed-market union index can carry
+    the NEXT session for some market while it's only pre-market there — yfinance may
+    return a thin/junk bar for a few names on that date. For each market group with
+    enough symbols to vote, keep data only up to the latest date where a MAJORITY
+    have a real bar; later (pre-market/phantom) bars are nulled so move/repair never
+    read them. Needs a populated group (>=3) to judge consensus; smaller groups are
+    left as-is (the snapshot fetches the whole universe at once so US has ~40)."""
+    if close_df.empty:
+        return
+    groups: dict[str, list[str]] = {}
+    for sym in close_df.columns:
+        groups.setdefault(_market(sym), []).append(sym)
+    for syms in groups.values():
+        if len(syms) < 3:
+            continue
+        counts = close_df[syms].notna().sum(axis=1)
+        thresh = max(2, int(len(syms) * 0.5))
+        consensus = counts[counts >= thresh]
+        if consensus.empty:
+            continue
+        last_good = consensus.index.max()
+        late = close_df.index > last_good
+        if late.any():
+            close_df.loc[late, syms] = np.nan
+
+
 def _repair_latest(close_df: pd.DataFrame) -> list[str]:
     """yfinance's daily history feed sometimes omits the most recent session for
     a SINGLE ticker (NaN bar) while its realtime quote already has that close
@@ -176,8 +209,7 @@ def _repair_latest(close_df: pd.DataFrame) -> list[str]:
     # session (the lone-missing-US-ticker case this exists for is intra-market).
     groups: dict[str, list[str]] = {}
     for sym in close_df.columns:
-        mkt = sym.rsplit(".", 1)[1] if "." in sym else "US"
-        groups.setdefault(mkt, []).append(sym)
+        groups.setdefault(_market(sym), []).append(sym)
     for syms in groups.values():
         sub = close_df[syms].dropna(how="all")
         if sub.empty:
@@ -203,22 +235,33 @@ def fetch_returns(symbols: list[str], period: str = "1y") -> pd.DataFrame:
     symbols = sorted(set(s for s in symbols if s))
     if not symbols:
         return pd.DataFrame()
-    raw = yf.download(symbols, period=period, interval="1d",
-                      auto_adjust=True, progress=False, group_by="ticker")
+    # Download in CHUNKS: a single yf.download of the whole (~300-symbol) universe
+    # silently drops bars for individual tickers (observed: WOLF lost its 2026-06-22
+    # bar in a 300-symbol call but not a 40-symbol one), which then corrupts the
+    # multi-day cumulative move. Smaller batches return complete series.
+    CHUNK = 40
     closes = {}
-    for s in symbols:
-        try:
-            col = raw[s]["Close"] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
-            if col.dropna().empty:
-                continue
-            closes[s] = col
-        except Exception:
+    for i in range(0, len(symbols), CHUNK):
+        chunk = symbols[i:i + CHUNK]
+        raw = yf.download(chunk, period=period, interval="1d",
+                          auto_adjust=True, progress=False, group_by="ticker")
+        if raw is None or raw.empty:
             continue
+        multi = isinstance(raw.columns, pd.MultiIndex)
+        for s in chunk:
+            try:
+                col = raw[s]["Close"] if multi else raw["Close"]
+                if col.dropna().empty:
+                    continue
+                closes[s] = col
+            except Exception:
+                continue
     if not closes:
         return pd.DataFrame()
     close_df = pd.DataFrame(closes)
     close_df.index = pd.to_datetime(close_df.index).tz_localize(None)
     close_df = close_df.sort_index()
+    _truncate_phantom(close_df)  # drop pre-market/phantom trailing bars first
     patched = _repair_latest(close_df)
     if patched:
         print(f"[fetch_returns] WARNING: stale latest bar repaired from realtime "
