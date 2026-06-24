@@ -1212,3 +1212,159 @@
     - {t: "1477", n: Makalot Industrial, role: peer}
     - {t: "1476", n: Eclat Textile, role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Machinery  (財報狗/CSV 機械; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: mach-machine-tools
+  name_en: Machinery — Machine Tools
+  name_zh: 機械｜工具機
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4510", n: "Kao Fong Machinery, Ltd", role: peer}
+    - {t: "4533", n: "Shieh Yih Machinery Industry", role: peer}
+    - {t: "6606", n: "KENT Industrial", role: peer}
+    - {t: "4526", n: "Tongtai Machine & Tool", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-hand-tools
+  name_en: Machinery — Hand Tools
+  name_zh: 機械｜手工具機
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1539", n: "Chiu Ting Machinery", role: peer}
+    - {t: "1527", n: "Basso Industry", role: peer}
+    - {t: "1570", n: "De Poan Pneumatic", role: peer}
+    - {t: "1541", n: "CHANG TYPE Industrial", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-components
+  name_en: Machinery — Mechanical Components
+  name_zh: 機械｜機械零組件
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1589", n: "Yeong Guan Energy Technology Group", role: peer}
+    - {t: "1560", n: "Kinik Company", role: peer}
+    - {t: "2049", n: "Hiwin Technologies", role: peer}
+    - {t: "4552", n: "Lida Holdings", role: peer}
+    - {t: "4532", n: "Rechi Precision", role: peer}
+    - {t: "1590", n: "Airtac International Group", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-industrial
+  name_en: Machinery — Industrial Machinery
+  name_zh: 機械｜產業機械
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4744", n: "CVC Technologies", role: peer}
+    - {t: "1528", n: "Anderson Industrial", role: peer}
+    - {t: "6603", n: "Fu Chun Shin Machinery Manufacture", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-die-stamping
+  name_en: Machinery — Die & Stamping
+  name_zh: 機械｜模具沖壓
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "5284", n: "JPP Holding Company", role: peer}
+    - {t: "5243", n: "Eson Precision Ind", role: peer}
+    - {t: "2476", n: "G-SHANK Enterprise", role: peer}
+    - {t: "1586", n: "China Fineblanking Technology", role: peer}
+    - {t: "1569", n: "Bin Chuan Enterprise", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-shipbuilding
+  name_en: Machinery — Shipbuilding
+  name_zh: 機械｜造船
+  cluster: Machinery
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2208", n: "CSBC", role: peer}
+    - {t: "6753", n: "Lungteh Shipbuilding", role: peer}
+    - {t: "8478", n: "Alexander Marine", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Power & Heavy Electrical  (財報狗/CSV 重電能源; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: power-oil-gas-utility
+  name_en: Power — Oil / Gas / Utility
+  name_zh: 重電能源｜油電燃氣
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1434", n: "Formosa Taffeta", role: peer}
+    - {t: "8926", n: "Taiwan Cogeneration", role: peer}
+    - {t: "8927", n: "North-Star International, LTD", role: peer}
+    - {t: "6505", n: "Formosa Petrochemical", role: peer}
+    - {t: "8931", n: "Ta-Yuan Cogeneration Company", role: peer}
+    - {t: "2904", n: "Prime Oil Chemical Service", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-heavy-electrical
+  name_en: Power — Heavy Electrical Equipment
+  name_zh: 重電能源｜重電
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1519", n: "Fortune Electric", role: peer}
+    - {t: "1504", n: "TECO Electric & Machinery", role: peer}
+    - {t: "1513", n: "Chung-Hsin Electric and Machinery Manufacturing", role: peer}
+    - {t: "1503", n: "Shihlin Electric & Engineering", role: peer}
+    - {t: "1514", n: "Allis Electric", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-wire-cable
+  name_en: Power — Wire & Cable
+  name_zh: 重電能源｜電線電纜
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1608", n: "Hua Eng Wire & Cable", role: peer}
+    - {t: "1609", n: "Ta Ya Electric Wire & Cable", role: peer}
+    - {t: "1605", n: "Walsin Lihwa", role: peer}
+    - {t: "1618", n: "Hold-Key Electric Wire & Cable, Ltd", role: peer}
+    - {t: "1612", n: "Hong Tai Electric Industrial", role: peer}
+    - {t: "1616", n: "Evertop Wire Cable", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-transformer
+  name_en: Power — Transformer
+  name_zh: 重電能源｜變壓器
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3207", n: "Yao Sheng Electronic", role: peer}
+    - {t: "6821", n: "LinkCom Manufacturing,LTD", role: peer}
+    - {t: "6109", n: "Atech OEM", role: peer}
+    - {t: "3191", n: "Yjn", role: peer}
+    - {t: "6292", n: "Axis", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-ups
+  name_en: Power — UPS / Backup Power
+  name_zh: 重電能源｜UPS
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3043", n: "Powercom, Ltd", role: peer}
+    - {t: "3617", n: "Cyber Power Systems", role: peer}
+    - {t: "3628", n: "Ablerex Electronics", role: peer}
+    - {t: "6409", n: "Voltronic Power Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
