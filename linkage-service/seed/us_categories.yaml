@@ -1368,3 +1368,319 @@
     - {t: "3628", n: "Ablerex Electronics", role: peer}
     - {t: "6409", n: "Voltronic Power Technology", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Auto & Transport  (財報狗/CSV 汽車運輸; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: auto-vehicles
+  name_en: Auto — Vehicle Assembly
+  name_zh: 汽車運輸｜汽車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2206", n: "Sanyang Motor", role: peer}
+    - {t: "2201", n: "Yulon Motor Company", role: peer}
+    - {t: "2204", n: "China Motor", role: peer}
+    - {t: "6592", n: "Hotai Finance", role: peer}
+    - {t: "2207", n: "Hotai Motor", role: peer}
+    - {t: "2247", n: "Pan German Universal Motors", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-parts
+  name_en: Auto — Auto Parts
+  name_zh: 汽車運輸｜汽車零組件
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6235", n: "Waffer Technology", role: peer}
+    - {t: "4543", n: "Man Zai Industrial", role: peer}
+    - {t: "1319", n: "Tong Yang Industry", role: peer}
+    - {t: "1525", n: "Kian Shen", role: peer}
+    - {t: "3162", n: "United Alloy-Tech Company", role: peer}
+    - {t: "2230", n: "C.T.I. Traffic Industries", role: peer}
+    - {t: "1568", n: "Tsang Yow Industrial", role: peer}
+    - {t: "1524", n: "Gordon Auto Body Parts", role: peer}
+    - {t: "4566", n: "GLOBAL TEK FABRICATION CO", role: peer}
+    - {t: "1522", n: "TYC Brother Industrial", role: peer}
+    - {t: "6605", n: "Depo Auto Parts Industrial", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-tire
+  name_en: Auto — Tire
+  name_zh: 汽車運輸｜輪胎
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2105", n: "Cheng Shin Rubber Ind", role: peer}
+    - {t: "2101", n: "Nankang Rubber Tire", role: peer}
+    - {t: "2102", n: "Federal", role: peer}
+    - {t: "2106", n: "Kenda Rubber Industrial", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-electronics
+  name_en: Auto — Automotive Electronics
+  name_zh: 汽車運輸｜車用電子
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2497", n: "E-Lead Electronic", role: peer}
+    - {t: "1533", n: "Mobiletron Electronics", role: peer}
+    - {t: "8255", n: "Actron Technology", role: peer}
+    - {t: "3128", n: "Hi Sharp Intelligence Technology", role: peer}
+    - {t: "3552", n: "Tung Thih Electronic", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-china-ev
+  name_en: Auto — China EV Chain
+  name_zh: 汽車運輸｜中國能源車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6279", n: "Hu Lane Associate", role: peer}
+    - {t: "3526", n: "Alltop Technology", role: peer}
+    - {t: "3665", n: "BizLink Holding", role: peer}
+    - {t: "3003", n: "K.S. Terminals", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-aircraft-parts
+  name_en: Auto — Aircraft Parts
+  name_zh: 汽車運輸｜飛機零組件
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2634", n: "Aerospace Industrial Development", role: peer}
+    - {t: "8222", n: "Aero Win Technology", role: peer}
+    - {t: "2630", n: "Air Asia", role: peer}
+    - {t: "4541", n: "Magnate Technology", role: peer}
+    - {t: "3004", n: "National Aerospace Fasteners", role: peer}
+    - {t: "4916", n: "Parpro", role: peer}
+    - {t: "6829", n: "ChenFull Precision", role: peer}
+    - {t: "2645", n: "Evergreen Aviation Technologies", role: peer}
+    - {t: "4572", n: "Drewloong Precision", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-bicycle
+  name_en: Auto — Bicycle
+  name_zh: 汽車運輸｜自行車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "8163", n: "Darfon Electronics", role: peer}
+    - {t: "9914", n: "Merida Industry", role: peer}
+    - {t: "9921", n: "Giant Manufacturing", role: peer}
+    - {t: "8933", n: "Ideal Bike", role: peer}
+    - {t: "6804", n: "Axman Enterprise", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Healthcare & Biotech  (財報狗/CSV 生技醫療; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: health-api
+  name_en: Healthcare — Active Pharma Ingredient
+  name_zh: 生技醫療｜原料藥
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4746", n: "Formosa Laboratories", role: peer}
+    - {t: "4102", n: "Yung Zip Chemical Ind", role: peer}
+    - {t: "1762", n: "Chunghwa Chemical Synthesis & Biotech", role: peer}
+    - {t: "4167", n: "Savior Lifetec", role: peer}
+    - {t: "1789", n: "ScinoPharm Taiwan", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-generic
+  name_en: Healthcare — Western Pharma
+  name_zh: 生技醫療｜西藥
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1795", n: "Lotus Pharmaceutical", role: peer}
+    - {t: "6535", n: "Lumosa Therapeutics", role: peer}
+    - {t: "4114", n: "Synmosa Biopharma", role: peer}
+    - {t: "6472", n: "Bora Pharmaceuticals", role: peer}
+    - {t: "4130", n: "Genovate Biotechnology", role: peer}
+    - {t: "4123", n: "Center Laboratories", role: peer}
+    - {t: "1760", n: "Panion & Bf Biotech", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-newdrug
+  name_en: Healthcare — New Drug R&D
+  name_zh: 生技醫療｜新藥研發
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6550", n: "Polaris Group", role: peer}
+    - {t: "6535", n: "Lumosa Therapeutics", role: peer}
+    - {t: "6446", n: "PharmaEssentia", role: peer}
+    - {t: "4743", n: "Oneness Biotech", role: peer}
+    - {t: "4147", n: "TaiMed Biologics", role: peer}
+    - {t: "6712", n: "Ever Supreme Bio Technology, Ltd", role: peer}
+    - {t: "4130", n: "Genovate Biotechnology", role: peer}
+    - {t: "4128", n: "Microbio", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-biologics
+  name_en: Healthcare — Biologics
+  name_zh: 生技醫療｜生物製劑
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6547", n: "Medigen Vaccine Biologics", role: peer}
+    - {t: "4142", n: "Adimmune", role: peer}
+    - {t: "4133", n: "Abnova (Taiwan)", role: peer}
+    - {t: "4174", n: "OBI Pharma", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-contact-lens
+  name_en: Healthcare — Contact Lens
+  name_zh: 生技醫療｜隱形眼鏡
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6782", n: "Visco Vision", role: peer}
+    - {t: "6491", n: "Pegavision", role: peer}
+    - {t: "1565", n: "St.Shine Optical", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-services
+  name_en: Healthcare — Medical Services
+  name_zh: 生技醫療｜醫療服務
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3218", n: "Universal Vision Biotechnology", role: peer}
+    - {t: "4139", n: "Ma Kuang Healthcare Holding", role: peer}
+    - {t: "6662", n: "BioLASCO Taiwan", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-device-distrib
+  name_en: Healthcare — Medical Device Distribution
+  name_zh: 生技醫療｜醫材通路
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4164", n: "CHC Healthcare Group", role: peer}
+    - {t: "4104", n: "Excelsior Medical", role: peer}
+    - {t: "4175", n: "MedFirst Healthcare Services", role: peer}
+    - {t: "1788", n: "Hi-Clearance", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-genetic-test
+  name_en: Healthcare — Genetic Testing
+  name_zh: 生技醫療｜基因檢測
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4160", n: "Genetics Generation Advancement", role: peer}
+    - {t: "6236", n: "Neith", role: peer}
+    - {t: "6615", n: "Sofiva Genomics", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-reagent
+  name_en: Healthcare — Diagnostic Reagent
+  name_zh: 生技醫療｜檢測試劑
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4155", n: "OK Biotech", role: peer}
+    - {t: "4171", n: "GeneReach Biotechnology", role: peer}
+    - {t: "4736", n: "TaiDoc Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-supplement
+  name_en: Healthcare — Health Supplement
+  name_zh: 生技醫療｜保健品
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1720", n: "Standard Chemical & Pharmaceutical", role: peer}
+    - {t: "8436", n: "TCI", role: peer}
+    - {t: "3205", n: "Sagittarius Life Science Corp", role: peer}
+    - {t: "1734", n: "Sinphar Pharmaceutical", role: peer}
+    - {t: "1707", n: "Grape King Bio Ltd", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-pharma-distrib
+  name_en: Healthcare — Pharma Distribution
+  name_zh: 生技醫療｜藥品通路
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4114", n: "Synmosa Biopharma", role: peer}
+    - {t: "4173", n: "Arich Enterprise", role: peer}
+    - {t: "6469", n: "Great Tree Pharmacy", role: peer}
+    - {t: "8403", n: "ShareHope Medicine", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Shipping & Logistics  (財報狗/CSV 航運物流; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: ship-air
+  name_en: Shipping — Airlines
+  name_zh: 航運物流｜航空
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2610", n: "China Airlines", role: peer}
+    - {t: "2618", n: "EVA Airways", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: ship-container
+  name_en: Shipping — Container Shipping
+  name_zh: 航運物流｜貨櫃航
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2603", n: "Evergreen Marine (Taiwan)", role: peer}
+    - {t: "2609", n: "Yang Ming Marine Transport", role: peer}
+    - {t: "2615", n: "Wan Hai Lines", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: ship-bulk
+  name_en: Shipping — Bulk Shipping
+  name_zh: 航運物流｜散裝航
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2637", n: "Wisdom Marine Lines", role: peer}
+    - {t: "2606", n: "U-Ming Marine Transport", role: peer}
+    - {t: "2605", n: "Sincere Navigation", role: peer}
+    - {t: "5608", n: "Shih Wei Navigation", role: peer}
+    - {t: "2601", n: "First Steamship", role: peer}
+    - {t: "2641", n: "Franbo Lines", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: ship-logistics
+  name_en: Shipping — Logistics
+  name_zh: 航運物流｜物流
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2607", n: "Evergreen International Storage & Transport", role: peer}
+    - {t: "5607", n: "Farglory Free Trade Zone Investment Holding", role: peer}
+    - {t: "2608", n: "Kerry TJ Logistics Company", role: peer}
+    - {t: "2642", n: "Taiwan Pelican Express", role: peer}
+    - {t: "5603", n: "Sea & Land Integrated", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
