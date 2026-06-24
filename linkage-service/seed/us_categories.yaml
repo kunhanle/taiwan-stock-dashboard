@@ -1684,3 +1684,624 @@
     - {t: "2642", n: "Taiwan Pelican Express", role: peer}
     - {t: "5603", n: "Sea & Land Integrated", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Consumer & Retail  (財報狗/CSV 消費內需; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: cons-food
+  name_en: Consumer — Food
+  name_zh: 消費內需｜食品
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1201", n: "Wei Chuan Foods", role: peer}
+    - {t: "1203", n: "Ve Wong", role: peer}
+    - {t: "1210", n: "Great Wall Enterprise", role: peer}
+    - {t: "1215", n: "Charoen Pokphand Enterprise (Taiwan)", role: peer}
+    - {t: "1216", n: "Uni-President Enterprises", role: peer}
+    - {t: "1217", n: "AGV Products", role: peer}
+    - {t: "1218", n: "Taisun Enterprise", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-commodity-agri
+  name_en: Consumer — Agri Commodity
+  name_zh: 消費內需｜大宗物資
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1210", n: "Great Wall Enterprise", role: peer}
+    - {t: "1215", n: "Charoen Pokphand Enterprise (Taiwan)", role: peer}
+    - {t: "1227", n: "Standard Foods", role: peer}
+    - {t: "1218", n: "Taisun Enterprise", role: peer}
+    - {t: "1702", n: "Namchow Holdings", role: peer}
+    - {t: "4207", n: "Taiwan Fructose", role: peer}
+    - {t: "1229", n: "Lien Hwa Industrial Holdings", role: peer}
+    - {t: "1219", n: "Fwusow Industry", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-restaurant
+  name_en: Consumer — Restaurant
+  name_zh: 消費內需｜餐飲
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2723", n: "Gourmet Master", role: peer}
+    - {t: "2727", n: "Wowprime", role: peer}
+    - {t: "2732", n: "La Kaffa International", role: peer}
+    - {t: "2754", n: "Kura Sushi Asia", role: peer}
+    - {t: "2729", n: "TTFB Company", role: peer}
+    - {t: "2753", n: "Bafang Yunji International Company", role: peer}
+    - {t: "1268", n: "Hi-Lai Foods, Ltd", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-cosmetics
+  name_en: Consumer — Cosmetics
+  name_zh: 消費內需｜美妝
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4137", n: "Chlitina Holding", role: peer}
+    - {t: "6703", n: "Shiny Brands Group", role: peer}
+    - {t: "4190", n: "Jourdeness Group", role: peer}
+    - {t: "6523", n: "Dr. Wu Skincare", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-department-store
+  name_en: Consumer — Department Store
+  name_zh: 消費內需｜百貨
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2903", n: "Far Eastern Department Stores", role: peer}
+    - {t: "2912", n: "President Chain Store", role: peer}
+    - {t: "5904", n: "POYA International", role: peer}
+    - {t: "5903", n: "Taiwan FamilyMart", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-travel
+  name_en: Consumer — Travel Agency
+  name_zh: 消費內需｜旅行社
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "5706", n: "Phoenix Tours International", role: peer}
+    - {t: "2731", n: "Lion Travel Service", role: peer}
+    - {t: "2734", n: "Ezfly International Travel Agent", role: peer}
+    - {t: "2743", n: "Richmond International Travel & Tours", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-hotel
+  name_en: Consumer — Hotel
+  name_zh: 消費內需｜飯店
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2736", n: "HOYA Resort Hotel Group", role: peer}
+    - {t: "2748", n: "FDC International Hotels", role: peer}
+    - {t: "2722", n: "Chateau International Development", role: peer}
+    - {t: "2705", n: "Leofoo Development", role: peer}
+    - {t: "2739", n: "My Humble House Hospitality Management Consulting", role: peer}
+    - {t: "2707", n: "Formosa International Hotels", role: peer}
+    - {t: "5704", n: "Hotel Royal Chihpen", role: peer}
+    - {t: "2704", n: "The Ambassador Hotel", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-sportswear
+  name_en: Consumer — Sportswear
+  name_zh: 消費內需｜運動
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1598", n: "Dyaco International", role: peer}
+    - {t: "1736", n: "Johnson Health Tech .Co", role: peer}
+    - {t: "1515", n: "Rexon", role: peer}
+    - {t: "8442", n: "WW Holding", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-golf
+  name_en: Consumer — Golf
+  name_zh: 消費內需｜高爾夫
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6670", n: "FuSheng Precision", role: peer}
+    - {t: "8924", n: "O-TA Precision Industry", role: peer}
+    - {t: "8928", n: "Dynamic Precision Industry", role: peer}
+    - {t: "8938", n: "Advanced International Multitech", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-bottle
+  name_en: Consumer — Bottle / Can
+  name_zh: 消費內需｜瓶罐
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "9939", n: "Taiwan Hon Chuan Enterprise", role: peer}
+    - {t: "9907", n: "Ton Yi", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-culture
+  name_en: Consumer — Cultural / Creative
+  name_zh: 消費內需｜文創
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6625", n: "B'in Live", role: peer}
+    - {t: "8446", n: "HIM International Music", role: peer}
+    - {t: "6101", n: "Kwan's International", role: peer}
+    - {t: "6596", n: "Kuang Hong Arts Management Incorporation", role: peer}
+    - {t: "8450", n: "Pili International Multimedia", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-recycle
+  name_en: Consumer — Recycling
+  name_zh: 消費內需｜回收
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "9955", n: "Super Dragon Technology, Ltd", role: peer}
+    - {t: "8422", n: "Cleanaway Company", role: peer}
+    - {t: "8440", n: "E&E Recycling,Inc", role: peer}
+    - {t: "6581", n: "Taiwan Steel Union", role: peer}
+    - {t: "8341", n: "Sunny Friend Environmental Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-appliance
+  name_en: Consumer — Home Appliance
+  name_zh: 消費內需｜家電
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2371", n: "Tatung", role: peer}
+    - {t: "1504", n: "TECO Electric & Machinery", role: peer}
+    - {t: "3024", n: "Action Electronics", role: peer}
+    - {t: "1604", n: "Sampo", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-3c-channel
+  name_en: Consumer — 3C Retail Channel
+  name_zh: 消費內需｜3C通路
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2347", n: "Synnex Technology International", role: peer}
+    - {t: "2430", n: "Tsann Kuen Enterprise", role: peer}
+    - {t: "2450", n: "Senao International", role: peer}
+    - {t: "6154", n: "Sunfar Computer, Ltd", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-pc-channel
+  name_en: Consumer — PC Distribution
+  name_zh: 消費內需｜電腦通路
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6118", n: "Xander International", role: peer}
+    - {t: "5386", n: "Albatron Technology, Ltd", role: peer}
+    - {t: "6776", n: "Weblink International", role: peer}
+    - {t: "3213", n: "Mildef Crete", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-ecommerce
+  name_en: Consumer — E-commerce
+  name_zh: 消費內需｜電子商務
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6741", n: "91APP", role: peer}
+    - {t: "5321", n: "United Recommend International", role: peer}
+    - {t: "8044", n: "PChome Online", role: peer}
+    - {t: "8454", n: "momo.com", role: peer}
+    - {t: "5287", n: "ADDCN Technology, Ltd", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-epayment
+  name_en: Consumer — E-payment
+  name_zh: 消費內需｜電子支付
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3687", n: "MacroWell OMG Digital Entertainment", role: peer}
+    - {t: "5478", n: "Soft-World International", role: peer}
+    - {t: "6763", n: "Green World Fintech Service", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Display  (財報狗/CSV 面板顯示; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: disp-panel
+  name_en: Display — LCD/OLED Panel
+  name_zh: 面板顯示｜面板
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3481", n: "Innolux", role: peer}
+    - {t: "2409", n: "AUO", role: peer}
+    - {t: "6116", n: "HannStar Display", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-panel-equip
+  name_en: Display — Panel Equipment
+  name_zh: 面板顯示｜面板設備
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "5443", n: "Gallant Precision Machining", role: peer}
+    - {t: "2467", n: "C Sun Mfg", role: peer}
+    - {t: "3455", n: "Utechzone", role: peer}
+    - {t: "8064", n: "Contrel Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-driver-ic
+  name_en: Display — LCD Driver IC
+  name_zh: 面板顯示｜LCD驅動IC
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3545", n: "FocalTech Systems", role: peer}
+    - {t: "3034", n: "Novatek Microelectronics", role: peer}
+    - {t: "4961", n: "Fitipower Integrated Technology", role: peer}
+    - {t: "6129", n: "Princeton Technology", role: peer}
+    - {t: "3141", n: "Ultra Chip", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-lcm
+  name_en: Display — LCD Module
+  name_zh: 面板顯示｜LCM
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3038", n: "Emerging Display Technologies", role: peer}
+    - {t: "6167", n: "Powertip Technology", role: peer}
+    - {t: "8105", n: "Giantplus Technology", role: peer}
+    - {t: "5315", n: "United Radiant Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-backlight
+  name_en: Display — Backlight
+  name_zh: 面板顯示｜背光板
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "8085", n: "Forward Electronics", role: peer}
+    - {t: "5371", n: "Coretronic", role: peer}
+    - {t: "6176", n: "Radiant Opto-Electronics", role: peer}
+    - {t: "6120", n: "Darwin Precisions", role: peer}
+    - {t: "4935", n: "Global Lighting Technologies", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-touch
+  name_en: Display — Touch Panel
+  name_zh: 面板顯示｜觸控面板
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3673", n: "TPK Holding", role: peer}
+    - {t: "6456", n: "General Interface Solution (GIS) Holding", role: peer}
+    - {t: "3049", n: "HannsTouch Holdings Company", role: peer}
+    - {t: "3622", n: "Young Fast Optoelectronics", role: peer}
+    - {t: "4729", n: "Mildex Optical", role: peer}
+    - {t: "2429", n: "Abonmax, Ltd", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-projector
+  name_en: Display — Projector
+  name_zh: 面板顯示｜投影機
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3504", n: "Young Optics", role: peer}
+    - {t: "5371", n: "Coretronic", role: peer}
+    - {t: "6225", n: "aiPlex", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-video
+  name_en: Display — Video / STB
+  name_zh: 面板顯示｜視訊
+  cluster: Display
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "5474", n: "Yuan High-Tech Development", role: peer}
+    - {t: "2485", n: "Zinwell", role: peer}
+    - {t: "3466", n: "Skardin Industrial", role: peer}
+    - {t: "6152", n: "Prime Electronics & Satellitics", role: peer}
+    - {t: "2417", n: "AVerMedia Technologies", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Electronic Components  (財報狗/CSV 廣義電子零組件; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: comp-led
+  name_en: Components — LED
+  name_zh: 電子零組件｜LED
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2486", n: "I-Chiun Precision Industry", role: peer}
+    - {t: "3714", n: "ENNOSTAR", role: peer}
+    - {t: "2393", n: "Everlight Electronics", role: peer}
+    - {t: "1611", n: "China Electric Mfg", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-usb-ic
+  name_en: Components — USB IC
+  name_zh: 電子零組件｜USB IC
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6104", n: "Genesys Logic", role: peer}
+    - {t: "6233", n: "Prolific Technology", role: peer}
+    - {t: "4966", n: "Parade Technologies", role: peer}
+    - {t: "5269", n: "ASMedia Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-discrete
+  name_en: Components — Discrete Devices
+  name_zh: 電子零組件｜分離式元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "5425", n: "Taiwan Semiconductor", role: peer}
+    - {t: "2481", n: "PANJIT International", role: peer}
+    - {t: "2302", n: "Rectron", role: peer}
+    - {t: "3675", n: "Eris Technology", role: peer}
+    - {t: "8255", n: "Actron Technology", role: peer}
+    - {t: "8261", n: "Advanced Power Electronics", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-quartz
+  name_en: Components — Quartz / Crystal
+  name_zh: 電子零組件｜石英元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2484", n: "Siward Crystal Technology, Ltd", role: peer}
+    - {t: "3042", n: "TXC", role: peer}
+    - {t: "3221", n: "Tai-Saw Technology", role: peer}
+    - {t: "8289", n: "Taitien Electronics", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-sensor
+  name_en: Components — Sensor
+  name_zh: 電子零組件｜感測元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "4974", n: "Asia Tech Image", role: peer}
+    - {t: "6789", n: "VisEra Technologies Company", role: peer}
+    - {t: "8249", n: "Creative Sensor", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-fpc
+  name_en: Components — Flexible PCB
+  name_zh: 電子零組件｜軟板
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2402", n: "Ichia Technologies", role: peer}
+    - {t: "4958", n: "Zhen Ding Technology Holding", role: peer}
+    - {t: "6269", n: "Flexium Interconnect", role: peer}
+    - {t: "6153", n: "Career Technology (Mfg.)", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-fpc-material
+  name_en: Components — FPC Material
+  name_zh: 電子零組件｜軟板材料
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3354", n: "Microcosm Technology", role: peer}
+    - {t: "3645", n: "Taimide Tech", role: peer}
+    - {t: "4939", n: "Asia Electronic Material", role: peer}
+    - {t: "8039", n: "Taiflex Scientific", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-acoustic
+  name_en: Components — Acoustic
+  name_zh: 電子零組件｜電聲
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2439", n: "Merry Electronics", role: peer}
+    - {t: "3206", n: "Kingstate Electronics", role: peer}
+    - {t: "5457", n: "Speed Tech", role: peer}
+    - {t: "6743", n: "AMPACS", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-chassis
+  name_en: Components — Chassis / Casing
+  name_zh: 電子零組件｜機殼
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6235", n: "Waffer Technology", role: peer}
+    - {t: "3013", n: "Chenming Electronic Tech", role: peer}
+    - {t: "3032", n: "Compucase Enterprise", role: peer}
+    - {t: "5465", n: "Loyalty Founder Enterprise", role: peer}
+    - {t: "3540", n: "Thermaltake Technology", role: peer}
+    - {t: "8210", n: "Chenbro Micom", role: peer}
+    - {t: "3325", n: "Casing Macron Technology", role: peer}
+    - {t: "3693", n: "AIC", role: peer}
+    - {t: "3508", n: "Ways Technical", role: peer}
+    - {t: "2354", n: "Foxconn Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-hinge
+  name_en: Components — Hinge
+  name_zh: 電子零組件｜樞紐
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1582", n: "Syncmold Enterprise", role: peer}
+    - {t: "3376", n: "Shin Zu Shing", role: peer}
+    - {t: "3548", n: "Jarllytec", role: peer}
+    - {t: "4999", n: "Sinher Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-gps
+  name_en: Components — GPS
+  name_zh: 電子零組件｜GPS
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3306", n: "RoyalTek Company", role: peer}
+    - {t: "3499", n: "GlobalSat WorldCom", role: peer}
+    - {t: "3632", n: "Papago", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Networking & Digital  (財報狗/CSV 網通資安數位; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: net-wireless
+  name_en: Networking — Wireless / Networking
+  name_zh: 網通數位｜無線網路
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3380", n: "Alpha Networks", role: peer}
+    - {t: "6285", n: "WNC", role: peer}
+    - {t: "2332", n: "D-Link", role: peer}
+    - {t: "4906", n: "Gemtek Technology", role: peer}
+    - {t: "3558", n: "Senao Networks", role: peer}
+    - {t: "6470", n: "U-MEDIA Communications", role: peer}
+    - {t: "5388", n: "Sercomm", role: peer}
+    - {t: "3596", n: "Arcadyan Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-surveillance
+  name_en: Networking — Security Surveillance
+  name_zh: 網通數位｜安全監控
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3356", n: "GeoVision", role: peer}
+    - {t: "3128", n: "Hi Sharp Intelligence Technology", role: peer}
+    - {t: "2390", n: "Everspring Industry", role: peer}
+    - {t: "8072", n: "AV TECH", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-cybersec
+  name_en: Networking — Cybersecurity
+  name_zh: 網通數位｜資安
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3029", n: "Zero One Technology", role: peer}
+    - {t: "6245", n: "Lanner Electronics", role: peer}
+    - {t: "3564", n: "AEWIN Technologies", role: peer}
+    - {t: "3664", n: "Array", role: peer}
+    - {t: "6416", n: "CASwell", role: peer}
+    - {t: "6690", n: "Acer Cyber Security", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-gaming
+  name_en: Networking — Gaming
+  name_zh: 網通數位｜遊戲
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6111", n: "Star Fusion Group", role: peer}
+    - {t: "6180", n: "Gamania Digital Entertainment", role: peer}
+    - {t: "3293", n: "International Games System", role: peer}
+    - {t: "3546", n: "USERJOY Technology", role: peer}
+    - {t: "5478", n: "Soft-World International", role: peer}
+    - {t: "5263", n: "Brogent Technologies", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-solar
+  name_en: Networking — Solar
+  name_zh: 網通數位｜太陽能
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6443", n: "TSEC", role: peer}
+    - {t: "6244", n: "Motech Industries", role: peer}
+    - {t: "3576", n: "United Renewable Energy", role: peer}
+    - {t: "5483", n: "Sino-American Silicon Products", role: peer}
+    - {t: "6477", n: "ANJI Technology", role: peer}
+    - {t: "3691", n: "Giga Solar Materials", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-cleanroom
+  name_en: Networking — Cleanroom Engineering
+  name_zh: 網通數位｜無塵室工程
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6139", n: "L&K Engineering", role: peer}
+    - {t: "5536", n: "Acter Group", role: peer}
+    - {t: "2404", n: "United Integrated Services", role: peer}
+    - {t: "6196", n: "Marketech International", role: peer}
+    - {t: "6691", n: "Yankey Engineering", role: peer}
+    - {t: "6667", n: "Trusval Technology", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-verification
+  name_en: Networking — Electronic Verification
+  name_zh: 網通數位｜電子驗證
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3138", n: "Auden Techno", role: peer}
+    - {t: "3289", n: "Integrated Service Technology", role: peer}
+    - {t: "3587", n: "Materials Analysis Technology", role: peer}
+    - {t: "6146", n: "Sporton International", role: peer}
+    - {t: "6830", n: "Msscorps", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-ic-distrib
+  name_en: Networking — IC Component Distribution
+  name_zh: 網通數位｜IC零組件通路
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3232", n: "Sentronic International", role: peer}
+    - {t: "3702", n: "WPG Holdings", role: peer}
+    - {t: "8112", n: "Supreme Electronics", role: peer}
+    - {t: "3028", n: "Zenitron", role: peer}
+    - {t: "3033", n: "Weikeng Industrial", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
