@@ -2057,7 +2057,7 @@
                             {/* US basket members */}
                             {data.us_members && data.us_members.length > 0 && (
                                 <div>
-                                    <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">美股龍頭（觸發籃）</div>
+                                    <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">美股龍頭（觸發籃 · 漲跌為近 5 日累計，非當日）</div>
                                     <div className="flex flex-wrap gap-2">
                                         {data.us_members.map(m => (
                                             <div key={m.ticker} className="px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-sm">
