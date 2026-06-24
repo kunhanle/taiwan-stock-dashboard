@@ -82,7 +82,8 @@ def category_two_layer(session: Session, slug: str, price_period: str = "3mo",
     # US basket members: window move (A) + latest revenue YoY (B), so the UI
     # shows the US side too, not just the TW read-through.
     rev_map = b.get("us_members_rev", {})
-    us_members = [{"ticker": m["ticker"], "move": m["move"], "rev_yoy": rev_map.get(m["ticker"])}
+    us_members = [{"ticker": m["ticker"], "move": m["move"], "move_1d": m.get("move_1d"),
+                   "rev_yoy": rev_map.get(m["ticker"])}
                   for m in a.get("us_members", [])]
 
     return {

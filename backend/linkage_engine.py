@@ -352,8 +352,10 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     # Per-US-member moves over the window (so the UI can show the US side too).
     us_members = []
     for s in us_syms:
-        m = _move_and_z(returns[s], window)[0] if s in returns.columns else None
-        us_members.append({"ticker": s, "move": m})
+        present = s in returns.columns
+        m = _move_and_z(returns[s], window)[0] if present else None
+        m1 = _move_and_z(returns[s], 1)[0] if present else None  # last completed session
+        us_members.append({"ticker": s, "move": m, "move_1d": m1})
 
     prior = LINKAGE_PRIOR.get(cat.linkage, 0.5)
     scored_nodes = [n for n in cat.tw_nodes if not n.exclude_from_scoring]
