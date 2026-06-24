@@ -13,6 +13,7 @@ slow on a cold cache, so results are TTL-cached. For production, a scheduled job
 should pre-warm these (see PLAN step 6).
 """
 import json
+import math
 import time
 from pathlib import Path
 
@@ -36,6 +37,19 @@ SNAPSHOT_MAX_AGE = 36 * 3600  # 36h
 _snap = {"data": None, "mtime": 0.0}
 
 
+def _clean_nan(o):
+    """Recursively replace NaN/Inf floats with None. JSON has no NaN, so FastAPI's
+    serializer raises (500) on any NaN that slips through (e.g. a node's b_corr_raw
+    when revenue history is too sparse to correlate). Sanitize before returning."""
+    if isinstance(o, float):
+        return None if (math.isnan(o) or math.isinf(o)) else o
+    if isinstance(o, dict):
+        return {k: _clean_nan(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_clean_nan(v) for v in o]
+    return o
+
+
 def _snapshot():
     if not SNAPSHOT.exists():
         return None
@@ -44,7 +58,7 @@ def _snapshot():
         return None
     if _snap["mtime"] != mtime:
         try:
-            _snap["data"] = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+            _snap["data"] = _clean_nan(json.loads(SNAPSHOT.read_text(encoding="utf-8")))
             _snap["mtime"] = mtime
         except Exception:
             _snap["data"] = None
@@ -82,7 +96,7 @@ def category_two_layer(slug: str, refresh: bool = Query(False),
     key = f"two:{slug}"
     if refresh:
         _CACHE.pop(key, None)
-    return _cached(key, HEAVY_TTL, lambda: ls.category_two_layer(session, slug))
+    return _clean_nan(_cached(key, HEAVY_TTL, lambda: ls.category_two_layer(session, slug)))
 
 
 @router.get("/movers")
