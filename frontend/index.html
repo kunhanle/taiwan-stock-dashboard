@@ -1969,6 +1969,7 @@
                                 <i data-lucide="bar-chart-3" className="w-4 h-4 text-teal-400"></i>
                                 <span className="text-sm font-semibold text-teal-300">跨類別相對強度排行</span>
                                 <span className="text-xs text-slate-500">全 {overview.categories.length} 類依超額排序（點列查兩層明細）</span>
+                                {overview.generated_at && <span className="text-xs text-slate-600" title="快照資料時間，反映最近一個美股「收盤」session，非即時盤中價">資料: {new Date(overview.generated_at).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}（美股收盤快照）</span>}
                                 <div className="flex gap-1 ml-auto">
                                     {[['all', '全部'], ['^SOX', '費半'], ['QQQ', '科技'], ['^GSPC', '大盤']].map(([k, lbl]) => (
                                         <button key={k} onClick={() => setObench(k)}

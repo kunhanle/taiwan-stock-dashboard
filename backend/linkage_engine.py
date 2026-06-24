@@ -167,19 +167,30 @@ def _repair_latest(close_df: pd.DataFrame) -> list[str]:
     calendar — production should use a reliable EOD source; see PLAN step 6)."""
     if close_df.empty:
         return []
-    target = close_df.index.max()
     patched = []
+    # Group by MARKET (suffix after the last dot; bare symbol = US). A mixed-market
+    # fetch builds a UNION index of every market's trading days, so e.g. a US stock
+    # gets a phantom NaN bar on an Asia-only session date. Repairing against the
+    # global index.max() would then inject a realtime quote on that phantom day and
+    # corrupt the move. Repair each symbol only against ITS OWN market's latest
+    # session (the lone-missing-US-ticker case this exists for is intra-market).
+    groups: dict[str, list[str]] = {}
     for sym in close_df.columns:
-        s = close_df[sym]
-        valid = s.dropna()
-        if valid.empty:
+        mkt = sym.rsplit(".", 1)[1] if "." in sym else "US"
+        groups.setdefault(mkt, []).append(sym)
+    for syms in groups.values():
+        sub = close_df[syms].dropna(how="all")
+        if sub.empty:
             continue
-        if pd.isna(s.loc[target]) or valid.index.max() < target:
+        target = sub.index.max()  # latest real session for THIS market
+        for sym in syms:
+            valid = close_df[sym].dropna()
+            if valid.empty or valid.index.max() >= target:
+                continue  # up to date for its market -> nothing to repair
             try:
                 lp = yf.Ticker(sym).fast_info.last_price
             except Exception:
                 lp = None
-            # Only accept the quote if it's genuinely newer than the last bar.
             if lp and float(lp) != float(valid.iloc[-1]):
                 close_df.loc[target, sym] = float(lp)
                 patched.append(sym)
@@ -226,12 +237,16 @@ def _basket_return(returns: pd.DataFrame, us_syms: list[str]) -> pd.Series:
 
 
 def _move_and_z(basket: pd.Series, window: int) -> tuple[float, float]:
-    """Cumulative basket return over last `window` days + z-score vs daily vol."""
-    if basket.empty:
+    """Cumulative return over the last `window` VALID days + z-score vs daily vol.
+    dropna first: a mixed-market union index leaves phantom trailing NaN bars (an
+    Asia-only session a US name didn't trade), and tail() on those would read a
+    missing/repaired bar instead of the symbol's real last session."""
+    s = basket.dropna()
+    if s.empty:
         return 0.0, 0.0
-    recent = basket.tail(window)
+    recent = s.tail(window)
     move = float((1 + recent).prod() - 1)
-    vol = float(basket.std())
+    vol = float(s.std())
     z = move / (vol * (window ** 0.5)) if vol > 0 else 0.0
     return move, z
 
