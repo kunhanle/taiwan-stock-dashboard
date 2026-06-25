@@ -1487,7 +1487,7 @@
   name_zh: 生技醫療｜原料藥
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: ["LONN.SW", "2359.HK", "603259.SS", "SFZN.SW", "DRREDDY.NS"]
   tw_linkage:
     - {t: "4746", n: "Formosa Laboratories", role: peer}
     - {t: "4102", n: "Yung Zip Chemical Ind", role: peer}
@@ -1501,7 +1501,7 @@
   name_zh: 生技醫療｜西藥
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [PFE, NVS, TEVA, VTRS, "SUNPHARMA.NS", SNY]
   tw_linkage:
     - {t: "1795", n: "Lotus Pharmaceutical", role: peer}
     - {t: "6535", n: "Lumosa Therapeutics", role: peer}
@@ -1517,7 +1517,7 @@
   name_zh: 生技醫療｜新藥研發
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [LLY, NVO, MRK, ABBV, REGN, VRTX]
   tw_linkage:
     - {t: "6550", n: "Polaris Group", role: peer}
     - {t: "6535", n: "Lumosa Therapeutics", role: peer}
@@ -1534,7 +1534,7 @@
   name_zh: 生技醫療｜生物製劑
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [AMGN, RHHBY, "SDZ.SW", SNY, "2359.HK"]
   tw_linkage:
     - {t: "6547", n: "Medigen Vaccine Biologics", role: peer}
     - {t: "4142", n: "Adimmune", role: peer}
@@ -1547,7 +1547,7 @@
   name_zh: 生技醫療｜隱形眼鏡
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [ALC, COO, JNJ, BLCO]
   tw_linkage:
     - {t: "6782", n: "Visco Vision", role: peer}
     - {t: "6491", n: "Pegavision", role: peer}
@@ -1559,7 +1559,7 @@
   name_zh: 生技醫療｜醫療服務
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [UNH, HCA, FMS, DVA, CVS]
   tw_linkage:
     - {t: "3218", n: "Universal Vision Biotechnology", role: peer}
     - {t: "4139", n: "Ma Kuang Healthcare Holding", role: peer}
@@ -1571,7 +1571,7 @@
   name_zh: 生技醫療｜醫材通路
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [MDT, SYK, BDX, HSIC, BSX]
   tw_linkage:
     - {t: "4164", n: "CHC Healthcare Group", role: peer}
     - {t: "4104", n: "Excelsior Medical", role: peer}
@@ -1584,7 +1584,7 @@
   name_zh: 生技醫療｜基因檢測
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [ILMN, TMO, PACB, NTRA, QGEN]
   tw_linkage:
     - {t: "4160", n: "Genetics Generation Advancement", role: peer}
     - {t: "6236", n: "Neith", role: peer}
@@ -1596,7 +1596,7 @@
   name_zh: 生技醫療｜檢測試劑
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [RHHBY, ABT, DHR, TMO, BIO]
   tw_linkage:
     - {t: "4155", n: "OK Biotech", role: peer}
     - {t: "4171", n: "GeneReach Biotechnology", role: peer}
@@ -1608,7 +1608,7 @@
   name_zh: 生技醫療｜保健品
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [HLN, "NESN.SW", ABT, HLF, USNA]
   tw_linkage:
     - {t: "1720", n: "Standard Chemical & Pharmaceutical", role: peer}
     - {t: "8436", n: "TCI", role: peer}
@@ -1622,7 +1622,7 @@
   name_zh: 生技醫療｜藥品通路
   cluster: Healthcare & Biotech
   linkage: weak
-  us_tickers: []
+  us_tickers: [MCK, COR, CAH]
   tw_linkage:
     - {t: "4114", n: "Synmosa Biopharma", role: peer}
     - {t: "4173", n: "Arich Enterprise", role: peer}
@@ -1638,7 +1638,7 @@
   name_zh: 航運物流｜航空
   cluster: Shipping & Logistics
   linkage: weak
-  us_tickers: []
+  us_tickers: [DAL, UAL, AAL, "LHA.DE", "C6L.SI", "0293.HK"]
   tw_linkage:
     - {t: "2610", n: "China Airlines", role: peer}
     - {t: "2618", n: "EVA Airways", role: peer}
@@ -1649,7 +1649,7 @@
   name_zh: 航運物流｜貨櫃航
   cluster: Shipping & Logistics
   linkage: weak
-  us_tickers: []
+  us_tickers: ["MAERSK-B.CO", "HLAG.DE", ZIM, "601919.SS", "1919.HK", "011200.KS"]
   tw_linkage:
     - {t: "2603", n: "Evergreen Marine (Taiwan)", role: peer}
     - {t: "2609", n: "Yang Ming Marine Transport", role: peer}
@@ -1661,7 +1661,7 @@
   name_zh: 航運物流｜散裝航
   cluster: Shipping & Logistics
   linkage: weak
-  us_tickers: []
+  us_tickers: [SBLK, "9101.T", "9104.T", "9107.T", GNK]
   tw_linkage:
     - {t: "2637", n: "Wisdom Marine Lines", role: peer}
     - {t: "2606", n: "U-Ming Marine Transport", role: peer}
@@ -1676,7 +1676,7 @@
   name_zh: 航運物流｜物流
   cluster: Shipping & Logistics
   linkage: weak
-  us_tickers: []
+  us_tickers: ["DHL.DE", "DSV.CO", "KNIN.SW", UPS, FDX]
   tw_linkage:
     - {t: "2607", n: "Evergreen International Storage & Transport", role: peer}
     - {t: "5607", n: "Farglory Free Trade Zone Investment Holding", role: peer}
@@ -1693,7 +1693,7 @@
   name_zh: 消費內需｜食品
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: ["NESN.SW", KHC, GIS, MDLZ, KO]
   tw_linkage:
     - {t: "1201", n: "Wei Chuan Foods", role: peer}
     - {t: "1203", n: "Ve Wong", role: peer}
@@ -1709,7 +1709,7 @@
   name_zh: 消費內需｜大宗物資
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [ADM, BG, "F34.SI", INGR]
   tw_linkage:
     - {t: "1210", n: "Great Wall Enterprise", role: peer}
     - {t: "1215", n: "Charoen Pokphand Enterprise (Taiwan)", role: peer}
@@ -1726,7 +1726,7 @@
   name_zh: 消費內需｜餐飲
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [MCD, SBUX, YUM, YUMC, QSR]
   tw_linkage:
     - {t: "2723", n: "Gourmet Master", role: peer}
     - {t: "2727", n: "Wowprime", role: peer}
@@ -1742,7 +1742,7 @@
   name_zh: 消費內需｜美妝
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: ["OR.PA", EL, "4911.T", "BEI.DE", ULTA]
   tw_linkage:
     - {t: "4137", n: "Chlitina Holding", role: peer}
     - {t: "6703", n: "Shiny Brands Group", role: peer}
@@ -1755,7 +1755,7 @@
   name_zh: 消費內需｜百貨
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [WMT, COST, "8267.T", M, TGT]
   tw_linkage:
     - {t: "2903", n: "Far Eastern Department Stores", role: peer}
     - {t: "2912", n: "President Chain Store", role: peer}
@@ -1768,7 +1768,7 @@
   name_zh: 消費內需｜旅行社
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [BKNG, EXPE, TCOM, ABNB]
   tw_linkage:
     - {t: "5706", n: "Phoenix Tours International", role: peer}
     - {t: "2731", n: "Lion Travel Service", role: peer}
@@ -1781,7 +1781,7 @@
   name_zh: 消費內需｜飯店
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [MAR, HLT, IHG, H]
   tw_linkage:
     - {t: "2736", n: "HOYA Resort Hotel Group", role: peer}
     - {t: "2748", n: "FDC International Hotels", role: peer}
@@ -1798,7 +1798,7 @@
   name_zh: 消費內需｜運動
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [NKE, "ADS.DE", LULU, DECK, ONON]
   tw_linkage:
     - {t: "1598", n: "Dyaco International", role: peer}
     - {t: "1736", n: "Johnson Health Tech .Co", role: peer}
@@ -1811,7 +1811,7 @@
   name_zh: 消費內需｜高爾夫
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [GOLF]
   tw_linkage:
     - {t: "6670", n: "FuSheng Precision", role: peer}
     - {t: "8924", n: "O-TA Precision Industry", role: peer}
@@ -1824,7 +1824,7 @@
   name_zh: 消費內需｜瓶罐
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [BALL, CCK, AMCR, OI]
   tw_linkage:
     - {t: "9939", n: "Taiwan Hon Chuan Enterprise", role: peer}
     - {t: "9907", n: "Ton Yi", role: peer}
@@ -1835,7 +1835,7 @@
   name_zh: 消費內需｜文創
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [DIS, NFLX, "7832.T", "9697.T", WBD]
   tw_linkage:
     - {t: "6625", n: "B'in Live", role: peer}
     - {t: "8446", n: "HIM International Music", role: peer}
@@ -1849,7 +1849,7 @@
   name_zh: 消費內需｜回收
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [WM, RSG, WCN, VEOEY]
   tw_linkage:
     - {t: "9955", n: "Super Dragon Technology, Ltd", role: peer}
     - {t: "8422", n: "Cleanaway Company", role: peer}
@@ -1863,7 +1863,7 @@
   name_zh: 消費內需｜家電
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [WHR, "ELUX-B.ST", "000333.SZ", "600690.SS", "6758.T"]
   tw_linkage:
     - {t: "2371", n: "Tatung", role: peer}
     - {t: "1504", n: "TECO Electric & Machinery", role: peer}
@@ -1876,7 +1876,7 @@
   name_zh: 消費內需｜3C通路
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [BBY, JD, "9831.T", "CURY.L"]
   tw_linkage:
     - {t: "2347", n: "Synnex Technology International", role: peer}
     - {t: "2430", n: "Tsann Kuen Enterprise", role: peer}
@@ -1889,7 +1889,7 @@
   name_zh: 消費內需｜電腦通路
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [SNX, INGM, ARW, AVT]
   tw_linkage:
     - {t: "6118", n: "Xander International", role: peer}
     - {t: "5386", n: "Albatron Technology, Ltd", role: peer}
@@ -1902,7 +1902,7 @@
   name_zh: 消費內需｜電子商務
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [AMZN, BABA, PDD, SHOP, MELI]
   tw_linkage:
     - {t: "6741", n: "91APP", role: peer}
     - {t: "5321", n: "United Recommend International", role: peer}
@@ -1916,7 +1916,7 @@
   name_zh: 消費內需｜電子支付
   cluster: Consumer & Retail
   linkage: weak
-  us_tickers: []
+  us_tickers: [V, MA, PYPL, XYZ, "ADYEN.AS"]
   tw_linkage:
     - {t: "3687", n: "MacroWell OMG Digital Entertainment", role: peer}
     - {t: "5478", n: "Soft-World International", role: peer}
@@ -1931,7 +1931,7 @@
   name_zh: 面板顯示｜面板
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: ["005930.KS", "034220.KS", LPL, "000725.SZ", "000100.SZ", "6753.T"]
   tw_linkage:
     - {t: "3481", n: "Innolux", role: peer}
     - {t: "2409", n: "AUO", role: peer}
@@ -1943,7 +1943,7 @@
   name_zh: 面板顯示｜面板設備
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: [AMAT, "8035.T", LRCX, KLAC]
   tw_linkage:
     - {t: "5443", n: "Gallant Precision Machining", role: peer}
     - {t: "2467", n: "C Sun Mfg", role: peer}
@@ -1956,7 +1956,7 @@
   name_zh: 面板顯示｜LCD驅動IC
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: [HIMX, "005930.KS", "000725.SZ"]
   tw_linkage:
     - {t: "3545", n: "FocalTech Systems", role: peer}
     - {t: "3034", n: "Novatek Microelectronics", role: peer}
@@ -1970,7 +1970,7 @@
   name_zh: 面板顯示｜LCM
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: ["000725.SZ", "034220.KS", "6753.T"]
   tw_linkage:
     - {t: "3038", n: "Emerging Display Technologies", role: peer}
     - {t: "6167", n: "Powertip Technology", role: peer}
@@ -1983,7 +1983,7 @@
   name_zh: 面板顯示｜背光板
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: [GLW, "000725.SZ", "6988.T"]
   tw_linkage:
     - {t: "8085", n: "Forward Electronics", role: peer}
     - {t: "5371", n: "Coretronic", role: peer}
@@ -1997,7 +1997,7 @@
   name_zh: 面板顯示｜觸控面板
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: [GLW, "005930.KS", "034220.KS"]
   tw_linkage:
     - {t: "3673", n: "TPK Holding", role: peer}
     - {t: "6456", n: "General Interface Solution (GIS) Holding", role: peer}
@@ -2012,7 +2012,7 @@
   name_zh: 面板顯示｜投影機
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6724.T", "6758.T", "7751.T"]
   tw_linkage:
     - {t: "3504", n: "Young Optics", role: peer}
     - {t: "5371", n: "Coretronic", role: peer}
@@ -2024,7 +2024,7 @@
   name_zh: 面板顯示｜視訊
   cluster: Display
   linkage: weak
-  us_tickers: []
+  us_tickers: [ROKU, "005930.KS"]
   tw_linkage:
     - {t: "5474", n: "Yuan High-Tech Development", role: peer}
     - {t: "2485", n: "Zinwell", role: peer}
@@ -2041,7 +2041,7 @@
   name_zh: 電子零組件｜LED
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: ["AMS.SW", "046890.KS", "6963.T"]
   tw_linkage:
     - {t: "2486", n: "I-Chiun Precision Industry", role: peer}
     - {t: "3714", n: "ENNOSTAR", role: peer}
@@ -2054,7 +2054,7 @@
   name_zh: 電子零組件｜USB IC
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [DIOD, ON, "IFX.DE"]
   tw_linkage:
     - {t: "6104", n: "Genesys Logic", role: peer}
     - {t: "6233", n: "Prolific Technology", role: peer}
@@ -2067,7 +2067,7 @@
   name_zh: 電子零組件｜分離式元件
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [ON, "IFX.DE", STM, VSH, "6963.T"]
   tw_linkage:
     - {t: "5425", n: "Taiwan Semiconductor", role: peer}
     - {t: "2481", n: "PANJIT International", role: peer}
@@ -2082,7 +2082,7 @@
   name_zh: 電子零組件｜石英元件
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [SITM, "6724.T", "6779.T", "6962.T"]
   tw_linkage:
     - {t: "2484", n: "Siward Crystal Technology, Ltd", role: peer}
     - {t: "3042", n: "TXC", role: peer}
@@ -2095,7 +2095,7 @@
   name_zh: 電子零組件｜感測元件
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6758.T", "603501.SS", STM, "AMS.SW"]
   tw_linkage:
     - {t: "4974", n: "Asia Tech Image", role: peer}
     - {t: "6789", n: "VisEra Technologies Company", role: peer}
@@ -2107,7 +2107,7 @@
   name_zh: 電子零組件｜軟板
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: ["5802.T", "6981.T"]
   tw_linkage:
     - {t: "2402", n: "Ichia Technologies", role: peer}
     - {t: "4958", n: "Zhen Ding Technology Holding", role: peer}
@@ -2120,7 +2120,7 @@
   name_zh: 電子零組件｜軟板材料
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [DD, "4118.T", "178920.KS", "4208.T"]
   tw_linkage:
     - {t: "3354", n: "Microcosm Technology", role: peer}
     - {t: "3645", n: "Taimide Tech", role: peer}
@@ -2133,7 +2133,7 @@
   name_zh: 電子零組件｜電聲
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [KN, "2018.HK", "002241.SZ"]
   tw_linkage:
     - {t: "2439", n: "Merry Electronics", role: peer}
     - {t: "3206", n: "Kingstate Electronics", role: peer}
@@ -2146,7 +2146,7 @@
   name_zh: 電子零組件｜機殼
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: ["0285.HK", "300433.SZ"]
   tw_linkage:
     - {t: "6235", n: "Waffer Technology", role: peer}
     - {t: "3013", n: "Chenming Electronic Tech", role: peer}
@@ -2178,7 +2178,7 @@
   name_zh: 電子零組件｜GPS
   cluster: Electronic Components
   linkage: weak
-  us_tickers: []
+  us_tickers: [GRMN, TRMB]
   tw_linkage:
     - {t: "3306", n: "RoyalTek Company", role: peer}
     - {t: "3499", n: "GlobalSat WorldCom", role: peer}
@@ -2193,7 +2193,7 @@
   name_zh: 網通數位｜無線網路
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: [CSCO, ANET, AVGO, QCOM, UI, NTGR]
   tw_linkage:
     - {t: "3380", n: "Alpha Networks", role: peer}
     - {t: "6285", n: "WNC", role: peer}
@@ -2210,7 +2210,7 @@
   name_zh: 網通數位｜安全監控
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: ["002415.SZ", "002236.SZ", MSI, AXON]
   tw_linkage:
     - {t: "3356", n: "GeoVision", role: peer}
     - {t: "3128", n: "Hi Sharp Intelligence Technology", role: peer}
@@ -2223,7 +2223,7 @@
   name_zh: 網通數位｜資安
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: [CRWD, PANW, ZS, FTNT, CHKP]
   tw_linkage:
     - {t: "3029", n: "Zero One Technology", role: peer}
     - {t: "6245", n: "Lanner Electronics", role: peer}
@@ -2238,7 +2238,7 @@
   name_zh: 網通數位｜遊戲
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: ["0700.HK", NTES, "7974.T", TTWO, EA, RBLX, "259960.KS"]
   tw_linkage:
     - {t: "6111", n: "Star Fusion Group", role: peer}
     - {t: "6180", n: "Gamania Digital Entertainment", role: peer}
@@ -2253,7 +2253,7 @@
   name_zh: 網通數位｜太陽能
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: [FSLR, ENPH, "601012.SS", "300274.SZ", JKS, CSIQ, SEDG]
   tw_linkage:
     - {t: "6443", n: "TSEC", role: peer}
     - {t: "6244", n: "Motech Industries", role: peer}
@@ -2283,7 +2283,7 @@
   name_zh: 網通數位｜電子驗證
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: ["SGSN.SW", "BVI.PA", "ITRK.L", "ERF.PA", ULS]
   tw_linkage:
     - {t: "3138", n: "Auden Techno", role: peer}
     - {t: "3289", n: "Integrated Service Technology", role: peer}
@@ -2297,7 +2297,7 @@
   name_zh: 網通數位｜IC零組件通路
   cluster: Networking & Digital
   linkage: weak
-  us_tickers: []
+  us_tickers: [ARW, AVT]
   tw_linkage:
     - {t: "3232", n: "Sentronic International", role: peer}
     - {t: "3702", n: "WPG Holdings", role: peer}

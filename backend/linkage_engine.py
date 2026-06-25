@@ -105,6 +105,9 @@ TECH_CLUSTERS = {
     "Liquid Cooling",
     "LEO Satellite",
     "Optical Lens",
+    "Display",
+    "Electronic Components",
+    "Networking & Digital",
 }
 
 
