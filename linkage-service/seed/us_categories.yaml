@@ -1032,9 +1032,9 @@
   linkage: weak
   us_tickers: [DOW, LYB, WLK, "BAS.DE", "4188.T"]
   tw_linkage:
-    - {t: "1316", n: Sun Yad Construction, role: peer}
-    - {t: "4770", n: Allied Supreme, role: peer}
-    - {t: "3708", n: Swancor Holding, LTD., role: peer}
+    - {t: "1316", n: "上曜", role: peer}
+    - {t: "4770", n: "上品", role: peer}
+    - {t: "3708", n: "上緯投控", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-photocure
@@ -1044,9 +1044,9 @@
   linkage: weak
   us_tickers: ["AKE.PA"]
   tw_linkage:
-    - {t: "1711", n: Everlight Chemical Industrial, role: peer}
-    - {t: "1721", n: Sunko Ink, role: peer}
-    - {t: "3430", n: Chitec Technology, role: peer}
+    - {t: "1711", n: "永光", role: peer}
+    - {t: "1721", n: "三晃", role: peer}
+    - {t: "3430", n: "奇鈦科", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-pesticide
@@ -1056,8 +1056,8 @@
   linkage: weak
   us_tickers: [CTVA, FMC, "BAYN.DE", "600486.SS"]
   tw_linkage:
-    - {t: "1712", n: Sinon, role: peer}
-    - {t: "6508", n: Huikwang, role: peer}
+    - {t: "1712", n: "興農", role: peer}
+    - {t: "6508", n: "惠光", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-cleaning
@@ -1067,9 +1067,9 @@
   linkage: weak
   us_tickers: [PG, CL, "RKT.L", "ULVR.L", SCL]
   tw_linkage:
-    - {t: "4707", n: Pan Asia Chemical, role: peer}
-    - {t: "1731", n: MAYWUFA CO, role: peer}
-    - {t: "1732", n: Mao Bao, role: peer}
+    - {t: "4707", n: "磐亞", role: peer}
+    - {t: "1731", n: "美吾華", role: peer}
+    - {t: "1732", n: "毛寶", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-battery-materials
@@ -1079,9 +1079,9 @@
   linkage: weak
   us_tickers: [ALB, SQM, "003670.KS", "300750.SZ", "002460.SZ", "002709.SZ"]
   tw_linkage:
-    - {t: "4721", n: Mechema Chemicals International, role: peer}
-    - {t: "4739", n: Coremax, role: peer}
-    - {t: "5227", n: Advanced Lithium Electrochemistry, role: peer}
+    - {t: "4721", n: "美琪瑪", role: peer}
+    - {t: "4739", n: "康普", role: peer}
+    - {t: "5227", n: "立凱-KY", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-building-materials
@@ -1091,11 +1091,11 @@
   linkage: weak
   us_tickers: [VMC, MLM, "HOLN.SW", CRH, "SGO.PA", JHX, "5938.T"]
   tw_linkage:
-    - {t: "1802", n: Taiwan Glass Ind., role: peer}
-    - {t: "1809", n: China Glaze, role: peer}
-    - {t: "8930", n: CKM Applied Materials, role: peer}
-    - {t: "1603", n: China Wire & Cable, role: peer}
-    - {t: "1806", n: Champion Building Materials, role: peer}
+    - {t: "1802", n: "台玻", role: peer}
+    - {t: "1809", n: "中釉", role: peer}
+    - {t: "8930", n: "青鋼", role: peer}
+    - {t: "1603", n: "華電", role: peer}
+    - {t: "1806", n: "冠軍", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mat-tape-adhesive
@@ -1105,9 +1105,9 @@
   linkage: weak
   us_tickers: [MMM, "HEN3.DE", "6988.T", FUL]
   tw_linkage:
-    - {t: "6509", n: Taiwan Hopax Chemicals Manufacturing, role: peer}
-    - {t: "4306", n: Yem Chio, role: peer}
-    - {t: "8354", n: Koan Hao Technology, role: peer}
+    - {t: "6509", n: "聚和", role: peer}
+    - {t: "4306", n: "炎洲", role: peer}
+    - {t: "8354", n: "冠好", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1120,10 +1120,10 @@
   linkage: weak
   us_tickers: ["601233.SS", "600346.SS"]
   tw_linkage:
-    - {t: "1402", n: Far Eastern New Century, role: peer}
-    - {t: "1444", n: Lealea Enterprise, role: peer}
-    - {t: "1445", n: Universal Textile, role: peer}
-    - {t: "4440", n: Yi Shin Textile Industrial, role: peer}
+    - {t: "1402", n: "遠東新", role: peer}
+    - {t: "1444", n: "力麗", role: peer}
+    - {t: "1445", n: "大宇", role: peer}
+    - {t: "4440", n: "宜新實業", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-cotton-spinning
@@ -1133,8 +1133,8 @@
   linkage: weak
   us_tickers: ["VTL.NS", "TRIDENT.NS"]
   tw_linkage:
-    - {t: "1440", n: Tainan Spinning, role: peer}
-    - {t: "4440", n: Yi Shin Textile Industrial, role: peer}
+    - {t: "1440", n: "南紡", role: peer}
+    - {t: "4440", n: "宜新實業", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-nylon
@@ -1144,9 +1144,9 @@
   linkage: weak
   us_tickers: ["3402.T", "3401.T", "3407.T", DD, CE]
   tw_linkage:
-    - {t: "1314", n: China Petrochemical Development, role: peer}
-    - {t: "1434", n: Formosa Taffeta, role: peer}
-    - {t: "1447", n: Li Peng Enterprise, role: peer}
+    - {t: "1314", n: "中石化", role: peer}
+    - {t: "1434", n: "福懋", role: peer}
+    - {t: "1447", n: "力鵬", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-polyester-fiber
@@ -1156,9 +1156,9 @@
   linkage: weak
   us_tickers: ["IVL.BK", "600346.SS", "601233.SS", "3402.T", "RELIANCE.NS"]
   tw_linkage:
-    - {t: "1402", n: Far Eastern New Century, role: peer}
-    - {t: "1718", n: China Man-Made Fiber, role: peer}
-    - {t: "1710", n: Oriental Union Chemical, role: peer}
+    - {t: "1402", n: "遠東新", role: peer}
+    - {t: "1718", n: "中纖", role: peer}
+    - {t: "1710", n: "東聯", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-weaving
@@ -1168,10 +1168,10 @@
   linkage: weak
   us_tickers: ["2313.HK", "VTL.NS"]
   tw_linkage:
-    - {t: "1460", n: Everest Textile, role: peer}
-    - {t: "1445", n: Universal Textile, role: peer}
-    - {t: "1476", n: Eclat Textile, role: peer}
-    - {t: "1464", n: De Licacy Industrial, role: peer}
+    - {t: "1460", n: "宏遠", role: peer}
+    - {t: "1445", n: "大宇", role: peer}
+    - {t: "1476", n: "儒鴻", role: peer}
+    - {t: "1464", n: "得力", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-dyeing
@@ -1181,9 +1181,9 @@
   linkage: weak
   us_tickers: [HUN]
   tw_linkage:
-    - {t: "1470", n: evertex fabrinology limited, role: peer}
-    - {t: "1463", n: CS Group Investment Holding, role: peer}
-    - {t: "1410", n: Nan Yang Dyeing & Finishing, role: peer}
+    - {t: "1470", n: "大統新創", role: peer}
+    - {t: "1463", n: "強盛新", role: peer}
+    - {t: "1410", n: "南染", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-nonwoven
@@ -1193,10 +1193,10 @@
   linkage: weak
   us_tickers: [MAGN, AMCR, "3402.T", "3407.T"]
   tw_linkage:
-    - {t: "9919", n: KNH Enterprise, role: peer}
-    - {t: "9944", n: Shinih Enterprise, role: peer}
-    - {t: "1325", n: Universal Incorporation, role: peer}
-    - {t: "6504", n: Nan Liu Enterprise, role: peer}
+    - {t: "9919", n: "康那香", role: peer}
+    - {t: "9944", n: "新麗", role: peer}
+    - {t: "1325", n: "恆大", role: peer}
+    - {t: "6504", n: "南六", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: textile-apparel
@@ -1206,11 +1206,11 @@
   linkage: weak
   us_tickers: [NKE, LULU, "ADS.DE", DECK, VFC, "2313.HK", "2232.HK"]
   tw_linkage:
-    - {t: "2915", n: Ruentex Industries, role: peer}
-    - {t: "1417", n: Carnival Industrial, role: peer}
-    - {t: "8916", n: Kwong Lung Enterprise, role: peer}
-    - {t: "1477", n: Makalot Industrial, role: peer}
-    - {t: "1476", n: Eclat Textile, role: peer}
+    - {t: "2915", n: "潤泰全", role: peer}
+    - {t: "1417", n: "嘉裕", role: peer}
+    - {t: "8916", n: "光隆", role: peer}
+    - {t: "1477", n: "聚陽", role: peer}
+    - {t: "1476", n: "儒鴻", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1223,10 +1223,10 @@
   linkage: weak
   us_tickers: ["6141.T", "6103.T", "6135.T", "6113.T"]
   tw_linkage:
-    - {t: "4510", n: "Kao Fong Machinery, Ltd", role: peer}
-    - {t: "4533", n: "Shieh Yih Machinery Industry", role: peer}
-    - {t: "6606", n: "KENT Industrial", role: peer}
-    - {t: "4526", n: "Tongtai Machine & Tool", role: peer}
+    - {t: "4510", n: "高鋒", role: peer}
+    - {t: "4533", n: "協易機", role: peer}
+    - {t: "6606", n: "建德工業", role: peer}
+    - {t: "4526", n: "東台", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mach-hand-tools
@@ -1236,10 +1236,10 @@
   linkage: weak
   us_tickers: [SWK, "6586.T", "0669.HK", EMR]
   tw_linkage:
-    - {t: "1539", n: "Chiu Ting Machinery", role: peer}
-    - {t: "1527", n: "Basso Industry", role: peer}
-    - {t: "1570", n: "De Poan Pneumatic", role: peer}
-    - {t: "1541", n: "CHANG TYPE Industrial", role: peer}
+    - {t: "1539", n: "巨庭", role: peer}
+    - {t: "1527", n: "鑽全", role: peer}
+    - {t: "1570", n: "力肯", role: peer}
+    - {t: "1541", n: "錩泰", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mach-components
@@ -1249,12 +1249,12 @@
   linkage: weak
   us_tickers: ["6481.T", "6471.T", "SKF-B.ST", "SHA0.DE", "6472.T", TKR]
   tw_linkage:
-    - {t: "1589", n: "Yeong Guan Energy Technology Group", role: peer}
-    - {t: "1560", n: "Kinik Company", role: peer}
-    - {t: "2049", n: "Hiwin Technologies", role: peer}
-    - {t: "4552", n: "Lida Holdings", role: peer}
-    - {t: "4532", n: "Rechi Precision", role: peer}
-    - {t: "1590", n: "Airtac International Group", role: peer}
+    - {t: "1589", n: "永冠-KY", role: peer}
+    - {t: "1560", n: "中砂", role: peer}
+    - {t: "2049", n: "上銀", role: peer}
+    - {t: "4552", n: "力達-KY", role: peer}
+    - {t: "4532", n: "瑞智", role: peer}
+    - {t: "1590", n: "亞德客-KY", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mach-industrial
@@ -1264,9 +1264,9 @@
   linkage: weak
   us_tickers: ["6954.T", "6506.T", "6273.T", "6383.T", "6861.T", "ABBN.SW"]
   tw_linkage:
-    - {t: "4744", n: "CVC Technologies", role: peer}
-    - {t: "1528", n: "Anderson Industrial", role: peer}
-    - {t: "6603", n: "Fu Chun Shin Machinery Manufacture", role: peer}
+    - {t: "4744", n: "皇將", role: peer}
+    - {t: "1528", n: "恩德", role: peer}
+    - {t: "6603", n: "富強鑫", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mach-die-stamping
@@ -1276,11 +1276,11 @@
   linkage: weak
   us_tickers: ["6118.T", "6113.T"]
   tw_linkage:
-    - {t: "5284", n: "JPP Holding Company", role: peer}
-    - {t: "5243", n: "Eson Precision Ind", role: peer}
-    - {t: "2476", n: "G-SHANK Enterprise", role: peer}
-    - {t: "1586", n: "China Fineblanking Technology", role: peer}
-    - {t: "1569", n: "Bin Chuan Enterprise", role: peer}
+    - {t: "5284", n: "jpp-KY", role: peer}
+    - {t: "5243", n: "乙盛-KY", role: peer}
+    - {t: "2476", n: "鉅祥", role: peer}
+    - {t: "1586", n: "和勤", role: peer}
+    - {t: "1569", n: "濱川", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: mach-shipbuilding
@@ -1290,9 +1290,9 @@
   linkage: weak
   us_tickers: ["329180.KS", "042660.KS", "010140.KS", "600150.SS", "7012.T"]
   tw_linkage:
-    - {t: "2208", n: "CSBC", role: peer}
-    - {t: "6753", n: "Lungteh Shipbuilding", role: peer}
-    - {t: "8478", n: "Alexander Marine", role: peer}
+    - {t: "2208", n: "台船", role: peer}
+    - {t: "6753", n: "龍德造船", role: peer}
+    - {t: "8478", n: "東哥遊艇", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1305,12 +1305,12 @@
   linkage: weak
   us_tickers: [XOM, CVX, SHEL, TTE, NEE]
   tw_linkage:
-    - {t: "1434", n: "Formosa Taffeta", role: peer}
-    - {t: "8926", n: "Taiwan Cogeneration", role: peer}
-    - {t: "8927", n: "North-Star International, LTD", role: peer}
-    - {t: "6505", n: "Formosa Petrochemical", role: peer}
-    - {t: "8931", n: "Ta-Yuan Cogeneration Company", role: peer}
-    - {t: "2904", n: "Prime Oil Chemical Service", role: peer}
+    - {t: "1434", n: "福懋", role: peer}
+    - {t: "8926", n: "台汽電", role: peer}
+    - {t: "8927", n: "北基", role: peer}
+    - {t: "6505", n: "台塑化", role: peer}
+    - {t: "8931", n: "大汽電", role: peer}
+    - {t: "2904", n: "匯僑", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: power-heavy-electrical
@@ -1320,11 +1320,11 @@
   linkage: weak
   us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "SU.PA", "6501.T"]
   tw_linkage:
-    - {t: "1519", n: "Fortune Electric", role: peer}
-    - {t: "1504", n: "TECO Electric & Machinery", role: peer}
-    - {t: "1513", n: "Chung-Hsin Electric and Machinery Manufacturing", role: peer}
-    - {t: "1503", n: "Shihlin Electric & Engineering", role: peer}
-    - {t: "1514", n: "Allis Electric", role: peer}
+    - {t: "1519", n: "華城", role: peer}
+    - {t: "1504", n: "東元", role: peer}
+    - {t: "1513", n: "中興電", role: peer}
+    - {t: "1503", n: "士電", role: peer}
+    - {t: "1514", n: "亞力", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: power-wire-cable
@@ -1334,12 +1334,12 @@
   linkage: weak
   us_tickers: ["PRY.MI", "NEX.PA", "NKT.CO", "600522.SS"]
   tw_linkage:
-    - {t: "1608", n: "Hua Eng Wire & Cable", role: peer}
-    - {t: "1609", n: "Ta Ya Electric Wire & Cable", role: peer}
-    - {t: "1605", n: "Walsin Lihwa", role: peer}
-    - {t: "1618", n: "Hold-Key Electric Wire & Cable, Ltd", role: peer}
-    - {t: "1612", n: "Hong Tai Electric Industrial", role: peer}
-    - {t: "1616", n: "Evertop Wire Cable", role: peer}
+    - {t: "1608", n: "華榮", role: peer}
+    - {t: "1609", n: "大亞", role: peer}
+    - {t: "1605", n: "華新", role: peer}
+    - {t: "1618", n: "合機", role: peer}
+    - {t: "1612", n: "宏泰", role: peer}
+    - {t: "1616", n: "億泰", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: power-transformer
@@ -1349,11 +1349,11 @@
   linkage: weak
   us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "6501.T", "298040.KS"]
   tw_linkage:
-    - {t: "3207", n: "Yao Sheng Electronic", role: peer}
-    - {t: "6821", n: "LinkCom Manufacturing,LTD", role: peer}
-    - {t: "6109", n: "Atech OEM", role: peer}
-    - {t: "3191", n: "Yjn", role: peer}
-    - {t: "6292", n: "Axis", role: peer}
+    - {t: "3207", n: "耀勝", role: peer}
+    - {t: "6821", n: "聯寶", role: peer}
+    - {t: "6109", n: "亞元", role: peer}
+    - {t: "3191", n: "雲嘉南", role: peer}
+    - {t: "6292", n: "迅德", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: power-ups
@@ -1363,10 +1363,10 @@
   linkage: weak
   us_tickers: [VRT, ETN, "SU.PA", "ABBN.SW"]
   tw_linkage:
-    - {t: "3043", n: "Powercom, Ltd", role: peer}
-    - {t: "3617", n: "Cyber Power Systems", role: peer}
-    - {t: "3628", n: "Ablerex Electronics", role: peer}
-    - {t: "6409", n: "Voltronic Power Technology", role: peer}
+    - {t: "3043", n: "科風", role: peer}
+    - {t: "3617", n: "碩天", role: peer}
+    - {t: "3628", n: "盈正", role: peer}
+    - {t: "6409", n: "旭隼", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1379,12 +1379,12 @@
   linkage: weak
   us_tickers: [TM, VWAGY, GM, TSLA, HMC, F]
   tw_linkage:
-    - {t: "2206", n: "Sanyang Motor", role: peer}
-    - {t: "2201", n: "Yulon Motor Company", role: peer}
-    - {t: "2204", n: "China Motor", role: peer}
-    - {t: "6592", n: "Hotai Finance", role: peer}
-    - {t: "2207", n: "Hotai Motor", role: peer}
-    - {t: "2247", n: "Pan German Universal Motors", role: peer}
+    - {t: "2206", n: "三陽工業", role: peer}
+    - {t: "2201", n: "裕隆", role: peer}
+    - {t: "2204", n: "中華", role: peer}
+    - {t: "6592", n: "和潤企業", role: peer}
+    - {t: "2207", n: "和泰車", role: peer}
+    - {t: "2247", n: "汎德永業", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-parts
@@ -1394,17 +1394,17 @@
   linkage: weak
   us_tickers: ["6902.T", APTV, BWA, MGA, "CON.DE", "FR.PA"]
   tw_linkage:
-    - {t: "6235", n: "Waffer Technology", role: peer}
-    - {t: "4543", n: "Man Zai Industrial", role: peer}
-    - {t: "1319", n: "Tong Yang Industry", role: peer}
-    - {t: "1525", n: "Kian Shen", role: peer}
-    - {t: "3162", n: "United Alloy-Tech Company", role: peer}
-    - {t: "2230", n: "C.T.I. Traffic Industries", role: peer}
-    - {t: "1568", n: "Tsang Yow Industrial", role: peer}
-    - {t: "1524", n: "Gordon Auto Body Parts", role: peer}
-    - {t: "4566", n: "GLOBAL TEK FABRICATION CO", role: peer}
-    - {t: "1522", n: "TYC Brother Industrial", role: peer}
-    - {t: "6605", n: "Depo Auto Parts Industrial", role: peer}
+    - {t: "6235", n: "華孚", role: peer}
+    - {t: "4543", n: "萬在", role: peer}
+    - {t: "1319", n: "東陽", role: peer}
+    - {t: "1525", n: "江申", role: peer}
+    - {t: "3162", n: "精確", role: peer}
+    - {t: "2230", n: "泰茂", role: peer}
+    - {t: "1568", n: "倉佑", role: peer}
+    - {t: "1524", n: "耿鼎", role: peer}
+    - {t: "4566", n: "時碩工業", role: peer}
+    - {t: "1522", n: "堤維西", role: peer}
+    - {t: "6605", n: "帝寶", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-tire
@@ -1414,10 +1414,10 @@
   linkage: weak
   us_tickers: ["5108.T", "ML.PA", GT, "CON.DE", "PIRC.MI", "601058.SS"]
   tw_linkage:
-    - {t: "2105", n: "Cheng Shin Rubber Ind", role: peer}
-    - {t: "2101", n: "Nankang Rubber Tire", role: peer}
-    - {t: "2102", n: "Federal", role: peer}
-    - {t: "2106", n: "Kenda Rubber Industrial", role: peer}
+    - {t: "2105", n: "正新", role: peer}
+    - {t: "2101", n: "南港", role: peer}
+    - {t: "2102", n: "泰豐", role: peer}
+    - {t: "2106", n: "建大", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-electronics
@@ -1427,11 +1427,11 @@
   linkage: weak
   us_tickers: [NXPI, "IFX.DE", STM, "6723.T", MBLY, ON]
   tw_linkage:
-    - {t: "2497", n: "E-Lead Electronic", role: peer}
-    - {t: "1533", n: "Mobiletron Electronics", role: peer}
-    - {t: "8255", n: "Actron Technology", role: peer}
-    - {t: "3128", n: "Hi Sharp Intelligence Technology", role: peer}
-    - {t: "3552", n: "Tung Thih Electronic", role: peer}
+    - {t: "2497", n: "怡利電", role: peer}
+    - {t: "1533", n: "車王電", role: peer}
+    - {t: "8255", n: "朋程", role: peer}
+    - {t: "3128", n: "昇銳", role: peer}
+    - {t: "3552", n: "同致", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-china-ev
@@ -1441,10 +1441,10 @@
   linkage: weak
   us_tickers: ["1211.HK", "300750.SZ", NIO, LI, XPEV]
   tw_linkage:
-    - {t: "6279", n: "Hu Lane Associate", role: peer}
-    - {t: "3526", n: "Alltop Technology", role: peer}
-    - {t: "3665", n: "BizLink Holding", role: peer}
-    - {t: "3003", n: "K.S. Terminals", role: peer}
+    - {t: "6279", n: "胡連", role: peer}
+    - {t: "3526", n: "凡甲", role: peer}
+    - {t: "3665", n: "貿聯-KY", role: peer}
+    - {t: "3003", n: "健和興", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-aircraft-parts
@@ -1454,15 +1454,15 @@
   linkage: weak
   us_tickers: [BA, "AIR.PA", RTX, GE, "SAF.PA", TDG, HEI]
   tw_linkage:
-    - {t: "2634", n: "Aerospace Industrial Development", role: peer}
-    - {t: "8222", n: "Aero Win Technology", role: peer}
-    - {t: "2630", n: "Air Asia", role: peer}
-    - {t: "4541", n: "Magnate Technology", role: peer}
-    - {t: "3004", n: "National Aerospace Fasteners", role: peer}
-    - {t: "4916", n: "Parpro", role: peer}
-    - {t: "6829", n: "ChenFull Precision", role: peer}
-    - {t: "2645", n: "Evergreen Aviation Technologies", role: peer}
-    - {t: "4572", n: "Drewloong Precision", role: peer}
+    - {t: "2634", n: "漢翔", role: peer}
+    - {t: "8222", n: "寶一", role: peer}
+    - {t: "2630", n: "亞航", role: peer}
+    - {t: "4541", n: "晟田", role: peer}
+    - {t: "3004", n: "豐達科", role: peer}
+    - {t: "4916", n: "事欣科", role: peer}
+    - {t: "6829", n: "千附精密", role: peer}
+    - {t: "2645", n: "長榮航太", role: peer}
+    - {t: "4572", n: "駐龍", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: auto-bicycle
@@ -1472,11 +1472,11 @@
   linkage: weak
   us_tickers: ["7309.T"]
   tw_linkage:
-    - {t: "8163", n: "Darfon Electronics", role: peer}
-    - {t: "9914", n: "Merida Industry", role: peer}
-    - {t: "9921", n: "Giant Manufacturing", role: peer}
-    - {t: "8933", n: "Ideal Bike", role: peer}
-    - {t: "6804", n: "Axman Enterprise", role: peer}
+    - {t: "8163", n: "達方", role: peer}
+    - {t: "9914", n: "美利達", role: peer}
+    - {t: "9921", n: "巨大", role: peer}
+    - {t: "8933", n: "愛地雅", role: peer}
+    - {t: "6804", n: "明係", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1489,11 +1489,11 @@
   linkage: weak
   us_tickers: ["LONN.SW", "2359.HK", "603259.SS", "SFZN.SW", "DRREDDY.NS"]
   tw_linkage:
-    - {t: "4746", n: "Formosa Laboratories", role: peer}
-    - {t: "4102", n: "Yung Zip Chemical Ind", role: peer}
-    - {t: "1762", n: "Chunghwa Chemical Synthesis & Biotech", role: peer}
-    - {t: "4167", n: "Savior Lifetec", role: peer}
-    - {t: "1789", n: "ScinoPharm Taiwan", role: peer}
+    - {t: "4746", n: "台耀", role: peer}
+    - {t: "4102", n: "永日", role: peer}
+    - {t: "1762", n: "中化生", role: peer}
+    - {t: "4167", n: "松瑞藥", role: peer}
+    - {t: "1789", n: "神隆", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-generic
@@ -1503,13 +1503,13 @@
   linkage: weak
   us_tickers: [PFE, NVS, TEVA, VTRS, "SUNPHARMA.NS", SNY]
   tw_linkage:
-    - {t: "1795", n: "Lotus Pharmaceutical", role: peer}
-    - {t: "6535", n: "Lumosa Therapeutics", role: peer}
-    - {t: "4114", n: "Synmosa Biopharma", role: peer}
-    - {t: "6472", n: "Bora Pharmaceuticals", role: peer}
-    - {t: "4130", n: "Genovate Biotechnology", role: peer}
-    - {t: "4123", n: "Center Laboratories", role: peer}
-    - {t: "1760", n: "Panion & Bf Biotech", role: peer}
+    - {t: "1795", n: "美時", role: peer}
+    - {t: "6535", n: "順藥", role: peer}
+    - {t: "4114", n: "健喬", role: peer}
+    - {t: "6472", n: "保瑞", role: peer}
+    - {t: "4130", n: "健亞", role: peer}
+    - {t: "4123", n: "晟德", role: peer}
+    - {t: "1760", n: "寶齡富錦", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-newdrug
@@ -1519,14 +1519,14 @@
   linkage: weak
   us_tickers: [LLY, NVO, MRK, ABBV, REGN, VRTX]
   tw_linkage:
-    - {t: "6550", n: "Polaris Group", role: peer}
-    - {t: "6535", n: "Lumosa Therapeutics", role: peer}
-    - {t: "6446", n: "PharmaEssentia", role: peer}
-    - {t: "4743", n: "Oneness Biotech", role: peer}
-    - {t: "4147", n: "TaiMed Biologics", role: peer}
-    - {t: "6712", n: "Ever Supreme Bio Technology, Ltd", role: peer}
-    - {t: "4130", n: "Genovate Biotechnology", role: peer}
-    - {t: "4128", n: "Microbio", role: peer}
+    - {t: "6550", n: "北極星藥業-KY", role: peer}
+    - {t: "6535", n: "順藥", role: peer}
+    - {t: "6446", n: "藥華藥", role: peer}
+    - {t: "4743", n: "合一", role: peer}
+    - {t: "4147", n: "中裕", role: peer}
+    - {t: "6712", n: "長聖", role: peer}
+    - {t: "4130", n: "健亞", role: peer}
+    - {t: "4128", n: "中天", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-biologics
@@ -1536,10 +1536,10 @@
   linkage: weak
   us_tickers: [AMGN, RHHBY, "SDZ.SW", SNY, "2359.HK"]
   tw_linkage:
-    - {t: "6547", n: "Medigen Vaccine Biologics", role: peer}
-    - {t: "4142", n: "Adimmune", role: peer}
-    - {t: "4133", n: "Abnova (Taiwan)", role: peer}
-    - {t: "4174", n: "OBI Pharma", role: peer}
+    - {t: "6547", n: "高端疫苗", role: peer}
+    - {t: "4142", n: "國光生", role: peer}
+    - {t: "4133", n: "亞諾法", role: peer}
+    - {t: "4174", n: "浩鼎", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-contact-lens
@@ -1549,9 +1549,9 @@
   linkage: weak
   us_tickers: [ALC, COO, JNJ, BLCO]
   tw_linkage:
-    - {t: "6782", n: "Visco Vision", role: peer}
-    - {t: "6491", n: "Pegavision", role: peer}
-    - {t: "1565", n: "St.Shine Optical", role: peer}
+    - {t: "6782", n: "視陽", role: peer}
+    - {t: "6491", n: "晶碩", role: peer}
+    - {t: "1565", n: "精華", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-services
@@ -1561,9 +1561,9 @@
   linkage: weak
   us_tickers: [UNH, HCA, FMS, DVA, CVS]
   tw_linkage:
-    - {t: "3218", n: "Universal Vision Biotechnology", role: peer}
-    - {t: "4139", n: "Ma Kuang Healthcare Holding", role: peer}
-    - {t: "6662", n: "BioLASCO Taiwan", role: peer}
+    - {t: "3218", n: "大學光", role: peer}
+    - {t: "4139", n: "馬光-KY", role: peer}
+    - {t: "6662", n: "樂斯科", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-device-distrib
@@ -1573,10 +1573,10 @@
   linkage: weak
   us_tickers: [MDT, SYK, BDX, HSIC, BSX]
   tw_linkage:
-    - {t: "4164", n: "CHC Healthcare Group", role: peer}
-    - {t: "4104", n: "Excelsior Medical", role: peer}
-    - {t: "4175", n: "MedFirst Healthcare Services", role: peer}
-    - {t: "1788", n: "Hi-Clearance", role: peer}
+    - {t: "4164", n: "承業醫", role: peer}
+    - {t: "4104", n: "佳醫", role: peer}
+    - {t: "4175", n: "杏一", role: peer}
+    - {t: "1788", n: "杏昌", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-genetic-test
@@ -1586,9 +1586,9 @@
   linkage: weak
   us_tickers: [ILMN, TMO, PACB, NTRA, QGEN]
   tw_linkage:
-    - {t: "4160", n: "Genetics Generation Advancement", role: peer}
-    - {t: "6236", n: "Neith", role: peer}
-    - {t: "6615", n: "Sofiva Genomics", role: peer}
+    - {t: "4160", n: "訊聯基因", role: peer}
+    - {t: "6236", n: "中湛", role: peer}
+    - {t: "6615", n: "慧智", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-reagent
@@ -1598,9 +1598,9 @@
   linkage: weak
   us_tickers: [RHHBY, ABT, DHR, TMO, BIO]
   tw_linkage:
-    - {t: "4155", n: "OK Biotech", role: peer}
-    - {t: "4171", n: "GeneReach Biotechnology", role: peer}
-    - {t: "4736", n: "TaiDoc Technology", role: peer}
+    - {t: "4155", n: "訊映", role: peer}
+    - {t: "4171", n: "瑞基", role: peer}
+    - {t: "4736", n: "泰博", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-supplement
@@ -1610,11 +1610,11 @@
   linkage: weak
   us_tickers: [HLN, "NESN.SW", ABT, HLF, USNA]
   tw_linkage:
-    - {t: "1720", n: "Standard Chemical & Pharmaceutical", role: peer}
-    - {t: "8436", n: "TCI", role: peer}
-    - {t: "3205", n: "Sagittarius Life Science Corp", role: peer}
-    - {t: "1734", n: "Sinphar Pharmaceutical", role: peer}
-    - {t: "1707", n: "Grape King Bio Ltd", role: peer}
+    - {t: "1720", n: "生達", role: peer}
+    - {t: "8436", n: "大江", role: peer}
+    - {t: "3205", n: "佰研", role: peer}
+    - {t: "1734", n: "杏輝", role: peer}
+    - {t: "1707", n: "葡萄王", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: health-pharma-distrib
@@ -1624,10 +1624,10 @@
   linkage: weak
   us_tickers: [MCK, COR, CAH]
   tw_linkage:
-    - {t: "4114", n: "Synmosa Biopharma", role: peer}
-    - {t: "4173", n: "Arich Enterprise", role: peer}
-    - {t: "6469", n: "Great Tree Pharmacy", role: peer}
-    - {t: "8403", n: "ShareHope Medicine", role: peer}
+    - {t: "4114", n: "健喬", role: peer}
+    - {t: "4173", n: "久裕", role: peer}
+    - {t: "6469", n: "大樹", role: peer}
+    - {t: "8403", n: "盛弘", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1640,8 +1640,8 @@
   linkage: weak
   us_tickers: [DAL, UAL, AAL, "LHA.DE", "C6L.SI", "0293.HK"]
   tw_linkage:
-    - {t: "2610", n: "China Airlines", role: peer}
-    - {t: "2618", n: "EVA Airways", role: peer}
+    - {t: "2610", n: "華航", role: peer}
+    - {t: "2618", n: "長榮航", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: ship-container
@@ -1651,9 +1651,9 @@
   linkage: weak
   us_tickers: ["MAERSK-B.CO", "HLAG.DE", ZIM, "601919.SS", "1919.HK", "011200.KS"]
   tw_linkage:
-    - {t: "2603", n: "Evergreen Marine (Taiwan)", role: peer}
-    - {t: "2609", n: "Yang Ming Marine Transport", role: peer}
-    - {t: "2615", n: "Wan Hai Lines", role: peer}
+    - {t: "2603", n: "長榮", role: peer}
+    - {t: "2609", n: "陽明", role: peer}
+    - {t: "2615", n: "萬海", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: ship-bulk
@@ -1663,12 +1663,12 @@
   linkage: weak
   us_tickers: [SBLK, "9101.T", "9104.T", "9107.T", GNK]
   tw_linkage:
-    - {t: "2637", n: "Wisdom Marine Lines", role: peer}
-    - {t: "2606", n: "U-Ming Marine Transport", role: peer}
-    - {t: "2605", n: "Sincere Navigation", role: peer}
-    - {t: "5608", n: "Shih Wei Navigation", role: peer}
-    - {t: "2601", n: "First Steamship", role: peer}
-    - {t: "2641", n: "Franbo Lines", role: peer}
+    - {t: "2637", n: "慧洋-KY", role: peer}
+    - {t: "2606", n: "裕民", role: peer}
+    - {t: "2605", n: "新興", role: peer}
+    - {t: "5608", n: "四維航", role: peer}
+    - {t: "2601", n: "益航", role: peer}
+    - {t: "2641", n: "正德", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: ship-logistics
@@ -1678,11 +1678,11 @@
   linkage: weak
   us_tickers: ["DHL.DE", "DSV.CO", "KNIN.SW", UPS, FDX]
   tw_linkage:
-    - {t: "2607", n: "Evergreen International Storage & Transport", role: peer}
-    - {t: "5607", n: "Farglory Free Trade Zone Investment Holding", role: peer}
-    - {t: "2608", n: "Kerry TJ Logistics Company", role: peer}
-    - {t: "2642", n: "Taiwan Pelican Express", role: peer}
-    - {t: "5603", n: "Sea & Land Integrated", role: peer}
+    - {t: "2607", n: "榮運", role: peer}
+    - {t: "5607", n: "遠雄港", role: peer}
+    - {t: "2608", n: "嘉里大榮", role: peer}
+    - {t: "2642", n: "宅配通", role: peer}
+    - {t: "5603", n: "陸海", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1695,13 +1695,13 @@
   linkage: weak
   us_tickers: ["NESN.SW", KHC, GIS, MDLZ, KO]
   tw_linkage:
-    - {t: "1201", n: "Wei Chuan Foods", role: peer}
-    - {t: "1203", n: "Ve Wong", role: peer}
-    - {t: "1210", n: "Great Wall Enterprise", role: peer}
-    - {t: "1215", n: "Charoen Pokphand Enterprise (Taiwan)", role: peer}
-    - {t: "1216", n: "Uni-President Enterprises", role: peer}
-    - {t: "1217", n: "AGV Products", role: peer}
-    - {t: "1218", n: "Taisun Enterprise", role: peer}
+    - {t: "1201", n: "味全", role: peer}
+    - {t: "1203", n: "味王", role: peer}
+    - {t: "1210", n: "大成", role: peer}
+    - {t: "1215", n: "卜蜂", role: peer}
+    - {t: "1216", n: "統一", role: peer}
+    - {t: "1217", n: "愛之味", role: peer}
+    - {t: "1218", n: "泰山", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-commodity-agri
@@ -1711,14 +1711,14 @@
   linkage: weak
   us_tickers: [ADM, BG, "F34.SI", INGR]
   tw_linkage:
-    - {t: "1210", n: "Great Wall Enterprise", role: peer}
-    - {t: "1215", n: "Charoen Pokphand Enterprise (Taiwan)", role: peer}
-    - {t: "1227", n: "Standard Foods", role: peer}
-    - {t: "1218", n: "Taisun Enterprise", role: peer}
-    - {t: "1702", n: "Namchow Holdings", role: peer}
-    - {t: "4207", n: "Taiwan Fructose", role: peer}
-    - {t: "1229", n: "Lien Hwa Industrial Holdings", role: peer}
-    - {t: "1219", n: "Fwusow Industry", role: peer}
+    - {t: "1210", n: "大成", role: peer}
+    - {t: "1215", n: "卜蜂", role: peer}
+    - {t: "1227", n: "佳格", role: peer}
+    - {t: "1218", n: "泰山", role: peer}
+    - {t: "1702", n: "南僑", role: peer}
+    - {t: "4207", n: "環泰", role: peer}
+    - {t: "1229", n: "聯華", role: peer}
+    - {t: "1219", n: "福壽", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-restaurant
@@ -1728,13 +1728,13 @@
   linkage: weak
   us_tickers: [MCD, SBUX, YUM, YUMC, QSR]
   tw_linkage:
-    - {t: "2723", n: "Gourmet Master", role: peer}
-    - {t: "2727", n: "Wowprime", role: peer}
-    - {t: "2732", n: "La Kaffa International", role: peer}
-    - {t: "2754", n: "Kura Sushi Asia", role: peer}
-    - {t: "2729", n: "TTFB Company", role: peer}
-    - {t: "2753", n: "Bafang Yunji International Company", role: peer}
-    - {t: "1268", n: "Hi-Lai Foods, Ltd", role: peer}
+    - {t: "2723", n: "美食-KY", role: peer}
+    - {t: "2727", n: "王品", role: peer}
+    - {t: "2732", n: "六角", role: peer}
+    - {t: "2754", n: "亞洲藏壽司", role: peer}
+    - {t: "2729", n: "瓦城", role: peer}
+    - {t: "2753", n: "八方雲集", role: peer}
+    - {t: "1268", n: "漢來美食", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-cosmetics
@@ -1744,10 +1744,10 @@
   linkage: weak
   us_tickers: ["OR.PA", EL, "4911.T", "BEI.DE", ULTA]
   tw_linkage:
-    - {t: "4137", n: "Chlitina Holding", role: peer}
-    - {t: "6703", n: "Shiny Brands Group", role: peer}
-    - {t: "4190", n: "Jourdeness Group", role: peer}
-    - {t: "6523", n: "Dr. Wu Skincare", role: peer}
+    - {t: "4137", n: "麗豐-KY", role: peer}
+    - {t: "6703", n: "軒郁", role: peer}
+    - {t: "4190", n: "佐登-KY", role: peer}
+    - {t: "6523", n: "達爾膚", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-department-store
@@ -1757,10 +1757,10 @@
   linkage: weak
   us_tickers: [WMT, COST, "8267.T", M, TGT]
   tw_linkage:
-    - {t: "2903", n: "Far Eastern Department Stores", role: peer}
-    - {t: "2912", n: "President Chain Store", role: peer}
-    - {t: "5904", n: "POYA International", role: peer}
-    - {t: "5903", n: "Taiwan FamilyMart", role: peer}
+    - {t: "2903", n: "遠百", role: peer}
+    - {t: "2912", n: "統一超", role: peer}
+    - {t: "5904", n: "寶雅", role: peer}
+    - {t: "5903", n: "全家", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-travel
@@ -1770,10 +1770,10 @@
   linkage: weak
   us_tickers: [BKNG, EXPE, TCOM, ABNB]
   tw_linkage:
-    - {t: "5706", n: "Phoenix Tours International", role: peer}
-    - {t: "2731", n: "Lion Travel Service", role: peer}
-    - {t: "2734", n: "Ezfly International Travel Agent", role: peer}
-    - {t: "2743", n: "Richmond International Travel & Tours", role: peer}
+    - {t: "5706", n: "鳳凰", role: peer}
+    - {t: "2731", n: "雄獅", role: peer}
+    - {t: "2734", n: "易飛網", role: peer}
+    - {t: "2743", n: "山富", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-hotel
@@ -1783,14 +1783,14 @@
   linkage: weak
   us_tickers: [MAR, HLT, IHG, H]
   tw_linkage:
-    - {t: "2736", n: "HOYA Resort Hotel Group", role: peer}
-    - {t: "2748", n: "FDC International Hotels", role: peer}
-    - {t: "2722", n: "Chateau International Development", role: peer}
-    - {t: "2705", n: "Leofoo Development", role: peer}
-    - {t: "2739", n: "My Humble House Hospitality Management Consulting", role: peer}
-    - {t: "2707", n: "Formosa International Hotels", role: peer}
-    - {t: "5704", n: "Hotel Royal Chihpen", role: peer}
-    - {t: "2704", n: "The Ambassador Hotel", role: peer}
+    - {t: "2736", n: "富野", role: peer}
+    - {t: "2748", n: "雲品", role: peer}
+    - {t: "2722", n: "夏都", role: peer}
+    - {t: "2705", n: "六福", role: peer}
+    - {t: "2739", n: "寒舍", role: peer}
+    - {t: "2707", n: "晶華", role: peer}
+    - {t: "5704", n: "老爺知", role: peer}
+    - {t: "2704", n: "國賓", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-sportswear
@@ -1800,10 +1800,10 @@
   linkage: weak
   us_tickers: [NKE, "ADS.DE", LULU, DECK, ONON]
   tw_linkage:
-    - {t: "1598", n: "Dyaco International", role: peer}
-    - {t: "1736", n: "Johnson Health Tech .Co", role: peer}
-    - {t: "1515", n: "Rexon", role: peer}
-    - {t: "8442", n: "WW Holding", role: peer}
+    - {t: "1598", n: "岱宇", role: peer}
+    - {t: "1736", n: "喬山", role: peer}
+    - {t: "1515", n: "力山", role: peer}
+    - {t: "8442", n: "威宏-KY", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-golf
@@ -1813,10 +1813,10 @@
   linkage: weak
   us_tickers: [GOLF]
   tw_linkage:
-    - {t: "6670", n: "FuSheng Precision", role: peer}
-    - {t: "8924", n: "O-TA Precision Industry", role: peer}
-    - {t: "8928", n: "Dynamic Precision Industry", role: peer}
-    - {t: "8938", n: "Advanced International Multitech", role: peer}
+    - {t: "6670", n: "復盛應用", role: peer}
+    - {t: "8924", n: "大田", role: peer}
+    - {t: "8928", n: "鉅明", role: peer}
+    - {t: "8938", n: "明安", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-bottle
@@ -1826,8 +1826,8 @@
   linkage: weak
   us_tickers: [BALL, CCK, AMCR, OI]
   tw_linkage:
-    - {t: "9939", n: "Taiwan Hon Chuan Enterprise", role: peer}
-    - {t: "9907", n: "Ton Yi", role: peer}
+    - {t: "9939", n: "宏全", role: peer}
+    - {t: "9907", n: "統一實", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-culture
@@ -1837,11 +1837,11 @@
   linkage: weak
   us_tickers: [DIS, NFLX, "7832.T", "9697.T", WBD]
   tw_linkage:
-    - {t: "6625", n: "B'in Live", role: peer}
-    - {t: "8446", n: "HIM International Music", role: peer}
-    - {t: "6101", n: "Kwan's International", role: peer}
-    - {t: "6596", n: "Kuang Hong Arts Management Incorporation", role: peer}
-    - {t: "8450", n: "Pili International Multimedia", role: peer}
+    - {t: "6625", n: "必應", role: peer}
+    - {t: "8446", n: "華研", role: peer}
+    - {t: "6101", n: "寬魚國際", role: peer}
+    - {t: "6596", n: "寬宏藝術", role: peer}
+    - {t: "8450", n: "霹靂", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-recycle
@@ -1851,11 +1851,11 @@
   linkage: weak
   us_tickers: [WM, RSG, WCN, VEOEY]
   tw_linkage:
-    - {t: "9955", n: "Super Dragon Technology, Ltd", role: peer}
-    - {t: "8422", n: "Cleanaway Company", role: peer}
-    - {t: "8440", n: "E&E Recycling,Inc", role: peer}
-    - {t: "6581", n: "Taiwan Steel Union", role: peer}
-    - {t: "8341", n: "Sunny Friend Environmental Technology", role: peer}
+    - {t: "9955", n: "佳龍", role: peer}
+    - {t: "8422", n: "可寧衛*", role: peer}
+    - {t: "8440", n: "綠電", role: peer}
+    - {t: "6581", n: "鋼聯", role: peer}
+    - {t: "8341", n: "日友", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-appliance
@@ -1865,10 +1865,10 @@
   linkage: weak
   us_tickers: [WHR, "ELUX-B.ST", "000333.SZ", "600690.SS", "6758.T"]
   tw_linkage:
-    - {t: "2371", n: "Tatung", role: peer}
-    - {t: "1504", n: "TECO Electric & Machinery", role: peer}
-    - {t: "3024", n: "Action Electronics", role: peer}
-    - {t: "1604", n: "Sampo", role: peer}
+    - {t: "2371", n: "大同", role: peer}
+    - {t: "1504", n: "東元", role: peer}
+    - {t: "3024", n: "憶聲", role: peer}
+    - {t: "1604", n: "聲寶", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-3c-channel
@@ -1878,10 +1878,10 @@
   linkage: weak
   us_tickers: [BBY, JD, "9831.T", "CURY.L"]
   tw_linkage:
-    - {t: "2347", n: "Synnex Technology International", role: peer}
-    - {t: "2430", n: "Tsann Kuen Enterprise", role: peer}
-    - {t: "2450", n: "Senao International", role: peer}
-    - {t: "6154", n: "Sunfar Computer, Ltd", role: peer}
+    - {t: "2347", n: "聯強", role: peer}
+    - {t: "2430", n: "燦坤", role: peer}
+    - {t: "2450", n: "神腦", role: peer}
+    - {t: "6154", n: "順發", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-pc-channel
@@ -1891,10 +1891,10 @@
   linkage: weak
   us_tickers: [SNX, INGM, ARW, AVT]
   tw_linkage:
-    - {t: "6118", n: "Xander International", role: peer}
-    - {t: "5386", n: "Albatron Technology, Ltd", role: peer}
-    - {t: "6776", n: "Weblink International", role: peer}
-    - {t: "3213", n: "Mildef Crete", role: peer}
+    - {t: "6118", n: "建達", role: peer}
+    - {t: "5386", n: "青雲", role: peer}
+    - {t: "6776", n: "展碁國際", role: peer}
+    - {t: "3213", n: "茂訊", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-ecommerce
@@ -1904,11 +1904,11 @@
   linkage: weak
   us_tickers: [AMZN, BABA, PDD, SHOP, MELI]
   tw_linkage:
-    - {t: "6741", n: "91APP", role: peer}
-    - {t: "5321", n: "United Recommend International", role: peer}
-    - {t: "8044", n: "PChome Online", role: peer}
-    - {t: "8454", n: "momo.com", role: peer}
-    - {t: "5287", n: "ADDCN Technology, Ltd", role: peer}
+    - {t: "6741", n: "91APP*-KY", role: peer}
+    - {t: "5321", n: "美而快", role: peer}
+    - {t: "8044", n: "網家", role: peer}
+    - {t: "8454", n: "富邦媒", role: peer}
+    - {t: "5287", n: "數字", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: cons-epayment
@@ -1918,9 +1918,9 @@
   linkage: weak
   us_tickers: [V, MA, PYPL, XYZ, "ADYEN.AS"]
   tw_linkage:
-    - {t: "3687", n: "MacroWell OMG Digital Entertainment", role: peer}
-    - {t: "5478", n: "Soft-World International", role: peer}
-    - {t: "6763", n: "Green World Fintech Service", role: peer}
+    - {t: "3687", n: "歐買尬", role: peer}
+    - {t: "5478", n: "智冠", role: peer}
+    - {t: "6763", n: "綠界科技*", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -1933,9 +1933,9 @@
   linkage: weak
   us_tickers: ["005930.KS", "034220.KS", LPL, "000725.SZ", "000100.SZ", "6753.T"]
   tw_linkage:
-    - {t: "3481", n: "Innolux", role: peer}
-    - {t: "2409", n: "AUO", role: peer}
-    - {t: "6116", n: "HannStar Display", role: peer}
+    - {t: "3481", n: "群創", role: peer}
+    - {t: "2409", n: "友達", role: peer}
+    - {t: "6116", n: "彩晶", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-panel-equip
@@ -1945,10 +1945,10 @@
   linkage: weak
   us_tickers: [AMAT, "8035.T", LRCX, KLAC]
   tw_linkage:
-    - {t: "5443", n: "Gallant Precision Machining", role: peer}
-    - {t: "2467", n: "C Sun Mfg", role: peer}
-    - {t: "3455", n: "Utechzone", role: peer}
-    - {t: "8064", n: "Contrel Technology", role: peer}
+    - {t: "5443", n: "均豪", role: peer}
+    - {t: "2467", n: "志聖", role: peer}
+    - {t: "3455", n: "由田", role: peer}
+    - {t: "8064", n: "東捷", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-driver-ic
@@ -1958,11 +1958,11 @@
   linkage: weak
   us_tickers: [HIMX, "005930.KS", "000725.SZ"]
   tw_linkage:
-    - {t: "3545", n: "FocalTech Systems", role: peer}
-    - {t: "3034", n: "Novatek Microelectronics", role: peer}
-    - {t: "4961", n: "Fitipower Integrated Technology", role: peer}
-    - {t: "6129", n: "Princeton Technology", role: peer}
-    - {t: "3141", n: "Ultra Chip", role: peer}
+    - {t: "3545", n: "敦泰", role: peer}
+    - {t: "3034", n: "聯詠", role: peer}
+    - {t: "4961", n: "天鈺", role: peer}
+    - {t: "6129", n: "普誠", role: peer}
+    - {t: "3141", n: "晶宏", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-lcm
@@ -1972,10 +1972,10 @@
   linkage: weak
   us_tickers: ["000725.SZ", "034220.KS", "6753.T"]
   tw_linkage:
-    - {t: "3038", n: "Emerging Display Technologies", role: peer}
-    - {t: "6167", n: "Powertip Technology", role: peer}
-    - {t: "8105", n: "Giantplus Technology", role: peer}
-    - {t: "5315", n: "United Radiant Technology", role: peer}
+    - {t: "3038", n: "全台", role: peer}
+    - {t: "6167", n: "久正", role: peer}
+    - {t: "8105", n: "凌巨", role: peer}
+    - {t: "5315", n: "光聯", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-backlight
@@ -1985,11 +1985,11 @@
   linkage: weak
   us_tickers: [GLW, "000725.SZ", "6988.T"]
   tw_linkage:
-    - {t: "8085", n: "Forward Electronics", role: peer}
-    - {t: "5371", n: "Coretronic", role: peer}
-    - {t: "6176", n: "Radiant Opto-Electronics", role: peer}
-    - {t: "6120", n: "Darwin Precisions", role: peer}
-    - {t: "4935", n: "Global Lighting Technologies", role: peer}
+    - {t: "8085", n: "福華", role: peer}
+    - {t: "5371", n: "中光電", role: peer}
+    - {t: "6176", n: "瑞儀", role: peer}
+    - {t: "6120", n: "達運", role: peer}
+    - {t: "4935", n: "茂林-KY", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-touch
@@ -1999,12 +1999,12 @@
   linkage: weak
   us_tickers: [GLW, "005930.KS", "034220.KS"]
   tw_linkage:
-    - {t: "3673", n: "TPK Holding", role: peer}
-    - {t: "6456", n: "General Interface Solution (GIS) Holding", role: peer}
-    - {t: "3049", n: "HannsTouch Holdings Company", role: peer}
-    - {t: "3622", n: "Young Fast Optoelectronics", role: peer}
-    - {t: "4729", n: "Mildex Optical", role: peer}
-    - {t: "2429", n: "Abonmax, Ltd", role: peer}
+    - {t: "3673", n: "TPK-KY", role: peer}
+    - {t: "6456", n: "GIS-KY", role: peer}
+    - {t: "3049", n: "精金", role: peer}
+    - {t: "3622", n: "洋華", role: peer}
+    - {t: "4729", n: "熒茂", role: peer}
+    - {t: "2429", n: "銘旺科", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-projector
@@ -2014,9 +2014,9 @@
   linkage: weak
   us_tickers: ["6724.T", "6758.T", "7751.T"]
   tw_linkage:
-    - {t: "3504", n: "Young Optics", role: peer}
-    - {t: "5371", n: "Coretronic", role: peer}
-    - {t: "6225", n: "aiPlex", role: peer}
+    - {t: "3504", n: "揚明光", role: peer}
+    - {t: "5371", n: "中光電", role: peer}
+    - {t: "6225", n: "天瀚", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: disp-video
@@ -2026,11 +2026,11 @@
   linkage: weak
   us_tickers: [ROKU, "005930.KS"]
   tw_linkage:
-    - {t: "5474", n: "Yuan High-Tech Development", role: peer}
-    - {t: "2485", n: "Zinwell", role: peer}
-    - {t: "3466", n: "Skardin Industrial", role: peer}
-    - {t: "6152", n: "Prime Electronics & Satellitics", role: peer}
-    - {t: "2417", n: "AVerMedia Technologies", role: peer}
+    - {t: "5474", n: "聰泰", role: peer}
+    - {t: "2485", n: "兆赫", role: peer}
+    - {t: "3466", n: "德晉", role: peer}
+    - {t: "6152", n: "百一", role: peer}
+    - {t: "2417", n: "圓剛", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -2043,10 +2043,10 @@
   linkage: weak
   us_tickers: ["AMS.SW", "046890.KS", "6963.T"]
   tw_linkage:
-    - {t: "2486", n: "I-Chiun Precision Industry", role: peer}
-    - {t: "3714", n: "ENNOSTAR", role: peer}
-    - {t: "2393", n: "Everlight Electronics", role: peer}
-    - {t: "1611", n: "China Electric Mfg", role: peer}
+    - {t: "2486", n: "一詮", role: peer}
+    - {t: "3714", n: "富采", role: peer}
+    - {t: "2393", n: "億光", role: peer}
+    - {t: "1611", n: "中電", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-usb-ic
@@ -2056,10 +2056,10 @@
   linkage: weak
   us_tickers: [DIOD, ON, "IFX.DE"]
   tw_linkage:
-    - {t: "6104", n: "Genesys Logic", role: peer}
-    - {t: "6233", n: "Prolific Technology", role: peer}
-    - {t: "4966", n: "Parade Technologies", role: peer}
-    - {t: "5269", n: "ASMedia Technology", role: peer}
+    - {t: "6104", n: "創惟", role: peer}
+    - {t: "6233", n: "旺玖", role: peer}
+    - {t: "4966", n: "譜瑞-KY", role: peer}
+    - {t: "5269", n: "祥碩", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-discrete
@@ -2069,12 +2069,12 @@
   linkage: weak
   us_tickers: [ON, "IFX.DE", STM, VSH, "6963.T"]
   tw_linkage:
-    - {t: "5425", n: "Taiwan Semiconductor", role: peer}
-    - {t: "2481", n: "PANJIT International", role: peer}
-    - {t: "2302", n: "Rectron", role: peer}
-    - {t: "3675", n: "Eris Technology", role: peer}
-    - {t: "8255", n: "Actron Technology", role: peer}
-    - {t: "8261", n: "Advanced Power Electronics", role: peer}
+    - {t: "5425", n: "台半", role: peer}
+    - {t: "2481", n: "強茂", role: peer}
+    - {t: "2302", n: "麗正", role: peer}
+    - {t: "3675", n: "德微", role: peer}
+    - {t: "8255", n: "朋程", role: peer}
+    - {t: "8261", n: "富鼎", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-quartz
@@ -2084,10 +2084,10 @@
   linkage: weak
   us_tickers: [SITM, "6724.T", "6779.T", "6962.T"]
   tw_linkage:
-    - {t: "2484", n: "Siward Crystal Technology, Ltd", role: peer}
-    - {t: "3042", n: "TXC", role: peer}
-    - {t: "3221", n: "Tai-Saw Technology", role: peer}
-    - {t: "8289", n: "Taitien Electronics", role: peer}
+    - {t: "2484", n: "希華", role: peer}
+    - {t: "3042", n: "晶技", role: peer}
+    - {t: "3221", n: "台嘉碩", role: peer}
+    - {t: "8289", n: "泰藝", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-sensor
@@ -2097,9 +2097,9 @@
   linkage: weak
   us_tickers: ["6758.T", "603501.SS", STM, "AMS.SW"]
   tw_linkage:
-    - {t: "4974", n: "Asia Tech Image", role: peer}
-    - {t: "6789", n: "VisEra Technologies Company", role: peer}
-    - {t: "8249", n: "Creative Sensor", role: peer}
+    - {t: "4974", n: "亞泰", role: peer}
+    - {t: "6789", n: "采鈺", role: peer}
+    - {t: "8249", n: "菱光", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-fpc
@@ -2109,10 +2109,10 @@
   linkage: weak
   us_tickers: ["5802.T", "6981.T"]
   tw_linkage:
-    - {t: "2402", n: "Ichia Technologies", role: peer}
-    - {t: "4958", n: "Zhen Ding Technology Holding", role: peer}
-    - {t: "6269", n: "Flexium Interconnect", role: peer}
-    - {t: "6153", n: "Career Technology (Mfg.)", role: peer}
+    - {t: "2402", n: "毅嘉", role: peer}
+    - {t: "4958", n: "臻鼎-KY", role: peer}
+    - {t: "6269", n: "台郡", role: peer}
+    - {t: "6153", n: "嘉聯益", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-fpc-material
@@ -2122,10 +2122,10 @@
   linkage: weak
   us_tickers: [DD, "4118.T", "178920.KS", "4208.T"]
   tw_linkage:
-    - {t: "3354", n: "Microcosm Technology", role: peer}
-    - {t: "3645", n: "Taimide Tech", role: peer}
-    - {t: "4939", n: "Asia Electronic Material", role: peer}
-    - {t: "8039", n: "Taiflex Scientific", role: peer}
+    - {t: "3354", n: "律勝", role: peer}
+    - {t: "3645", n: "達邁", role: peer}
+    - {t: "4939", n: "亞電", role: peer}
+    - {t: "8039", n: "台虹", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-acoustic
@@ -2135,10 +2135,10 @@
   linkage: weak
   us_tickers: [KN, "2018.HK", "002241.SZ"]
   tw_linkage:
-    - {t: "2439", n: "Merry Electronics", role: peer}
-    - {t: "3206", n: "Kingstate Electronics", role: peer}
-    - {t: "5457", n: "Speed Tech", role: peer}
-    - {t: "6743", n: "AMPACS", role: peer}
+    - {t: "2439", n: "美律", role: peer}
+    - {t: "3206", n: "志豐", role: peer}
+    - {t: "5457", n: "宣德", role: peer}
+    - {t: "6743", n: "安普新", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-chassis
@@ -2148,16 +2148,16 @@
   linkage: weak
   us_tickers: ["0285.HK", "300433.SZ"]
   tw_linkage:
-    - {t: "6235", n: "Waffer Technology", role: peer}
-    - {t: "3013", n: "Chenming Electronic Tech", role: peer}
-    - {t: "3032", n: "Compucase Enterprise", role: peer}
-    - {t: "5465", n: "Loyalty Founder Enterprise", role: peer}
-    - {t: "3540", n: "Thermaltake Technology", role: peer}
-    - {t: "8210", n: "Chenbro Micom", role: peer}
-    - {t: "3325", n: "Casing Macron Technology", role: peer}
-    - {t: "3693", n: "AIC", role: peer}
-    - {t: "3508", n: "Ways Technical", role: peer}
-    - {t: "2354", n: "Foxconn Technology", role: peer}
+    - {t: "6235", n: "華孚", role: peer}
+    - {t: "3013", n: "晟銘電", role: peer}
+    - {t: "3032", n: "偉訓", role: peer}
+    - {t: "5465", n: "富驊", role: peer}
+    - {t: "3540", n: "曜越", role: peer}
+    - {t: "8210", n: "勤誠", role: peer}
+    - {t: "3325", n: "旭品", role: peer}
+    - {t: "3693", n: "營邦", role: peer}
+    - {t: "3508", n: "位速", role: peer}
+    - {t: "2354", n: "鴻準", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-hinge
@@ -2167,10 +2167,10 @@
   linkage: weak
   us_tickers: []
   tw_linkage:
-    - {t: "1582", n: "Syncmold Enterprise", role: peer}
-    - {t: "3376", n: "Shin Zu Shing", role: peer}
-    - {t: "3548", n: "Jarllytec", role: peer}
-    - {t: "4999", n: "Sinher Technology", role: peer}
+    - {t: "1582", n: "信錦", role: peer}
+    - {t: "3376", n: "新日興", role: peer}
+    - {t: "3548", n: "兆利", role: peer}
+    - {t: "4999", n: "鑫禾", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-gps
@@ -2180,9 +2180,9 @@
   linkage: weak
   us_tickers: [GRMN, TRMB]
   tw_linkage:
-    - {t: "3306", n: "RoyalTek Company", role: peer}
-    - {t: "3499", n: "GlobalSat WorldCom", role: peer}
-    - {t: "3632", n: "Papago", role: peer}
+    - {t: "3306", n: "鼎天", role: peer}
+    - {t: "3499", n: "環天科", role: peer}
+    - {t: "3632", n: "研勤", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 # -----------------------------------------------------------------------------
@@ -2195,14 +2195,14 @@
   linkage: weak
   us_tickers: [CSCO, ANET, AVGO, QCOM, UI, NTGR]
   tw_linkage:
-    - {t: "3380", n: "Alpha Networks", role: peer}
-    - {t: "6285", n: "WNC", role: peer}
-    - {t: "2332", n: "D-Link", role: peer}
-    - {t: "4906", n: "Gemtek Technology", role: peer}
-    - {t: "3558", n: "Senao Networks", role: peer}
-    - {t: "6470", n: "U-MEDIA Communications", role: peer}
-    - {t: "5388", n: "Sercomm", role: peer}
-    - {t: "3596", n: "Arcadyan Technology", role: peer}
+    - {t: "3380", n: "明泰", role: peer}
+    - {t: "6285", n: "啟碁", role: peer}
+    - {t: "2332", n: "友訊", role: peer}
+    - {t: "4906", n: "正文", role: peer}
+    - {t: "3558", n: "神準", role: peer}
+    - {t: "6470", n: "宇智", role: peer}
+    - {t: "5388", n: "中磊", role: peer}
+    - {t: "3596", n: "智易", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-surveillance
@@ -2212,10 +2212,10 @@
   linkage: weak
   us_tickers: ["002415.SZ", "002236.SZ", MSI, AXON]
   tw_linkage:
-    - {t: "3356", n: "GeoVision", role: peer}
-    - {t: "3128", n: "Hi Sharp Intelligence Technology", role: peer}
-    - {t: "2390", n: "Everspring Industry", role: peer}
-    - {t: "8072", n: "AV TECH", role: peer}
+    - {t: "3356", n: "奇偶", role: peer}
+    - {t: "3128", n: "昇銳", role: peer}
+    - {t: "2390", n: "云辰", role: peer}
+    - {t: "8072", n: "陞泰", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-cybersec
@@ -2225,12 +2225,12 @@
   linkage: weak
   us_tickers: [CRWD, PANW, ZS, FTNT, CHKP]
   tw_linkage:
-    - {t: "3029", n: "Zero One Technology", role: peer}
-    - {t: "6245", n: "Lanner Electronics", role: peer}
-    - {t: "3564", n: "AEWIN Technologies", role: peer}
-    - {t: "3664", n: "Array", role: peer}
-    - {t: "6416", n: "CASwell", role: peer}
-    - {t: "6690", n: "Acer Cyber Security", role: peer}
+    - {t: "3029", n: "零壹", role: peer}
+    - {t: "6245", n: "立端", role: peer}
+    - {t: "3564", n: "其陽", role: peer}
+    - {t: "3664", n: "安瑞-KY", role: peer}
+    - {t: "6416", n: "瑞祺電通", role: peer}
+    - {t: "6690", n: "安碁資訊", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-gaming
@@ -2240,12 +2240,12 @@
   linkage: weak
   us_tickers: ["0700.HK", NTES, "7974.T", TTWO, EA, RBLX, "259960.KS"]
   tw_linkage:
-    - {t: "6111", n: "Star Fusion Group", role: peer}
-    - {t: "6180", n: "Gamania Digital Entertainment", role: peer}
-    - {t: "3293", n: "International Games System", role: peer}
-    - {t: "3546", n: "USERJOY Technology", role: peer}
-    - {t: "5478", n: "Soft-World International", role: peer}
-    - {t: "5263", n: "Brogent Technologies", role: peer}
+    - {t: "6111", n: "光聚晶電", role: peer}
+    - {t: "6180", n: "橘子", role: peer}
+    - {t: "3293", n: "鈊象", role: peer}
+    - {t: "3546", n: "宇峻", role: peer}
+    - {t: "5478", n: "智冠", role: peer}
+    - {t: "5263", n: "智崴", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-solar
@@ -2255,12 +2255,12 @@
   linkage: weak
   us_tickers: [FSLR, ENPH, "601012.SS", "300274.SZ", JKS, CSIQ, SEDG]
   tw_linkage:
-    - {t: "6443", n: "TSEC", role: peer}
-    - {t: "6244", n: "Motech Industries", role: peer}
-    - {t: "3576", n: "United Renewable Energy", role: peer}
-    - {t: "5483", n: "Sino-American Silicon Products", role: peer}
-    - {t: "6477", n: "ANJI Technology", role: peer}
-    - {t: "3691", n: "Giga Solar Materials", role: peer}
+    - {t: "6443", n: "元晶", role: peer}
+    - {t: "6244", n: "茂迪", role: peer}
+    - {t: "3576", n: "聯合再生", role: peer}
+    - {t: "5483", n: "中美晶", role: peer}
+    - {t: "6477", n: "安集", role: peer}
+    - {t: "3691", n: "碩禾", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-cleanroom
@@ -2270,12 +2270,12 @@
   linkage: weak
   us_tickers: []
   tw_linkage:
-    - {t: "6139", n: "L&K Engineering", role: peer}
-    - {t: "5536", n: "Acter Group", role: peer}
-    - {t: "2404", n: "United Integrated Services", role: peer}
-    - {t: "6196", n: "Marketech International", role: peer}
-    - {t: "6691", n: "Yankey Engineering", role: peer}
-    - {t: "6667", n: "Trusval Technology", role: peer}
+    - {t: "6139", n: "亞翔", role: peer}
+    - {t: "5536", n: "聖暉*", role: peer}
+    - {t: "2404", n: "漢唐", role: peer}
+    - {t: "6196", n: "帆宣", role: peer}
+    - {t: "6691", n: "洋基工程", role: peer}
+    - {t: "6667", n: "信紘科", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-verification
@@ -2285,11 +2285,11 @@
   linkage: weak
   us_tickers: ["SGSN.SW", "BVI.PA", "ITRK.L", "ERF.PA", ULS]
   tw_linkage:
-    - {t: "3138", n: "Auden Techno", role: peer}
-    - {t: "3289", n: "Integrated Service Technology", role: peer}
-    - {t: "3587", n: "Materials Analysis Technology", role: peer}
-    - {t: "6146", n: "Sporton International", role: peer}
-    - {t: "6830", n: "Msscorps", role: peer}
+    - {t: "3138", n: "耀登", role: peer}
+    - {t: "3289", n: "宜特", role: peer}
+    - {t: "3587", n: "閎康", role: peer}
+    - {t: "6146", n: "耕興", role: peer}
+    - {t: "6830", n: "汎銓", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: net-ic-distrib
@@ -2299,9 +2299,9 @@
   linkage: weak
   us_tickers: [ARW, AVT]
   tw_linkage:
-    - {t: "3232", n: "Sentronic International", role: peer}
-    - {t: "3702", n: "WPG Holdings", role: peer}
-    - {t: "8112", n: "Supreme Electronics", role: peer}
-    - {t: "3028", n: "Zenitron", role: peer}
-    - {t: "3033", n: "Weikeng Industrial", role: peer}
+    - {t: "3232", n: "昱捷", role: peer}
+    - {t: "3702", n: "大聯大", role: peer}
+    - {t: "8112", n: "至上", role: peer}
+    - {t: "3028", n: "增你強", role: peer}
+    - {t: "3033", n: "威健", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
