@@ -160,19 +160,16 @@ def overview():
     out = []
     for c in snap.get("categories", {}).values():
         nodes = c.get("nodes", [])
-        top = None
-        for n in nodes:  # nodes are pre-sorted by |readthrough| desc
-            if n.get("readthrough") is not None:
-                top = {"ticker": n["ticker"], "name": n["name"],
-                       "verdict": n["verdict"], "readthrough": n["readthrough"]}
-                break
+        tw = [{"ticker": n["ticker"], "name": n["name"], "role": n.get("role"),
+               "a_corr": n.get("a_corr"), "readthrough": n.get("readthrough"),
+               "verdict": n.get("verdict")} for n in nodes]  # pre-sorted by |readthrough|
         out.append({
             "slug": c["slug"], "name_zh": c["name_zh"], "cluster": c["cluster"],
             "benchmark": c.get("benchmark"), "a_move": c.get("a_move"),
             "a_z": c.get("a_z"), "excess": c.get("excess"),
             "has_trigger": c.get("excess") is not None,
             "us_count": len(c.get("us_members", [])),
-            "tw_count": len(nodes), "top_node": top,
+            "tw_count": len(nodes), "tw_nodes": tw,
         })
     # excess desc; None (no-trigger watchlists) sink to the bottom
     out.sort(key=lambda x: (x["excess"] is not None, x["excess"] or 0), reverse=True)

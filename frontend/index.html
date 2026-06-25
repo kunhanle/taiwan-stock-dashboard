@@ -1932,36 +1932,6 @@
                         </div>
                     </div>
 
-                    {/* Alert: relative-strength breakouts (collapsible, default collapsed) */}
-                    {alerts && alerts.ready && alerts.alerts.length > 0 && (
-                        <section className="glass-panel rounded-2xl p-4 border border-amber-500/30">
-                            <button onClick={() => setAlertsOpen(o => !o)}
-                                className="w-full flex items-center gap-2 text-left">
-                                <i data-lucide="zap" className="w-4 h-4 text-amber-400"></i>
-                                <span className="text-sm font-semibold text-amber-300">相對強度警示</span>
-                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">{alerts.alerts.length}</span>
-                                <span className="text-xs text-slate-500 hidden sm:inline">≥2 檔美股族群超漲贏基準（單一美股不列入，見下方排行榜）</span>
-                                <i data-lucide={alertsOpen ? "chevron-up" : "chevron-down"} className="w-4 h-4 text-slate-400 ml-auto"></i>
-                            </button>
-                            {alertsOpen && (
-                                <div className="space-y-2 mt-3">
-                                    {alerts.alerts.map(a => (
-                                        <button key={a.slug} onClick={() => load(a.slug)}
-                                            className="w-full text-left flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700 hover:border-amber-500">
-                                            <span className="text-amber-300 font-semibold text-sm">超額 {lkPct(a.excess)}</span>
-                                            <span className="text-slate-200 text-sm">{a.name_zh}</span>
-                                            <span className="text-xs text-slate-500">族群{lkPct(a.a_move)} vs {a.benchmark === '^SOX' ? '費半' : (a.benchmark === 'QQQ' ? '科技' : '大盤')}{lkPct(a.benchmark_move)}</span>
-                                            {a.watch.length > 0 && <span className="text-xs text-teal-400">→ 留意 {a.watch.map(w => w.name.split(' ')[0]).slice(0, 3).join('、')}</span>}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
-                    )}
-                    {alerts && alerts.ready && alerts.alerts.length === 0 && (
-                        <div className="pl-5 text-xs text-slate-500">目前無相對強度警示（沒有族群明顯超漲贏大盤）。</div>
-                    )}
-
                     {/* Cross-category relative-strength leaderboard */}
                     {overview && overview.ready && (
                         <section className="glass-panel rounded-2xl p-4">
@@ -1984,7 +1954,7 @@
                                         <th className="text-center font-medium">基準</th>
                                         <th className="text-right font-medium">族群%</th>
                                         <th className="text-right font-medium">超額%</th>
-                                        <th className="text-left font-medium pl-3">領頭台股(讀數)</th>
+                                        <th className="text-left font-medium pl-3">台股連動 (名稱·A股價corr)</th>
                                     </tr></thead>
                                     <tbody>
                                         {overview.categories.filter(c => obench === 'all' || (obench === '^GSPC' ? (c.benchmark === '^GSPC' || !c.benchmark) : c.benchmark === obench)).map(c => {
@@ -1996,7 +1966,18 @@
                                                     <td className="text-center text-xs text-slate-400">{tier}</td>
                                                     <td className={`text-right tabular-nums ${(c.a_move || 0) >= 0 ? 'text-red-400' : 'text-green-400'}`}>{c.a_move == null ? '—' : lkPct(c.a_move)}</td>
                                                     <td className={`text-right tabular-nums font-semibold ${c.excess == null ? 'text-slate-600' : (c.excess >= 0.03 ? 'text-amber-300' : (c.excess >= 0 ? 'text-slate-300' : 'text-green-400'))}`}>{c.excess == null ? '—' : lkPct(c.excess)}{c.us_count === 1 && c.excess != null && <span className="ml-1 text-[10px] text-slate-500" title="單一美股籃子，超額易受個股雜訊影響">單</span>}</td>
-                                                    <td className="text-left pl-3 text-xs text-slate-400">{c.top_node ? `${c.top_node.name.split(' ')[0]} ${c.top_node.readthrough.toFixed(3)}` : (c.has_trigger ? '—' : '純台股')}</td>
+                                                    <td className="text-left pl-3">
+                                                        {c.tw_nodes && c.tw_nodes.length ? (
+                                                            <div className="flex flex-wrap gap-x-2.5 gap-y-0.5">
+                                                                {c.tw_nodes.map(n => (
+                                                                    <span key={n.ticker} className="text-xs text-slate-400 whitespace-nowrap">
+                                                                        {n.name}
+                                                                        {n.a_corr != null && <span className={`ml-0.5 tabular-nums ${n.a_corr >= 0.2 ? 'text-amber-300' : (n.a_corr >= 0 ? 'text-slate-500' : 'text-green-500')}`}>{n.a_corr >= 0 ? '+' : ''}{n.a_corr.toFixed(2)}</span>}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        ) : <span className="text-xs text-slate-600">{c.has_trigger ? '—' : '純台股'}</span>}
+                                                    </td>
                                                 </tr>
                                             );
                                         })}
