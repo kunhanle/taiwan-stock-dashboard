@@ -1030,7 +1030,7 @@
   name_zh: 原物料｜合成樹脂
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [DOW, LYB, WLK, "BAS.DE", "4188.T"]
   tw_linkage:
     - {t: "1316", n: Sun Yad Construction, role: peer}
     - {t: "4770", n: Allied Supreme, role: peer}
@@ -1042,7 +1042,7 @@
   name_zh: 原物料｜光固化材料
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: ["AKE.PA"]
   tw_linkage:
     - {t: "1711", n: Everlight Chemical Industrial, role: peer}
     - {t: "1721", n: Sunko Ink, role: peer}
@@ -1054,7 +1054,7 @@
   name_zh: 原物料｜農藥
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [CTVA, FMC, "BAYN.DE", "600486.SS"]
   tw_linkage:
     - {t: "1712", n: Sinon, role: peer}
     - {t: "6508", n: Huikwang, role: peer}
@@ -1065,7 +1065,7 @@
   name_zh: 原物料｜清潔用品
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [PG, CL, "RKT.L", "ULVR.L", SCL]
   tw_linkage:
     - {t: "4707", n: Pan Asia Chemical, role: peer}
     - {t: "1731", n: MAYWUFA CO, role: peer}
@@ -1077,7 +1077,7 @@
   name_zh: 原物料｜電池材料
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [ALB, SQM, "003670.KS", "300750.SZ", "002460.SZ", "002709.SZ"]
   tw_linkage:
     - {t: "4721", n: Mechema Chemicals International, role: peer}
     - {t: "4739", n: Coremax, role: peer}
@@ -1089,7 +1089,7 @@
   name_zh: 原物料｜建材
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [VMC, MLM, "HOLN.SW", CRH, "SGO.PA", JHX, "5938.T"]
   tw_linkage:
     - {t: "1802", n: Taiwan Glass Ind., role: peer}
     - {t: "1809", n: China Glaze, role: peer}
@@ -1103,7 +1103,7 @@
   name_zh: 原物料｜膠帶
   cluster: Materials & Chemicals
   linkage: weak
-  us_tickers: []
+  us_tickers: [MMM, "HEN3.DE", "6988.T", FUL]
   tw_linkage:
     - {t: "6509", n: Taiwan Hopax Chemicals Manufacturing, role: peer}
     - {t: "4306", n: Yem Chio, role: peer}
@@ -1118,7 +1118,7 @@
   name_zh: 紡織｜加工絲
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: ["601233.SS", "600346.SS"]
   tw_linkage:
     - {t: "1402", n: Far Eastern New Century, role: peer}
     - {t: "1444", n: Lealea Enterprise, role: peer}
@@ -1131,7 +1131,7 @@
   name_zh: 紡織｜棉紡
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: ["VTL.NS", "TRIDENT.NS"]
   tw_linkage:
     - {t: "1440", n: Tainan Spinning, role: peer}
     - {t: "4440", n: Yi Shin Textile Industrial, role: peer}
@@ -1142,7 +1142,7 @@
   name_zh: 紡織｜尼龍
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: ["3402.T", "3401.T", "3407.T", DD, CE]
   tw_linkage:
     - {t: "1314", n: China Petrochemical Development, role: peer}
     - {t: "1434", n: Formosa Taffeta, role: peer}
@@ -1154,7 +1154,7 @@
   name_zh: 紡織｜聚酯纖維
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: ["IVL.BK", "600346.SS", "601233.SS", "3402.T", "RELIANCE.NS"]
   tw_linkage:
     - {t: "1402", n: Far Eastern New Century, role: peer}
     - {t: "1718", n: China Man-Made Fiber, role: peer}
@@ -1166,7 +1166,7 @@
   name_zh: 紡織｜織布
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: ["2313.HK", "VTL.NS"]
   tw_linkage:
     - {t: "1460", n: Everest Textile, role: peer}
     - {t: "1445", n: Universal Textile, role: peer}
@@ -1179,7 +1179,7 @@
   name_zh: 紡織｜染整
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: [HUN]
   tw_linkage:
     - {t: "1470", n: evertex fabrinology limited, role: peer}
     - {t: "1463", n: CS Group Investment Holding, role: peer}
@@ -1191,7 +1191,7 @@
   name_zh: 紡織｜不織布
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: [MAGN, AMCR, "3402.T", "3407.T"]
   tw_linkage:
     - {t: "9919", n: KNH Enterprise, role: peer}
     - {t: "9944", n: Shinih Enterprise, role: peer}
@@ -1204,7 +1204,7 @@
   name_zh: 紡織｜成衣
   cluster: Textile
   linkage: weak
-  us_tickers: []
+  us_tickers: [NKE, LULU, "ADS.DE", DECK, VFC, "2313.HK", "2232.HK"]
   tw_linkage:
     - {t: "2915", n: Ruentex Industries, role: peer}
     - {t: "1417", n: Carnival Industrial, role: peer}
@@ -1221,7 +1221,7 @@
   name_zh: 機械｜工具機
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6141.T", "6103.T", "6135.T", "6113.T"]
   tw_linkage:
     - {t: "4510", n: "Kao Fong Machinery, Ltd", role: peer}
     - {t: "4533", n: "Shieh Yih Machinery Industry", role: peer}
@@ -1234,7 +1234,7 @@
   name_zh: 機械｜手工具機
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: [SWK, "6586.T", "0669.HK", EMR]
   tw_linkage:
     - {t: "1539", n: "Chiu Ting Machinery", role: peer}
     - {t: "1527", n: "Basso Industry", role: peer}
@@ -1247,7 +1247,7 @@
   name_zh: 機械｜機械零組件
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6481.T", "6471.T", "SKF-B.ST", "SHA0.DE", "6472.T", TKR]
   tw_linkage:
     - {t: "1589", n: "Yeong Guan Energy Technology Group", role: peer}
     - {t: "1560", n: "Kinik Company", role: peer}
@@ -1262,7 +1262,7 @@
   name_zh: 機械｜產業機械
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6954.T", "6506.T", "6273.T", "6383.T", "6861.T", "ABBN.SW"]
   tw_linkage:
     - {t: "4744", n: "CVC Technologies", role: peer}
     - {t: "1528", n: "Anderson Industrial", role: peer}
@@ -1274,7 +1274,7 @@
   name_zh: 機械｜模具沖壓
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6118.T", "6113.T"]
   tw_linkage:
     - {t: "5284", n: "JPP Holding Company", role: peer}
     - {t: "5243", n: "Eson Precision Ind", role: peer}
@@ -1288,7 +1288,7 @@
   name_zh: 機械｜造船
   cluster: Machinery
   linkage: weak
-  us_tickers: []
+  us_tickers: ["329180.KS", "042660.KS", "010140.KS", "600150.SS", "7012.T"]
   tw_linkage:
     - {t: "2208", n: "CSBC", role: peer}
     - {t: "6753", n: "Lungteh Shipbuilding", role: peer}
@@ -1303,7 +1303,7 @@
   name_zh: 重電能源｜油電燃氣
   cluster: Power & Heavy Electrical
   linkage: weak
-  us_tickers: []
+  us_tickers: [XOM, CVX, SHEL, TTE, NEE]
   tw_linkage:
     - {t: "1434", n: "Formosa Taffeta", role: peer}
     - {t: "8926", n: "Taiwan Cogeneration", role: peer}
@@ -1318,7 +1318,7 @@
   name_zh: 重電能源｜重電
   cluster: Power & Heavy Electrical
   linkage: weak
-  us_tickers: []
+  us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "SU.PA", "6501.T"]
   tw_linkage:
     - {t: "1519", n: "Fortune Electric", role: peer}
     - {t: "1504", n: "TECO Electric & Machinery", role: peer}
@@ -1332,7 +1332,7 @@
   name_zh: 重電能源｜電線電纜
   cluster: Power & Heavy Electrical
   linkage: weak
-  us_tickers: []
+  us_tickers: ["PRY.MI", "NEX.PA", "NKT.CO", "600522.SS"]
   tw_linkage:
     - {t: "1608", n: "Hua Eng Wire & Cable", role: peer}
     - {t: "1609", n: "Ta Ya Electric Wire & Cable", role: peer}
@@ -1347,7 +1347,7 @@
   name_zh: 重電能源｜變壓器
   cluster: Power & Heavy Electrical
   linkage: weak
-  us_tickers: []
+  us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "6501.T", "298040.KS"]
   tw_linkage:
     - {t: "3207", n: "Yao Sheng Electronic", role: peer}
     - {t: "6821", n: "LinkCom Manufacturing,LTD", role: peer}
@@ -1361,7 +1361,7 @@
   name_zh: 重電能源｜UPS
   cluster: Power & Heavy Electrical
   linkage: weak
-  us_tickers: []
+  us_tickers: [VRT, ETN, "SU.PA", "ABBN.SW"]
   tw_linkage:
     - {t: "3043", n: "Powercom, Ltd", role: peer}
     - {t: "3617", n: "Cyber Power Systems", role: peer}
@@ -1377,7 +1377,7 @@
   name_zh: 汽車運輸｜汽車
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: [TM, VWAGY, GM, TSLA, HMC, F]
   tw_linkage:
     - {t: "2206", n: "Sanyang Motor", role: peer}
     - {t: "2201", n: "Yulon Motor Company", role: peer}
@@ -1392,7 +1392,7 @@
   name_zh: 汽車運輸｜汽車零組件
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: ["6902.T", APTV, BWA, MGA, "CON.DE", "FR.PA"]
   tw_linkage:
     - {t: "6235", n: "Waffer Technology", role: peer}
     - {t: "4543", n: "Man Zai Industrial", role: peer}
@@ -1412,7 +1412,7 @@
   name_zh: 汽車運輸｜輪胎
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: ["5108.T", "ML.PA", GT, "CON.DE", "PIRC.MI", "601058.SS"]
   tw_linkage:
     - {t: "2105", n: "Cheng Shin Rubber Ind", role: peer}
     - {t: "2101", n: "Nankang Rubber Tire", role: peer}
@@ -1425,7 +1425,7 @@
   name_zh: 汽車運輸｜車用電子
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: [NXPI, "IFX.DE", STM, "6723.T", MBLY, ON]
   tw_linkage:
     - {t: "2497", n: "E-Lead Electronic", role: peer}
     - {t: "1533", n: "Mobiletron Electronics", role: peer}
@@ -1439,7 +1439,7 @@
   name_zh: 汽車運輸｜中國能源車
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: ["1211.HK", "300750.SZ", NIO, LI, XPEV]
   tw_linkage:
     - {t: "6279", n: "Hu Lane Associate", role: peer}
     - {t: "3526", n: "Alltop Technology", role: peer}
@@ -1452,7 +1452,7 @@
   name_zh: 汽車運輸｜飛機零組件
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: [BA, "AIR.PA", RTX, GE, "SAF.PA", TDG, HEI]
   tw_linkage:
     - {t: "2634", n: "Aerospace Industrial Development", role: peer}
     - {t: "8222", n: "Aero Win Technology", role: peer}
@@ -1470,7 +1470,7 @@
   name_zh: 汽車運輸｜自行車
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: []
+  us_tickers: ["7309.T"]
   tw_linkage:
     - {t: "8163", n: "Darfon Electronics", role: peer}
     - {t: "9914", n: "Merida Industry", role: peer}
