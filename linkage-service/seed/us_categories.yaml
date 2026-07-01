@@ -2316,7 +2316,7 @@
   name_zh: TGV｜成孔(雷射改質/電漿蝕刻)
   cluster: TGV
   linkage: strong
-  us_tickers: []
+  us_tickers: ["LPK.DE"]
   tw_linkage:
     - {t: "1595", n: "川寶", role: peer}
     - {t: "7730", n: "暉盛-創", role: peer}
@@ -2330,7 +2330,7 @@
   name_zh: TGV｜金屬化填孔
   cluster: TGV
   linkage: medium
-  us_tickers: []
+  us_tickers: [LRCX, MKSI]
   tw_linkage:
     - {t: "7828", n: "創新服務", role: peer}
     - {t: "4760", n: "勤凱", role: peer}
@@ -2341,7 +2341,7 @@
   name_zh: TGV｜製程設備(壓膜/濕製程/乾燥)
   cluster: TGV
   linkage: medium
-  us_tickers: []
+  us_tickers: [AMAT, KLAC, ONTO, "0522.HK"]
   tw_linkage:
     - {t: "3485", n: "敘豐", role: peer}
     - {t: "6664", n: "群翊", role: peer}
