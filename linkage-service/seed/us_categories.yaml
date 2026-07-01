@@ -2088,6 +2088,8 @@
     - {t: "3042", n: "晶技", role: peer}
     - {t: "3221", n: "台嘉碩", role: peer}
     - {t: "8289", n: "泰藝", role: peer}
+    - {t: "8182", n: "加高", role: peer}
+    - {t: "6174", n: "安碁", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
 
 - id: comp-sensor
