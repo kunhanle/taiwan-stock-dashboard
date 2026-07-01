@@ -88,6 +88,7 @@ SEMI_CLUSTERS = {
     "Power Management IC",
     "CoPoS",
     "SiC",
+    "TGV",
 }
 
 # Relative-strength benchmark for alerts: a category only "alerts" when its basket

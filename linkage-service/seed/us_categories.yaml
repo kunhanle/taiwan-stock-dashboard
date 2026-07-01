@@ -2305,3 +2305,43 @@
     - {t: "3028", n: "增你強", role: peer}
     - {t: "3033", n: "威健", role: peer}
   flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — TGV  (玻璃穿孔供應鏈; 只收製程段A/B/C:成孔/填孔/設備,下游量測整合不收)
+# -----------------------------------------------------------------------------
+- id: tgv-drilling
+  name_en: TGV — Via Drilling (Laser / Plasma Etch)
+  name_zh: TGV｜成孔(雷射改質/電漿蝕刻)
+  cluster: TGV
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "1595", n: "川寶", role: peer}
+    - {t: "7730", n: "暉盛-創", role: peer}
+    - {t: "4768", n: "晶呈", role: peer}
+    - {t: "8027", n: "鈦昇", role: peer}
+    - {t: "6207", n: "雷科", role: peer}
+  flags: "製程段A(成孔),物理不可省略. 純台股觀察清單(全球純標的少). 川寶=雷射改質+ALD一站式代工龍頭."
+
+- id: tgv-metallization
+  name_en: TGV — Metallization & Via Fill
+  name_zh: TGV｜金屬化填孔
+  cluster: TGV
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "7828", n: "創新服務", role: peer}
+    - {t: "4760", n: "勤凱", role: peer}
+  flags: "製程段B(金屬化填孔). 純台股. 創新服務=銅柱巨量轉移(Technoprobe持股),勤凱=導電漿填膏."
+
+- id: tgv-equipment
+  name_en: TGV — Process Equipment (Wet / Dry / Lamination)
+  name_zh: TGV｜製程設備(壓膜/濕製程/乾燥)
+  cluster: TGV
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3485", n: "敘豐", role: peer}
+    - {t: "6664", n: "群翊", role: peer}
+    - {t: "4542", n: "科嶠", role: peer}
+  flags: "製程段C(製程設備). 純台股. 敘豐=ABF濕製程龍頭延伸,群翊=乾製程全球龍頭. 與玻璃基板cluster重疊(允許)."
