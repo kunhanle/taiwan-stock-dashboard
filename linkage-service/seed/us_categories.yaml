@@ -1642,7 +1642,8 @@
   tw_linkage:
     - {t: "2610", n: "華航", role: peer}
     - {t: "2618", n: "長榮航", role: peer}
-  flags: "純台股觀察清單; 全球觸發待補."
+    - {t: "6757", n: "台灣虎航(廉航對照)", role: peer}
+  flags: "全球觸發 DAL/UAL/AAL/Lufthansa/國泰/新航. 高端(長榮航) vs 廉航(虎航)分化."
 
 - id: ship-container
   name_en: Shipping — Container Shipping
@@ -2347,3 +2348,18 @@
     - {t: "6664", n: "群翊", role: peer}
     - {t: "4542", n: "科嶠", role: peer}
   flags: "製程段C(製程設備). 純台股. 敘豐=ABF濕製程龍頭延伸,群翊=乾製程全球龍頭. 與玻璃基板cluster重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Drone / UAV  (無人機; 台灣政策驅動 + 美系軍用無人機對照; SPX基準)
+# -----------------------------------------------------------------------------
+- id: drone-uav
+  name_en: Drone / UAV
+  name_zh: 無人機
+  cluster: Drone / UAV
+  linkage: medium
+  us_tickers: [AVAV, KTOS, RCAT]
+  tw_linkage:
+    - {t: "8033", n: "雷虎", role: peer}
+    - {t: "2634", n: "漢翔", role: peer}
+    - {t: "2645", n: "長榮航太", role: peer}
+  flags: "台灣無人機政策驅動(防禦性). 美對照 AVAV(AeroVironment)/KTOS(Kratos)/RCAT(Red Cat). 漢翔/長榮航太與飛機零組件重疊(允許)."
