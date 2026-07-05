@@ -74,3 +74,51 @@ input[type="text"] {
 input[type="text"]:focus {
   border-color: var(--primary-color);
 }
+
+/* Layout */
+.main-content {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.left-panel {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.right-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Tab navigation */
+.tab-nav {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  color: var(--secondary-color);
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--font-family);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--text-color);
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
