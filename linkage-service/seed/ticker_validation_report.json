@@ -1,7 +1,17 @@
 {
-  "us_total": 151,
-  "tw_total": 88,
-  "us_invalid": {},
-  "tw_invalid": {},
-  "tw_source": "yfinance"
+  "us_total": 424,
+  "tw_total": 596,
+  "us_invalid": {
+    "True": [
+      "auto-electronics",
+      "comp-usb-ic",
+      "comp-discrete"
+    ]
+  },
+  "tw_invalid": {
+    "6930": [
+      "sic-substrate-wafer"
+    ]
+  },
+  "tw_source": "finlab"
 }
