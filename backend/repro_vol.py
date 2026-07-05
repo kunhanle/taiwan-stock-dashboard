@@ -4,7 +4,7 @@ import os
 import json
 
 # Login
-API_TOKEN = "WxYZVitl9Ly7elxSHam9yTSgTq1VXS+tz2CODiBY5N4SGiM4FjQuXr1kk+1V7gsv#vip_m"
+API_TOKEN = os.environ.get("FINLAB_API_TOKEN") or open(os.path.expanduser("~/.finlab_token"), encoding="utf-8").read().strip()
 login(api_token=API_TOKEN)
 
 def load_categories():

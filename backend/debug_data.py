@@ -1,9 +1,10 @@
 from finlab import data, login
 import pandas as pd
+import os
 
 # 1. Login
 print("--- Logging in ---")
-api_token = "WxYZVitl9Ly7elxSHam9yTSgTq1VXS+tz2CODiBY5N4SGiM4FjQuXr1kk+1V7gsv#vip_m"
+api_token = os.environ.get("FINLAB_API_TOKEN") or open(os.path.expanduser("~/.finlab_token"), encoding="utf-8").read().strip()
 login(api_token=api_token)
 
 # 2. Fetch Data
