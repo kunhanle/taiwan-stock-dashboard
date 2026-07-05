@@ -1,0 +1,2365 @@
+# =============================================================================
+# US Thematic Category Seed  —  Taiwan-US Supply-Chain Linkage App
+# =============================================================================
+# Fine-grained US sub-sector taxonomy. Each category = ONE narrow sub-theme,
+# represented by <=8 US-listed leader (龍頭) tickers. These are the "trigger"
+# baskets: when a category's leaders move sharply, the linkage engine maps the
+# move to the Taiwan nodes listed under `tw_linkage`.
+#
+# Field schema per category:
+#   id              stable slug (do not rename once wired)
+#   name_en/name_zh display names
+#   cluster         high-level grouping
+#   linkage         strong | medium | weak   (TW supply-chain coupling)
+#   us_tickers      <=8 leader tickers (end-market representative)
+#   tw_linkage      [{t: TW ticker, n: name, role: up|down|peer|dual}]
+#                     up   = TW supplies INTO the US theme (upstream)
+#                     down = TW sits downstream of the US theme
+#                     peer = TW competitor / same layer
+#                     dual = SAME company dual-listed (US ADR <-> TW local);
+#                            NOT a linkage signal (self-correlation) — treat
+#                            as identity, exclude from correlation scoring
+#   flags           special situations (ADR / merger / bankruptcy / etc.)
+#
+# Verification: tickers web-verified as US-listed on 2026-06-18. Run a final
+# programmatic pass against the live market-data feed before ingest (re-tickers
+# like XYZ=Block, post-spin SNDK/WDC, and merger/bankruptcy names are the risk).
+# A ticker may legitimately appear in multiple categories (different end-market
+# -> different TW supplier). Dedupe is by category, NOT by ticker.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# CLUSTER 3b — Silicon Photonics / CPO  (財報狗 tag 細分: 直接/間接/擴散受惠)
+# -----------------------------------------------------------------------------
+- id: cpo-laser-source
+  name_en: CPO — High-power Lasers & External Light Source
+  name_zh: 矽光子CPO｜高功率雷射與外部光源
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [COHR, LITE, POET]
+  tw_linkage:
+    - {t: "3081", n: 聯亞 LandMark (InP雷射磊晶), role: up}
+    - {t: "3234", n: 光環 (雷射/光收發), role: up}
+    - {t: "4908", n: 前鼎 (雷射二極體), role: up}
+    - {t: "4971", n: IET-KY 英特磊 (InP/GaAs磊晶), role: up}
+    - {t: "4977", n: 眾達-KY, role: peer}
+  flags: "直接受惠. POET=矽光子光引擎(投機,EDGAR無營收). LITE EDGAR營收偏短."
+
+- id: cpo-fau-passive
+  name_en: CPO — FAU Coupling & Passive Optics
+  name_zh: 矽光子CPO｜FAU耦光與被動光學元件
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [HIMX]
+  tw_linkage:
+    - {t: "3363", n: 上詮 (FAU龍頭/光學封裝), role: up}
+    - {t: "3163", n: 波若威 Browave (光纖套件/濾光片), role: up}
+    - {t: "6442", n: 光聖 Gloria (光連接), role: up}
+    - {t: "6789", n: 采鈺 VisEra (微透鏡), role: up}
+  flags: "直接受惠(財報狗評受惠最高:上詮). 美股僅HIMX(台裔ADR,EDGAR無營收)->本類A層為主、無B層."
+
+- id: cpo-module-integration
+  name_en: CPO — Optical Module & SiPh Transceiver
+  name_zh: 矽光子CPO｜光模組與矽光子收發整合
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [FN, AAOI, CIEN]
+  tw_linkage:
+    - {t: "4979", n: 華星光 Luxnet, role: peer}
+    - {t: "3234", n: 光環 (光收發), role: peer}
+    - {t: "3450", n: 聯鈞 (磊晶/封測), role: up}
+  flags: "間接受惠. FN=Fabrinet(代工), AAOI, CIEN."
+
+- id: cpo-siph-packaging
+  name_en: CPO — SiPh Platform & Advanced Packaging
+  name_zh: 矽光子CPO｜SiPh平台與先進封裝
+  cluster: Silicon Photonics / CPO
+  linkage: strong
+  us_tickers: [TSEM]
+  tw_linkage:
+    - {t: "6451", n: 訊芯-KY (SiP封裝), role: up}
+    - {t: "3265", n: 台星科 (晶圓級封裝/測試), role: up}
+  flags: "間接受惠. 美股僅TSEM(以色列20-F,EDGAR僅4季)->本類A層為主. TSMC COUPE平台依規則不列(只留代工)."
+
+- id: cpo-test-inspection
+  name_en: CPO — Optoelectronic Test & Inspection
+  name_zh: 矽光子CPO｜光電測試與檢量測設備
+  cluster: Silicon Photonics / CPO
+  linkage: medium
+  us_tickers: [KEYS, FORM, TER, AEHR]
+  tw_linkage:
+    - {t: "2360", n: 致茂 Chroma (測試設備), role: peer}
+    - {t: "6223", n: 旺矽 MPI (光電探針), role: up}
+    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
+  flags: "擴散受惠. KEYS EDGAR營收偏短,靠FORM/TER/AEHR撐B層."
+
+- id: cpo-switch-dsp
+  name_en: CPO — Switch / DSP / Networking
+  name_zh: 矽光子CPO｜交換器、DSP與系統網通
+  cluster: Silicon Photonics / CPO
+  linkage: medium
+  us_tickers: [AVGO, MRVL, ANET, CRDO]
+  tw_linkage:
+    - {t: "2345", n: 智邦 Accton (交換器 ODM), role: down}
+  flags: "擴散受惠. AVGO Tomahawk6 CPO+DSP, NVDA Spectrum-X/Quantum-X 也相關."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Copper Clad Laminate / PCB  (財報狗 銅箔基板CCL tag 細分)
+# 含日股(.T)觸發與純台股(無觸發)子類; JP/.T -> 引擎自動 lag=0
+# -----------------------------------------------------------------------------
+- id: ccl-makers
+  name_en: CCL — High-end Low-loss Laminate (big-three)
+  name_zh: 銅箔基板CCL｜中游 高階低損耗CCL三雄
+  cluster: CCL / PCB
+  linkage: strong
+  us_tickers: [ROG]
+  tw_linkage:
+    - {t: "2383", n: 台光電 EMC (全球CCL龍頭), role: peer}
+    - {t: "6274", n: 台燿 TUC, role: peer}
+    - {t: "6213", n: 聯茂 ITEQ, role: peer}
+    - {t: "1303", n: 南亞 Nan Ya (CCL/銅箔), role: peer}
+  flags: "中游直接受惠(受惠最高:台光電). 美股僅 ROG(Rogers 高頻層壓板)."
+
+- id: ccl-upstream-materials
+  name_en: CCL — Upstream Materials (copper foil / glass cloth / resin)
+  name_zh: 銅箔基板CCL｜上游 銅箔、玻纖布與樹脂瓶頸材料
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "8358", n: 金居 (HVLP銅箔,全球前三), role: up}
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "1802", n: 台玻 (玻纖布), role: up}
+    - {t: "5475", n: 德宏 (玻纖布/石英布), role: up}
+    - {t: "5340", n: 建榮 (玻纖布), role: up}
+    - {t: "1717", n: 長興 (低損耗樹脂), role: up}
+    - {t: "1303", n: 南亞 (銅箔/電子材料), role: up}
+  flags: "上游瓶頸材料. 無美股/日股觸發 -> 純台股觀察清單(無 A 層讀數)."
+
+- id: ai-server-pcb
+  name_en: CCL — AI Server High-layer PCB
+  name_zh: 銅箔基板CCL｜下游 AI伺服器高多層PCB
+  cluster: CCL / PCB
+  linkage: strong
+  us_tickers: [TTMI]
+  tw_linkage:
+    - {t: "2368", n: 金像電 GCE (AI server PCB), role: peer}
+    - {t: "4958", n: 臻鼎-KY ZDT (全球最大PCB/FPC), role: peer}
+    - {t: "3044", n: 健鼎 Tripod, role: peer}
+    - {t: "2313", n: 華通 Compeq, role: peer}
+    - {t: "6577", n: 定穎投控 Dynamic, role: peer}
+  flags: "下游. 美股僅 TTMI(TTM Technologies)."
+
+- id: abf-substrate
+  name_en: CCL — ABF Substrate & Packaging Materials
+  name_zh: 銅箔基板CCL｜下游 ABF載板與封裝材料外溢
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: ["2802.T", "4182.T", "4004.T"]
+  tw_linkage:
+    - {t: "3037", n: 欣興 Unimicron (ABF載板), role: up}
+    - {t: "8046", n: 南電 Nan Ya PCB (ABF載板), role: up}
+    - {t: "3189", n: 景碩 Kinsus (ABF載板), role: up}
+  flags: "下游. 觸發=日股 ABF 材料龍頭: 味之素2802.T(ABF film)/三菱瓦斯化學4182.T/Resonac4004.T. 日股A層(.T,lag=0); 日股EDGAR無營收->本類無B層."
+
+- id: pcb-drill-equipment
+  name_en: CCL — Drill Bits / Impregnation / Process Equipment
+  name_zh: 銅箔基板CCL｜下游 鑽針、含浸與精密製程設備
+  cluster: CCL / PCB
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "4536", n: 尖點 Tct (PCB鑽針), role: up}
+    - {t: "6727", n: 亞泰金屬 (精密機構件/鑽針), role: up}
+    - {t: "3167", n: 大量 (PCB鑽孔/成型設備), role: up}
+    - {t: "3455", n: 由田 (AOI檢測), role: up}
+    - {t: "8074", n: 鉅橡 (PCB製程設備), role: up}
+  flags: "下游設備. 無美股/日股觸發 -> 純台股觀察清單(無 A 層讀數)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Passive Components  (財報狗 被動元件 tag 細分; 美/日/韓/台)
+# 龍頭多在日韓(.T/.KS, 引擎 lag=0); 上游材料日商掌握
+# -----------------------------------------------------------------------------
+- id: passive-upstream-materials
+  name_en: Passive — Dielectric Powder & Conductive Materials
+  name_zh: 被動元件｜上游 介電粉末與導電材料
+  cluster: Passive Components
+  linkage: medium
+  us_tickers: ["4078.T"]
+  tw_linkage:
+    - {t: "6173", n: 信昌電 HEC (自製介電瓷粉), role: up}
+    - {t: "4760", n: 勤凱 (材料), role: up}
+  flags: "上游材料日商掌握(>7成). 觸發=堺化學4078.T(MLCC介電瓷粉龍頭,日股lag=0,無EDGAR營收->無B層)."
+
+- id: mlcc-makers
+  name_en: Passive — MLCC & Integrated Passive Manufacturing
+  name_zh: 被動元件｜中游 MLCC與綜合被動元件製造
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: ["6981.T", "6762.T", "6976.T", "009150.KS"]
+  tw_linkage:
+    - {t: "2327", n: 國巨 Yageo (全球龍頭), role: peer}
+    - {t: "3026", n: 禾伸堂 Holystone (利基MLCC), role: peer}
+    - {t: "2492", n: 華新科 Walsin Tech, role: peer}
+  flags: "中游核心. 觸發=日韓龍頭 Murata6981.T/TDK6762.T/TaiyoYuden6976.T/三星電機009150.KS (lag=0,無EDGAR營收->無B層)."
+
+- id: aluminum-tantalum-cap
+  name_en: Passive — Aluminum / Solid / Tantalum Capacitors
+  name_zh: 被動元件｜中游 鋁電容、固態電容與鉭電容
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: [VSH, "6997.T", "6996.T"]
+  tw_linkage:
+    - {t: "2472", n: 立隆 Lelon (鋁電容), role: peer}
+    - {t: "8042", n: 金山電 (鋁電容), role: peer}
+    - {t: "6449", n: 鈺邦 Apaq (固態/高分子電容), role: peer}
+  flags: "VSH(鉭) + 日股 ChemiCon6997.T/Nichicon6996.T(鋁電容,lag=0). 凱美已被國巨併下市."
+
+- id: inductor-resistor-magnetics
+  name_en: Passive — Inductors / Resistors / Magnetics
+  name_zh: 被動元件｜中游 電感、電阻與磁性元件
+  cluster: Passive Components
+  linkage: strong
+  us_tickers: [VSH, BELFB, "6762.T", "6981.T", "6976.T"]
+  tw_linkage:
+    - {t: "6862", n: 三集瑞-KY (磁性/電感), role: peer}
+    - {t: "3357", n: 臺慶科 (AI電感), role: peer}
+    - {t: "3236", n: 千如 (電感), role: peer}
+    - {t: "2478", n: 大毅 TA-I (電阻), role: peer}
+    - {t: "6834", n: 天二科技 (電感/磁性), role: peer}
+  flags: "VSH(電阻)/BELFB(磁性) + 日股 TDK6762.T/Murata6981.T/TaiyoYuden6976.T (亞洲多數->lag=0). 奇力新/美磊未列(下市/查無)."
+
+- id: passive-distribution
+  name_en: Passive — Distribution & Channel
+  name_zh: 被動元件｜下游 通路代理與庫存配置
+  cluster: Passive Components
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3090", n: 日電貿 (高階被動全線代理), role: down}
+    - {t: "8043", n: 蜜望實 (通路), role: down}
+    - {t: "3537", n: 堡達 (被動元件通路), role: down}
+  flags: "下游通路. 無美/日觸發 -> 純台股觀察清單(缺貨期庫存價差受惠)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Liquid Cooling  (財報狗 液冷散熱 tag 細分; AI伺服器水冷)
+# -----------------------------------------------------------------------------
+- id: lc-coldplate-module
+  name_en: Liquid Cooling — Cold Plate & Module Leaders
+  name_zh: 液冷散熱｜水冷板與液冷模組龍頭
+  cluster: Liquid Cooling
+  linkage: strong
+  us_tickers: [VRT, MOD, NVT]
+  tw_linkage:
+    - {t: "3017", n: 奇鋐 AVC (GB水冷板40-50%), role: peer}
+    - {t: "3324", n: 雙鴻 Auras (全套液冷), role: peer}
+    - {t: "3653", n: 健策 Jentech (均熱片), role: peer}
+    - {t: "6831", n: 邁科 (3D VC/液冷/浸沒), role: peer}
+  flags: "直接受惠(受惠最高:奇鋐). 美股 Vertiv/Modine/nVent."
+
+- id: lc-cdu-heat-exchange
+  name_en: Liquid Cooling — CDU & Heat Exchange
+  name_zh: 液冷散熱｜CDU、熱交換與系統級液冷設備
+  cluster: Liquid Cooling
+  linkage: strong
+  us_tickers: [VRT, NVT]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (CDU), role: peer}
+    - {t: "8996", n: 高力 (CDU/熱交換器), role: peer}
+  flags: "直接受惠. 美股 Vertiv/nVent."
+
+- id: lc-qd-manifold
+  name_en: Liquid Cooling — Quick Disconnect / Manifold / Precision Parts
+  name_zh: 液冷散熱｜快接頭、分歧管與精密零組件
+  cluster: Liquid Cooling
+  linkage: medium
+  us_tickers: [PH, ETN]
+  tw_linkage:
+    - {t: "6805", n: 富世達 (UQD液冷快接頭), role: up}
+    - {t: "3013", n: 晟銘電 (水冷機櫃/Sidecar), role: up}
+    - {t: "8210", n: 勤誠 Chenbro (伺服器機殼), role: up}
+    - {t: "2421", n: 建準 Sunonwealth (風扇), role: up}
+  flags: "間接受惠. 美股 Parker(PH 流體接頭/manifold)/Eaton."
+
+- id: lc-server-integration
+  name_en: Liquid Cooling — Server Integration & AI Infra
+  name_zh: 液冷散熱｜伺服器整機與AI基礎建設整合
+  cluster: Liquid Cooling
+  linkage: medium
+  us_tickers: [SMCI, DELL, HPE]
+  tw_linkage:
+    - {t: "2317", n: 鴻海 Hon Hai, role: down}
+    - {t: "2382", n: 廣達 Quanta, role: down}
+    - {t: "6669", n: 緯穎 Wiwynn, role: down}
+    - {t: "3231", n: 緯創 Wistron, role: down}
+  flags: "擴散受惠. 美股伺服器整機 SMCI/DELL/HPE."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Glass Substrate / TGV  (財報狗 玻璃基板 tag 細分; 下一代先進封裝)
+# -----------------------------------------------------------------------------
+- id: glass-tgv-equipment
+  name_en: Glass Substrate — TGV & Advanced Packaging Equipment
+  name_zh: 玻璃基板｜TGV與先進封裝設備
+  cluster: Glass Substrate
+  linkage: strong
+  us_tickers: [AMAT, KLAC, ONTO]
+  tw_linkage:
+    - {t: "8027", n: 鈦昇 (TGV雷射開孔), role: up}
+    - {t: "3131", n: 弘塑 GPM (濕製程), role: up}
+    - {t: "3583", n: 辛耘 Scientech, role: up}
+    - {t: "6664", n: 群翊 (含浸/烘烤), role: up}
+    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
+    - {t: "3167", n: 大量 (鑽孔/成型), role: up}
+  flags: "直接受惠(受惠最高:鈦昇,已出貨美客戶). 美股先進封裝設備 AMAT/KLAC/ONTO."
+
+- id: glass-core-panel-substrate
+  name_en: Glass Substrate — Glass Core / Panel-level / Substrate Integration
+  name_zh: 玻璃基板｜玻璃核心、面板級封裝與載板整合
+  cluster: Glass Substrate
+  linkage: strong
+  us_tickers: ["011790.KS", "4062.T"]
+  tw_linkage:
+    - {t: "3481", n: 群創 Innolux (FOPLP), role: peer}
+    - {t: "3037", n: 欣興 Unimicron (載板), role: peer}
+  flags: "直接受惠. 觸發=韓SKC011790.KS(Absolics母)/日Ibiden4062.T(亞洲lag=0,EDGAR無營收->無B層). TSMC CoPoS依規則不列."
+
+- id: glass-abf-transition
+  name_en: Glass Substrate — High-end ABF & Pre-transition Demand
+  name_zh: 玻璃基板｜高階ABF載板與替代前過渡需求
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: ["4062.T"]
+  tw_linkage:
+    - {t: "3037", n: 欣興 Unimicron (ABF載板), role: up}
+    - {t: "8046", n: 南電 Nan Ya PCB (ABF載板), role: up}
+    - {t: "3189", n: 景碩 Kinsus (ABF載板), role: up}
+  flags: "間接受惠. 觸發=日Ibiden4062.T(ABF載板龍頭,lag=0,無B層). 與 CCL-ABF 類重疊(允許)."
+
+- id: glass-materials
+  name_en: Glass Substrate — Glass / Fiber Cloth / Packaging Materials
+  name_zh: 玻璃基板｜玻璃材料、玻纖布與封裝材料
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: [GLW, DD, "5201.T", "5214.T"]
+  tw_linkage:
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "1802", n: 台玻 (玻璃/玻纖布), role: up}
+    - {t: "4768", n: 晶呈科技 (玻璃/半導體材料), role: up}
+    - {t: "5475", n: 德宏 (玻纖布/石英布), role: up}
+    - {t: "1717", n: 長興 (封裝樹脂), role: up}
+  flags: "間接受惠. 美股 GLW(Corning玻璃)/DD + 日 AGC5201.T/NEG5214.T(玻璃,lag=0). 與 CCL/被動玻纖布重疊(允許)."
+
+- id: glass-ai-packaging-test
+  name_en: Glass Substrate — AI Packaging Demand & Test Spillover
+  name_zh: 玻璃基板｜AI封裝需求平台與測試外溢
+  cluster: Glass Substrate
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "2449", n: 京元電 King Yuan (測試), role: down}
+    - {t: "6515", n: 穎崴 WinWay (測試介面), role: up}
+    - {t: "6510", n: 中華精測 CHPT (探針卡), role: up}
+  flags: "擴散受惠. 無美/日觸發 -> 純台股觀察清單."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Advanced Packaging  (財報狗 半導體封測 tag 細分; CoWoS/SoIC/OSAT/測試)
+#   取代舊「先進封裝」4 類; 台積電依規則不列(他類仍只留代工)
+# -----------------------------------------------------------------------------
+- id: pkgtest-osat-spillover
+  name_en: Adv Packaging — Advanced Packaging & OSAT Spillover
+  name_zh: 半導體封測｜先進封裝與OSAT外溢
+  cluster: Advanced Packaging
+  linkage: strong
+  us_tickers: [AMKR]
+  tw_linkage:
+    - {t: "3711", n: 日月光投控 ASE (全球最大OSAT,承接CoWoS外溢), role: peer}
+    - {t: "6239", n: 力成 Powertech (FOPLP/記憶體封測), role: peer}
+    - {t: "6147", n: 頎邦 Chipbond (凸塊/RDL/驅動封測), role: up}
+  flags: "直接受惠(受惠最高:日月光). 觸發=AMKR(Amkor). 台積CoWoS供不應求->外溢OSAT. 台積電依規則不列."
+
+- id: pkgtest-ai-chip-test
+  name_en: Adv Packaging — AI Chip Test Service
+  name_zh: 半導體封測｜AI晶片測試服務
+  cluster: Advanced Packaging
+  linkage: strong
+  us_tickers: [TER, "6857.T"]
+  tw_linkage:
+    - {t: "2449", n: 京元電 King Yuan (測試龍頭,FT/Burn-in/SLT), role: peer}
+    - {t: "3264", n: 欣銓 Sigurd (測試服務), role: peer}
+    - {t: "6257", n: 矽格 Sigurd-rel (測試/封裝), role: peer}
+  flags: "直接受惠. 觸發=TER(Teradyne)+日Advantest6857.T(AI晶片測試機龍頭,lag0). AI測試時間拉長->缺口."
+
+- id: pkgtest-interface-probecard
+  name_en: Adv Packaging — Test Interface & Probe Card
+  name_zh: 半導體封測｜測試介面與探針卡
+  cluster: Advanced Packaging
+  linkage: medium
+  us_tickers: [FORM]
+  tw_linkage:
+    - {t: "6223", n: 旺矽 MPI (探針卡), role: up}
+    - {t: "6515", n: 穎崴 WinWay (測試介面/測試座), role: up}
+    - {t: "6510", n: 中華精測 (探針卡), role: up}
+    - {t: "6683", n: 雍智 YEC (測試載板/探針卡), role: up}
+    - {t: "7856", n: 漢測 HTSI (薄膜探針卡,興櫃), role: up}
+  flags: "間接受惠. 觸發=FORM(FormFactor探針卡). 探針卡/測試座/KGD=良率守門員,結構性ASP上升."
+
+- id: pkgtest-equipment-materials
+  name_en: Adv Packaging — Equipment & Materials
+  name_zh: 半導體封測｜先進封裝設備與材料
+  cluster: Advanced Packaging
+  linkage: weak
+  us_tickers: [AMAT, KLAC]
+  tw_linkage:
+    - {t: "3131", n: 弘塑 GPM (CoWoS濕製程), role: up}
+    - {t: "3583", n: 辛耘 Scientech (濕製程), role: up}
+    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
+    - {t: "6640", n: 均華 (封裝設備), role: up}
+    - {t: "2467", n: 志聖 (壓合/烘烤), role: up}
+    - {t: "6187", n: 萬潤 (封裝設備/AOI), role: up}
+    - {t: "3455", n: 由田 YDT (AOI光學檢測), role: up}
+  flags: "擴散受惠. 美股 AMAT/KLAC. 弘塑為台積CoWoS/SoIC濕製程主供應. 設備擴產+材料瓶頸."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Specialty Chemicals  (財報狗 特用化學品 tag 細分; 半導體材料國產替代)
+# -----------------------------------------------------------------------------
+- id: spchem-frontend-materials
+  name_en: Specialty Chem — Semi Front-end Key Materials
+  name_zh: 特用化學品｜半導體前段關鍵材料
+  cluster: Specialty Chemicals
+  linkage: strong
+  us_tickers: [ENTG, APD, LIN]
+  tw_linkage:
+    - {t: "4749", n: 新應材 (微影Rinse/EBR/BARC, TSMC 2nm), role: up}
+    - {t: "4772", n: 台特化 (高純矽烷/前驅物), role: up}
+    - {t: "2227", n: 三福化 (濕製程/TMAH再生), role: up}
+    - {t: "1773", n: 勝一 (電子級溶劑), role: up}
+  flags: "上游核心(受惠最高:新應材,TSMC 2nm). 美股 ENTG/APD/LIN(氣體). TSMC在地採購2030->68%."
+
+- id: spchem-resin-glass-copper
+  name_en: Specialty Chem — Resin / Glass Cloth / Copper Foil
+  name_zh: 特用化學品｜高階樹脂、玻纖與銅箔材料
+  cluster: Specialty Chemicals
+  linkage: medium
+  us_tickers: [DD, "4182.T"]
+  tw_linkage:
+    - {t: "4722", n: 國精化 (特化), role: up}
+    - {t: "1303", n: 南亞 (電子材料), role: up}
+    - {t: "1802", n: 台玻 (玻纖布), role: up}
+    - {t: "8358", n: 金居 (HVLP銅箔), role: up}
+    - {t: "1815", n: 富喬 (玻纖布), role: up}
+    - {t: "3388", n: 崇越電 (電子材料通路), role: up}
+  flags: "上游. DD + 日三菱瓦斯化學4182.T(BT樹脂,lag=0). 與 CCL 上游材料重疊(允許)."
+
+- id: spchem-packaging-materials
+  name_en: Specialty Chem — Advanced Packaging & Substrate Materials
+  name_zh: 特用化學品｜先進封裝與載板特化材料
+  cluster: Specialty Chemicals
+  linkage: medium
+  us_tickers: [ESI]
+  tw_linkage:
+    - {t: "1717", n: 長興 (封裝樹脂), role: up}
+    - {t: "5234", n: 達興材料 (PSPI/CoWoS), role: up}
+    - {t: "1711", n: 永光 (特化), role: up}
+    - {t: "4766", n: 南寶 (樹脂/膠材), role: up}
+    - {t: "7858", n: 芝普 E-Chem (封裝特化), role: up}
+  flags: "中游. 美股 ESI(Element Solutions)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Silicon Wafer  (財報狗 矽晶圓 tag 細分; 全球寡占,日德台主導)
+# -----------------------------------------------------------------------------
+- id: wafer-12in-oligopoly
+  name_en: Silicon Wafer — 12-inch High-end & Global Oligopoly
+  name_zh: 矽晶圓｜12吋高階矽晶圓與全球寡占供應商
+  cluster: Silicon Wafer
+  linkage: strong
+  us_tickers: ["4063.T", "3436.T", "WAF.DE"]
+  tw_linkage:
+    - {t: "6488", n: 環球晶 GlobalWafers (全球前三), role: peer}
+    - {t: "3532", n: 台勝科 TSC, role: peer}
+  flags: "直接受惠(受惠最高:環球晶). 觸發=日信越4063.T/SUMCO3436.T(lag=0)+德Siltronic WAF.DE(lag=1,少數). 前五大寡占>90%, 無美廠."
+
+- id: wafer-8in-power
+  name_en: Silicon Wafer — 8-inch Mature & Power/Analog
+  name_zh: 矽晶圓｜8吋成熟製程與功率/類比用晶圓
+  cluster: Silicon Wafer
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6182", n: 合晶 Wafer Works (8吋), role: peer}
+    - {t: "6488", n: 環球晶 GlobalWafers, role: peer}
+    - {t: "3532", n: 台勝科 TSC, role: peer}
+  flags: "8吋成熟製程. 無美/外觸發 -> 純台股觀察清單. 8吋多為台/中廠."
+
+- id: wafer-epi-soi-compound
+  name_en: Silicon Wafer — Epitaxy / SOI / Compound Substrates
+  name_zh: 矽晶圓｜磊晶、SOI與化合物半導體基板
+  cluster: Silicon Wafer
+  linkage: medium
+  us_tickers: [WOLF, "SOI.PA"]
+  tw_linkage:
+    - {t: "3016", n: 嘉晶 EpiStar-rel (磊晶), role: peer}
+    - {t: "3707", n: 漢磊 Episil (SiC/GaN代工), role: peer}
+  flags: "間接受惠. 美股 WOLF(SiC) + 法 Soitec SOI.PA(SOI龍頭,歐股lag=1)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — GaN  (財報狗 氮化鎵 tag 細分; 第三代半導體, AI 800V HVDC)
+# -----------------------------------------------------------------------------
+- id: gan-power-ic-idm
+  name_en: GaN — Power IC & International IDM
+  name_zh: 氮化鎵｜GaN功率IC與國際IDM
+  cluster: GaN
+  linkage: strong
+  us_tickers: [NVTS, IFNNY, POWI, "ON", STM, "6723.T"]
+  tw_linkage: []
+  flags: "直接受惠(受惠最高:NVTS Navitas). 國際IDM主導,台股無純對應. 含日瑞薩6723.T(少數,lag1). NVIDIA MGX/800V HVDC."
+
+- id: gan-foundry
+  name_en: GaN — Foundry & Mature Process Transfer
+  name_zh: 氮化鎵｜GaN晶圓代工與成熟製程轉單
+  cluster: GaN
+  linkage: medium
+  us_tickers: [GFS]
+  tw_linkage:
+    - {t: "6770", n: 力積電 PSMC (GaN-on-Si轉單), role: peer}
+  flags: "直接受惠. 美股 GFS(GlobalFoundries)."
+
+- id: gan-epi-substrate-compound
+  name_en: GaN — Epitaxy / Substrate / Compound Semi
+  name_zh: 氮化鎵｜磊晶、基板與化合物半導體製造
+  cluster: GaN
+  linkage: medium
+  us_tickers: [WOLF]
+  tw_linkage:
+    - {t: "3105", n: 穩懋 WIN Semi (GaN代工), role: peer}
+    - {t: "2455", n: 全新 VPEC (GaN/GaAs磊晶), role: peer}
+  flags: "間接受惠. 美股 WOLF(SiC). 漢磊改列 Silicon Wafer(磊晶SOI)避免三重重複."
+
+- id: gan-packaging-leadframe-test
+  name_en: GaN — Packaging / Leadframe / Reliability Test
+  name_zh: 氮化鎵｜封測、導線架與可靠度測試
+  cluster: GaN
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6525", n: 捷敏-KY GEM (功率封測,全球前三), role: up}
+    - {t: "5285", n: 界霖 Jih Lin (導線架), role: up}
+    - {t: "6548", n: 長科 Chang Wah (導線架/材料), role: up}
+  flags: "間接受惠. 無美/外觸發 -> 純台股觀察清單. 導線架三雄:順德/界霖/長科."
+
+- id: gan-ai-power-pmic
+  name_en: GaN — AI Power System / PMIC / Power Spillover
+  name_zh: 氮化鎵｜AI電源系統、PMIC與功率元件外溢
+  cluster: GaN
+  linkage: medium
+  us_tickers: [MPWR, POWI]
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (電源), role: peer}
+    - {t: "2301", n: 光寶科 Lite-On (電源), role: peer}
+    - {t: "6415", n: 矽力-KY Silergy (PMIC), role: peer}
+    - {t: "6719", n: 力智 RichTek-rel (PMIC), role: peer}
+    - {t: "2481", n: 強茂 Pan Jit (功率分立), role: peer}
+    - {t: "3675", n: 德微 Devtech (功率分立), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立), role: peer}
+  flags: "擴散受惠. 美股 MPWR/POWI."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — IC Design  (財報狗 IC設計 tag 細分; AI ASIC/高速傳輸/IP/PMIC驅動)
+# -----------------------------------------------------------------------------
+- id: icdesign-ai-asic-service
+  name_en: IC Design — AI ASIC & Design Service
+  name_zh: IC設計｜AI ASIC與設計服務
+  cluster: IC Design
+  linkage: strong
+  us_tickers: [AVGO, MRVL]
+  tw_linkage:
+    - {t: "3661", n: 世芯-KY Alchip (ASIC設計服務), role: down}
+    - {t: "3443", n: 創意 GUC (ASIC設計服務), role: down}
+    - {t: "2454", n: 聯發科 MediaTek (AI ASIC跨入), role: peer}
+    - {t: "3035", n: 智原 Faraday (ASIC/IP), role: down}
+    - {t: "8227", n: 巨有 (ASIC設計服務,興櫃), role: down}
+  flags: "直接受惠(受惠最高). 美CSP自研ASIC: AVGO/MRVL. 台ASIC三雄世芯/創意/智原."
+
+- id: icdesign-server-mgmt-highspeed
+  name_en: IC Design — Server Mgmt & High-Speed Transmission
+  name_zh: IC設計｜伺服器管理與高速傳輸晶片
+  cluster: IC Design
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "4966", n: 譜瑞-KY Parade (高速傳輸/retimer), role: peer}
+    - {t: "5269", n: 祥碩 Asmedia (高速IO), role: peer}
+    - {t: "6104", n: 創惟 Genesys Logic (USB/高速IO), role: peer}
+    - {t: "6756", n: 威鋒電子 VIA Labs (USB4/高速IO), role: peer}
+    - {t: "2379", n: 瑞昱 Realtek (網通/介面), role: peer}
+  flags: "直接受惠. 無美觸發(台廠自有利基,A層為主) -> 純台股觀察清單."
+
+- id: icdesign-ip-silicon
+  name_en: IC Design — Silicon IP & Advanced Node Support
+  name_zh: IC設計｜IP矽智財與先進節點支援
+  cluster: IC Design
+  linkage: medium
+  us_tickers: [SNPS, CDNS, ARM]
+  tw_linkage:
+    - {t: "3529", n: 力旺 eMemory (NVM IP), role: peer}
+    - {t: "6643", n: M31 (IP矽智財), role: peer}
+    - {t: "3443", n: 創意 GUC (IP/ASIC), role: peer}
+  flags: "間接受惠. 美EDA/IP: SNPS/CDNS/ARM(ARM為UK 20-F,無EDGAR季營收->A層). 台IP:力旺/M31."
+
+- id: icdesign-pmic-driver-edge
+  name_en: IC Design — PMIC / Driver IC / Edge AI Control
+  name_zh: IC設計｜PMIC、驅動IC與邊緣AI控制
+  cluster: IC Design
+  linkage: medium
+  us_tickers: [HIMX]
+  tw_linkage:
+    - {t: "6415", n: 矽力-KY Silergy (PMIC), role: peer}
+    - {t: "8081", n: 致新 Global Mixed (PMIC), role: peer}
+    - {t: "3034", n: 聯詠 Novatek (驅動IC/SoC), role: peer}
+    - {t: "4961", n: 天鈺 Fitipower (驅動IC), role: peer}
+    - {t: "3227", n: 原相 PixArt (感測/邊緣控制), role: peer}
+  flags: "間接受惠. 美觸發 HIMX(奇景,台廠ADR 20-F無EDGAR->A層). 台PMIC/驅動IC群."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — LEO Satellite  (財報狗 低軌衛星 tag 細分; SpaceX/Amazon Leo/OneWeb)
+# -----------------------------------------------------------------------------
+- id: leo-payload-rf
+  name_en: LEO Satellite — Payload & High-Freq RF Components
+  name_zh: 低軌衛星｜衛星酬載與高頻射頻元件
+  cluster: LEO Satellite
+  linkage: strong
+  us_tickers: [MTSI]
+  tw_linkage:
+    - {t: "3491", n: 昇達科 SWSC (RF/OISL,受惠最高), role: up}
+    - {t: "6271", n: 同欣電 Tong Hsing (高頻封裝), role: up}
+    - {t: "5222", n: 全訊 ACTS (PA功率放大器), role: up}
+    - {t: "3105", n: 穩懋 WIN Semi (GaAs PA), role: up}
+    - {t: "8086", n: 宏捷科 AWSC (GaAs PA), role: up}
+  flags: "上游核心(受惠最高:昇達科). 美股 MTSI(MACOM微波). SpaceX/OneWeb/Telesat."
+
+- id: leo-pcb-substrate
+  name_en: LEO Satellite — PCB / HDI / CCL / Substrate
+  name_zh: 低軌衛星｜PCB、HDI、CCL與封裝基板
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [TTMI]
+  tw_linkage:
+    - {t: "2313", n: 華通 Compeq (HDI PCB,SpaceX), role: up}
+    - {t: "2367", n: 燿華 Unitech (PCB), role: up}
+  flags: "上游. 美股 TTMI(TTM Tech,衛星/航太PCB). 與 CCL/PCB cluster 重疊(允許)."
+
+- id: leo-antenna-ground-terminal
+  name_en: LEO Satellite — Phased Array Antenna / Ground Station / Terminal
+  name_zh: 低軌衛星｜相控陣天線、地面站與終端設備
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [STM]
+  tw_linkage:
+    - {t: "6285", n: 啟碁 Wistron NeWeb (相控陣天線/終端), role: up}
+    - {t: "2314", n: 台揚 Microelectronics (地面站/gateway), role: up}
+    - {t: "3138", n: 耀登 Auden (天線/RF), role: up}
+    - {t: "2485", n: 兆赫 Zinwell (衛星傳輸設備), role: up}
+  flags: "中游. 美股 STM(終端/衛星晶片). 啟碁相控陣天線/台揚地面站."
+
+- id: leo-optical-oisl
+  name_en: LEO Satellite — Optical Comms / OISL / High-Speed Space Network
+  name_zh: 低軌衛星｜光通訊、OISL與高速太空網路
+  cluster: LEO Satellite
+  linkage: medium
+  us_tickers: [COHR, LITE]
+  tw_linkage:
+    - {t: "7717", n: 萊德光電-KY (光纖被動/星間雷射), role: up}
+    - {t: "6426", n: 統新 (WDM濾光片/光通訊), role: up}
+  flags: "中游. 美股 COHR/LITE(光通訊). OISL星間雷射通訊. 與 CPO cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — MCU  (財報狗 MCU tag 細分; 成熟製程漲價/中國轉單/車用工控BMC)
+# -----------------------------------------------------------------------------
+- id: mcu-taiwan-niche-design
+  name_en: MCU — Taiwan Niche Design & Control Chips
+  name_zh: MCU｜台系MCU設計與利基控制晶片
+  cluster: MCU
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "4919", n: 新唐 Nuvoton (MCU/車用工控BMC,受惠最高), role: peer}
+    - {t: "6202", n: 盛群 Holtek (8/32位利基MCU), role: peer}
+    - {t: "6716", n: 應廣 PADAUK (MCU/風扇馬達控制), role: peer}
+    - {t: "6907", n: 雅特力-KY Artery (32位MCU,智原子公司), role: peer}
+    - {t: "5471", n: 松翰 Sonix (MCU), role: peer}
+    - {t: "2401", n: 凌陽 Sunplus (MCU/SoC), role: peer}
+    - {t: "2436", n: 偉詮電 Weltrend (MCU/電源控制), role: peer}
+  flags: "直接受惠(受惠最高:新唐). 無美觸發(台系利基,A層為主) -> 純台股觀察清單. 中微半漲價15-50%帶轉單."
+
+- id: mcu-international-idm
+  name_en: MCU — International Auto/Industrial IDM
+  name_zh: MCU｜國際車用與工規MCU大廠
+  cluster: MCU
+  linkage: strong
+  us_tickers: [NXPI, STM, MCHP, IFNNY, "6723.T", TXN]
+  tw_linkage: []
+  flags: "直接受惠. 國際IDM主導(NXP/ST/Microchip/英飛凌/瑞薩6723.T含lag0/TI),台系對應在①. 純觸發,無台股read-through."
+
+- id: mcu-leadframe-materials
+  name_en: MCU — Leadframe & Materials
+  name_zh: MCU｜導線架材料
+  cluster: MCU
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6548", n: 長科 Chang Wah (導線架/材料), role: up}
+    - {t: "2351", n: 順德 SDI (導線架), role: up}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單. 導線架成本漲->MCU調價. 與 GaN封測 cluster 重疊(允許)."
+
+- id: mcu-iot-power-spillover
+  name_en: MCU — IoT / Power / Embedded Control Spillover
+  name_zh: MCU｜IoT、電源與嵌入式控制外溢應用
+  cluster: MCU
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2458", n: 義隆 Elan (觸控/MCU), role: peer}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Memory  (財報狗 記憶體 tag 細分; HBM/DDR5超級循環/成熟製程缺貨)
+# -----------------------------------------------------------------------------
+- id: memory-hbm-international
+  name_en: Memory — HBM & International Memory IDM
+  name_zh: 記憶體｜HBM與國際記憶體原廠
+  cluster: Memory
+  linkage: strong
+  us_tickers: [MU, "000660.KS", "005930.KS"]
+  tw_linkage: []
+  flags: "直接受惠(Critical). 三大原廠:美光MU/SK海力士000660.KS/三星005930.KS(韓股lag0). 純觸發,台廠對應在②③. HBM由SK(~60%)/三星/MU主導."
+
+- id: memory-tw-niche-dram-flash
+  name_en: Memory — Taiwan Niche DRAM & Mature Flash
+  name_zh: 記憶體｜台灣利基型DRAM與成熟Flash
+  cluster: Memory
+  linkage: strong
+  us_tickers: []
+  tw_linkage:
+    - {t: "2408", n: 南亞科 Nanya (利基DRAM,DDR4轉單), role: peer}
+    - {t: "2344", n: 華邦電 Winbond (利基DRAM/NOR), role: peer}
+    - {t: "6770", n: 力積電 PSMC (記憶體晶圓代工), role: up}
+    - {t: "2337", n: 旺宏 Macronix (NOR/SLC NAND), role: peer}
+  flags: "直接受惠. 無美觸發(台系利基,A層為主) -> 純台股觀察清單. 承接美光/三星/SK退DDR4轉單. LTA長約紅利."
+
+- id: memory-nand-essd-storage
+  name_en: Memory — NAND / eSSD / Datacenter Storage
+  name_zh: 記憶體｜NAND、eSSD與資料中心儲存
+  cluster: Memory
+  linkage: strong
+  us_tickers: [SNDK, "285A.T"]
+  tw_linkage:
+    - {t: "8299", n: 群聯 Phison (NAND控制IC/eSSD), role: peer}
+  flags: "直接受惠. 美SNDK(SanDisk) + 日Kioxia285A.T(NAND原廠,lag0,無EDGAR->A層). 群聯控制IC."
+
+- id: memory-packaging-test
+  name_en: Memory — Packaging & Test
+  name_zh: 記憶體｜記憶體封裝測試
+  cluster: Memory
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "8110", n: 華東 Walton (記憶體封測), role: down}
+    - {t: "8150", n: 南茂 ChipMOS (記憶體封測), role: down}
+    - {t: "8131", n: 福懋科 Walton Adv (記憶體封測), role: down}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單. 受惠原廠產能滿載與漲價外溢."
+
+- id: memory-module-substrate
+  name_en: Memory — Module / Substrate / Expansion Peripheral
+  name_zh: 記憶體｜模組、基板與擴產周邊
+  cluster: Memory
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "3260", n: 威剛 ADATA (記憶體模組), role: down}
+    - {t: "2451", n: 創見 Transcend (記憶體模組), role: down}
+    - {t: "4967", n: 十銓 Team Group (記憶體模組), role: down}
+    - {t: "8271", n: 宇瞻 Apacer (記憶體模組/工業), role: down}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單. 短線彈性大,循環反轉庫存跌價風險最高."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Optical Lens  (財報狗 光學鏡頭 tag 細分; 潛望式/車用/AI眼鏡/微光學)
+# tech-not-semi -> QQQ benchmark
+# -----------------------------------------------------------------------------
+- id: optical-phone-periscope
+  name_en: Optical Lens — High-end Phone & Periscope
+  name_zh: 光學鏡頭｜高階手機鏡頭與潛望式主線
+  cluster: Optical Lens
+  linkage: strong
+  us_tickers: ["2382.HK"]
+  tw_linkage:
+    - {t: "3008", n: 大立光 Largan (高階塑膠鏡頭龍頭,受惠最高), role: up}
+    - {t: "3406", n: 玉晶光 GSEO (潛望式/iPhone), role: up}
+    - {t: "3019", n: 亞光 Asia Optical (鏡頭), role: up}
+  flags: "直接受惠(受惠最高:大立光). 港股舜宇光學2382.HK(lag0). iPhone潛望式/可變光圈/G+P規格升級."
+
+- id: optical-auto-drone-vision
+  name_en: Optical Lens — Auto / Drone / Industrial Vision
+  name_zh: 光學鏡頭｜車用、無人機與工業視覺鏡頭
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: ["2382.HK"]
+  tw_linkage:
+    - {t: "3019", n: 亞光 Asia Optical (車載5家客戶/ADAS), role: up}
+    - {t: "6209", n: 今國光 Kinik-rel (車用/紅外), role: up}
+    - {t: "3441", n: 聯一光 (光學元件), role: up}
+  flags: "直接受惠. 港股舜宇光學2382.HK(lag0). 車用ADAS/無人機/機器人視覺."
+
+- id: optical-module-biometric
+  name_en: Optical Lens — Module / NB / Biometric
+  name_zh: 光學鏡頭｜鏡頭模組、NB與生物辨識應用
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "3362", n: 先進光 AOET (鏡頭模組/光學), role: up}
+  flags: "間接受惠. 無觸發 -> 純台股觀察清單."
+
+- id: optical-ai-glasses-arvr
+  name_en: Optical Lens — AI Glasses / AR-VR / Wearable Optics
+  name_zh: 光學鏡頭｜AI眼鏡、AR/VR與智慧穿戴光學
+  cluster: Optical Lens
+  linkage: medium
+  us_tickers: [META, VUZI]
+  tw_linkage:
+    - {t: "3406", n: 玉晶光 GSEO (智慧眼鏡,蘋果/Meta鏈), role: up}
+    - {t: "6209", n: 今國光 Kinik-rel (穿戴光學), role: up}
+    - {t: "3019", n: 亞光 Asia Optical (穿戴/光學), role: up}
+    - {t: "3362", n: 先進光 AOET (光學模組), role: up}
+  flags: "間接受惠. 美股 META(Ray-Ban Meta)/VUZI(Vuzix). 玉晶光AI眼鏡布局最深."
+
+- id: optical-cpo-microoptics
+  name_en: Optical Lens — CPO / Silicon Photonics / Micro-optics
+  name_zh: 光學鏡頭｜CPO、矽光子與先進微光學
+  cluster: Optical Lens
+  linkage: weak
+  us_tickers: [COHR, LITE]
+  tw_linkage:
+    - {t: "3008", n: 大立光 Largan (微光學/CPO切入), role: up}
+    - {t: "3406", n: 玉晶光 GSEO (微光學), role: up}
+    - {t: "6789", n: 采鈺 VisEra (WLO晶圓級光學), role: peer}
+  flags: "擴散受惠. 美股 COHR/LITE(光通訊). 與 CPO cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Power Management IC  (財報狗 電源管理IC tag 細分; AI伺服器48V/800V HVDC)
+# -----------------------------------------------------------------------------
+- id: pmic-design
+  name_en: Power Management IC — PMIC & Power Control IC Design
+  name_zh: 電源管理IC｜PMIC與電源控制IC設計
+  cluster: Power Management IC
+  linkage: strong
+  us_tickers: [MPWR, POWI]
+  tw_linkage:
+    - {t: "6415", n: 矽力-KY Silergy (PMIC全能龍頭), role: peer}
+    - {t: "6719", n: 力智 RichTek-rel (GPU電源PMIC), role: peer}
+    - {t: "8081", n: 致新 Global Mixed (DDR5 Server PMIC), role: peer}
+    - {t: "6138", n: 茂達 Anpec (DDR5/風扇48V三相IC), role: peer}
+  flags: "中游核心(受惠最高). 美股 MPWR(MPS)/POWI. AI伺服器48V/800V HVDC帶多相控制器/DDR5 PMIC."
+
+- id: pmic-power-discrete
+  name_en: Power Management IC — Power Discrete & Protection
+  name_zh: 電源管理IC｜功率元件與保護元件
+  cluster: Power Management IC
+  linkage: medium
+  us_tickers: ["ON", IFNNY, DIOD]
+  tw_linkage:
+    - {t: "2481", n: 強茂 Pan Jit (MOSFET/二極體/TVS/SiC), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立/二極體), role: peer}
+    - {t: "3675", n: 德微 Devtech (功率分立), role: peer}
+    - {t: "6435", n: 大中 Great Power (高階電源/MOSFET), role: peer}
+  flags: "中游. 美股 ON(Onsemi)/IFNNY(英飛凌)/DIOD(Diodes). 高壓化+報價回升. 與 GaN功率 cluster 重疊(允許)."
+
+- id: pmic-power-system-passive
+  name_en: Power Management IC — Power System & High-end Passives
+  name_zh: 電源管理IC｜電源系統與高階被動元件
+  cluster: Power Management IC
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2308", n: 台達電 Delta (電源系統), role: down}
+    - {t: "3026", n: 禾伸堂 HEC (高階MLCC被動), role: peer}
+  flags: "擴散受惠. 無觸發 -> 純台股觀察清單. AI電力基建升級間接受惠. 與被動 cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — CoPoS  (財報狗 CoPoS tag 瘦版; 台積面板級封裝路線獨有刀,不重複玻璃基板)
+#   平台主導+試產驗證 / 自動化檢測; TGV設備與玻璃材料留在 Glass Substrate. 台積電不列
+# -----------------------------------------------------------------------------
+- id: copos-platform-pilot
+  name_en: CoPoS — Platform Lead & Pilot Validation
+  name_zh: CoPoS｜平台主導與試產驗證
+  cluster: CoPoS
+  linkage: strong
+  us_tickers: ["4062.T"]
+  tw_linkage:
+    - {t: "6789", n: 采鈺 VisEra (龍潭CoPoS試產線直接承接), role: peer}
+    - {t: "3481", n: 群創 Innolux (面板級玻璃處理/FOPLP), role: peer}
+  flags: "上游(受惠最高). 觸發=日Ibiden4062.T(CoPoS載板供應,lag0,無EDGAR->A層). 台積主導平台,采鈺早期驗證夥伴. 台積電依規則不列."
+
+- id: copos-automation-inspection
+  name_en: CoPoS — Automation / Carrier / Inspection & Metrology
+  name_zh: CoPoS｜自動化、載具與檢測量測
+  cluster: CoPoS
+  linkage: medium
+  us_tickers: []
+  tw_linkage:
+    - {t: "6640", n: 均華 (面板級封裝設備/自動化), role: up}
+    - {t: "3455", n: 由田 YDT (AOI光學檢測), role: up}
+    - {t: "3680", n: 家登 Gudeng (載具/pod), role: up}
+    - {t: "2360", n: 致茂 Chroma (檢測量測), role: peer}
+    - {t: "6187", n: 萬潤 (自動化/AOI), role: up}
+  flags: "中游. 無觸發 -> 純台股觀察清單. CoPoS近期增量先落在自動化/檢測/載具. 與封測 cluster 重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — SiC  (財報狗 碳化矽 tag; 第三代半導體,與 GaN 並列; EV/800V/快充)
+#   兄弟題材與 GaN cluster 重疊(漢磊/全新等)允許; 修正 GaN 越界收 SiC
+# -----------------------------------------------------------------------------
+- id: sic-substrate-wafer
+  name_en: SiC — Substrate & Wafer Materials
+  name_zh: 碳化矽｜SiC基板與晶圓材料
+  cluster: SiC
+  linkage: strong
+  us_tickers: [WOLF, COHR]
+  tw_linkage:
+    - {t: "6488", n: 環球晶 GlobalWafers (8吋SiC基板), role: peer}
+    - {t: "6930", n: 盛新材料 TaiSiC (SiC基板,興櫃yfinance未收->A層顯—), role: peer}
+  flags: "上游核心(受惠最高:WOLF垂直整合). 美股 WOLF(Wolfspeed)/COHR(II-VI SiC基板). 8吋升級. 基板+磊晶佔SiC成本~7成."
+
+- id: sic-power-idm
+  name_en: SiC — Power Device & IDM Leaders
+  name_zh: 碳化矽｜SiC功率元件與IDM龍頭
+  cluster: SiC
+  linkage: strong
+  us_tickers: ["ON", STM, IFNNY, "6963.T"]
+  tw_linkage:
+    - {t: "2481", n: 強茂 Pan Jit (SiC/MOSFET/二極體), role: peer}
+    - {t: "5425", n: 台半 TSC (功率分立/SiC), role: peer}
+  flags: "中游. 美股 ON/STM/IFNNY + 日羅姆ROHM6963.T(SiC IDM). 籃子US主導->lag1. MOSFET平台+車規客戶. 與 GaN/PMIC 重疊(允許)."
+
+- id: sic-power-system-terminal
+  name_en: SiC — Power System / AI Power / Terminal
+  name_zh: 碳化矽｜電源系統、AI供電與終端應用
+  cluster: SiC
+  linkage: weak
+  us_tickers: [NVTS]
+  tw_linkage: []
+  flags: "下游. 美股 NVTS(Navitas,GaN/SiC功率). 純觸發,台廠對應在④電源(見GaN/PMIC). 800V EV/AI高壓供電."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Materials & Chemicals  (傳產原物料/化工; CSV量化分類, 非AI; 全球大宗連動)
+#   含美股+中國A/H觸發(.SS/.SZ/.HK同盤lag0); SPX基準
+# -----------------------------------------------------------------------------
+- id: mat-plastics-petrochem
+  name_en: Materials — Plastics & Petrochemicals
+  name_zh: 原物料｜塑膠原料與石化
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [DOW, LYB, WLK, "600028.SS", "600309.SS", "002493.SZ"]
+  tw_linkage:
+    - {t: "1301", n: 台塑 FPC (塑膠原料), role: peer}
+    - {t: "1303", n: 南亞 NanYa (塑膠/電子材料), role: peer}
+    - {t: "1304", n: 台聚 USI (聚乙烯), role: peer}
+    - {t: "1305", n: 華夏 China General (PVC), role: peer}
+    - {t: "1308", n: 亞聚 APC (EVA/LDPE), role: peer}
+    - {t: "1309", n: 台達化 TPCC (苯乙烯), role: peer}
+    - {t: "1310", n: 台苯 TSC (苯乙烯), role: peer}
+    - {t: "1312", n: 國喬 Grand Pacific (ABS/SM), role: peer}
+    - {t: "1313", n: 聯成 UPC (PVC增塑劑), role: peer}
+  flags: "石化油價連動. 美 DOW/LYB/WLK + 中國 中石化600028.SS/萬華化學600309.SS/榮盛石化002493.SZ(A股lag0). 籃子偏亞洲->lag0."
+
+- id: mat-cement
+  name_en: Materials — Cement
+  name_zh: 原物料｜水泥
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [VMC, MLM, "600585.SS"]
+  tw_linkage:
+    - {t: "1101", n: 台泥 TCC (水泥龍頭), role: peer}
+    - {t: "1102", n: 亞泥 ACC (水泥), role: peer}
+    - {t: "1103", n: 嘉泥 Chia Hsin (水泥), role: peer}
+    - {t: "1104", n: 環泥 USC (水泥), role: peer}
+    - {t: "1108", n: 幸福 Lucky Cement, role: peer}
+    - {t: "1109", n: 信大 Hsing Ta (水泥), role: peer}
+    - {t: "1110", n: 東泥 Tung Ho (水泥), role: peer}
+    - {t: "2504", n: 國產 Goldsun (預拌混凝土), role: peer}
+    - {t: "8936", n: 國統 Kungkuo (預鑄管), role: peer}
+  flags: "內需+中國房產連動. 美 VMC/MLM(骨材) + 中國 海螺水泥600585.SS(A股lag0). 籃子US主導->lag1."
+
+- id: mat-fertilizer
+  name_en: Materials — Fertilizer & Agrichemicals
+  name_zh: 原物料｜肥料與農化
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [NTR, CF, MOS, "000792.SZ", "600096.SS"]
+  tw_linkage:
+    - {t: "1722", n: 台肥 TFC (肥料龍頭), role: peer}
+    - {t: "1708", n: 東鹼 Tung HsCo (純鹼/化工), role: peer}
+    - {t: "4148", n: 全宇生技-KY (有機肥/農化), role: peer}
+  flags: "全球農化連動. 美 NTR/CF/MOS + 中國 鹽湖000792.SZ/雲天化600096.SS(A股lag0). 籃子US主導->lag1."
+
+- id: mat-paper
+  name_en: Materials — Paper & Packaging
+  name_zh: 原物料｜造紙與紙器
+  cluster: Materials & Chemicals
+  linkage: medium
+  us_tickers: [IP, SW, "2689.HK", "002078.SZ"]
+  tw_linkage:
+    - {t: "1907", n: 永豐餘 YFY (紙業龍頭), role: peer}
+    - {t: "1904", n: 正隆 Cheng Loong (工業用紙), role: peer}
+    - {t: "1909", n: 榮成 Long Chen (紙器), role: peer}
+    - {t: "1905", n: 華紙 CHP (文化用紙), role: peer}
+    - {t: "1903", n: 士紙 Shihlin Paper, role: peer}
+  flags: "包裝紙箱景氣連動. 美 IP/SW(Smurfit WestRock) + 中國 玖龍2689.HK/太陽紙業002078.SZ(亞洲lag0). 籃子偏亞->lag0."
+
+- id: mat-rubber
+  name_en: Materials — Synthetic Rubber
+  name_zh: 原物料｜橡膠原料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "2103", n: 台橡 TSRC (合成橡膠), role: peer}
+    - {t: "2104", n: 中橡 China Synthetic Rubber, role: peer}
+    - {t: "2108", n: 南帝 Nantex (合成橡膠/乳膠), role: peer}
+  flags: "擴散受惠. 合成橡膠無純全球觸發(油價連動) -> 純台股觀察清單."
+
+- id: mat-synthetic-resin
+  name_en: Materials — Synthetic Resin
+  name_zh: 原物料｜合成樹脂
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [DOW, LYB, WLK, "BAS.DE", "4188.T"]
+  tw_linkage:
+    - {t: "1316", n: "上曜", role: peer}
+    - {t: "4770", n: "上品", role: peer}
+    - {t: "3708", n: "上緯投控", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-photocure
+  name_en: Materials — Photocure / UV Materials
+  name_zh: 原物料｜光固化材料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: ["AKE.PA"]
+  tw_linkage:
+    - {t: "1711", n: "永光", role: peer}
+    - {t: "1721", n: "三晃", role: peer}
+    - {t: "3430", n: "奇鈦科", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-pesticide
+  name_en: Materials — Pesticide / Agrichemical
+  name_zh: 原物料｜農藥
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [CTVA, FMC, "BAYN.DE", "600486.SS"]
+  tw_linkage:
+    - {t: "1712", n: "興農", role: peer}
+    - {t: "6508", n: "惠光", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-cleaning
+  name_en: Materials — Cleaning / Household
+  name_zh: 原物料｜清潔用品
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [PG, CL, "RKT.L", "ULVR.L", SCL]
+  tw_linkage:
+    - {t: "4707", n: "磐亞", role: peer}
+    - {t: "1731", n: "美吾華", role: peer}
+    - {t: "1732", n: "毛寶", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-battery-materials
+  name_en: Materials — Battery Materials
+  name_zh: 原物料｜電池材料
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [ALB, SQM, "003670.KS", "300750.SZ", "002460.SZ", "002709.SZ"]
+  tw_linkage:
+    - {t: "4721", n: "美琪瑪", role: peer}
+    - {t: "4739", n: "康普", role: peer}
+    - {t: "5227", n: "立凱-KY", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-building-materials
+  name_en: Materials — Building Materials
+  name_zh: 原物料｜建材
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [VMC, MLM, "HOLN.SW", CRH, "SGO.PA", JHX, "5938.T"]
+  tw_linkage:
+    - {t: "1802", n: "台玻", role: peer}
+    - {t: "1809", n: "中釉", role: peer}
+    - {t: "8930", n: "青鋼", role: peer}
+    - {t: "1603", n: "華電", role: peer}
+    - {t: "1806", n: "冠軍", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mat-tape-adhesive
+  name_en: Materials — Tape / Adhesive
+  name_zh: 原物料｜膠帶
+  cluster: Materials & Chemicals
+  linkage: weak
+  us_tickers: [MMM, "HEN3.DE", "6988.T", FUL]
+  tw_linkage:
+    - {t: "6509", n: "聚和", role: peer}
+    - {t: "4306", n: "炎洲", role: peer}
+    - {t: "8354", n: "冠好", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Textile  (財報狗/CSV 紡織纖維; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: textile-textured-yarn
+  name_en: Textile — Textured Yarn
+  name_zh: 紡織｜加工絲
+  cluster: Textile
+  linkage: weak
+  us_tickers: ["601233.SS", "600346.SS"]
+  tw_linkage:
+    - {t: "1402", n: "遠東新", role: peer}
+    - {t: "1444", n: "力麗", role: peer}
+    - {t: "1445", n: "大宇", role: peer}
+    - {t: "4440", n: "宜新實業", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-cotton-spinning
+  name_en: Textile — Cotton Spinning
+  name_zh: 紡織｜棉紡
+  cluster: Textile
+  linkage: weak
+  us_tickers: ["VTL.NS", "TRIDENT.NS"]
+  tw_linkage:
+    - {t: "1440", n: "南紡", role: peer}
+    - {t: "4440", n: "宜新實業", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-nylon
+  name_en: Textile — Nylon
+  name_zh: 紡織｜尼龍
+  cluster: Textile
+  linkage: weak
+  us_tickers: ["3402.T", "3401.T", "3407.T", DD, CE]
+  tw_linkage:
+    - {t: "1314", n: "中石化", role: peer}
+    - {t: "1434", n: "福懋", role: peer}
+    - {t: "1447", n: "力鵬", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-polyester-fiber
+  name_en: Textile — Polyester Fiber
+  name_zh: 紡織｜聚酯纖維
+  cluster: Textile
+  linkage: weak
+  us_tickers: ["IVL.BK", "600346.SS", "601233.SS", "3402.T", "RELIANCE.NS"]
+  tw_linkage:
+    - {t: "1402", n: "遠東新", role: peer}
+    - {t: "1718", n: "中纖", role: peer}
+    - {t: "1710", n: "東聯", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-weaving
+  name_en: Textile — Weaving
+  name_zh: 紡織｜織布
+  cluster: Textile
+  linkage: weak
+  us_tickers: ["2313.HK", "VTL.NS"]
+  tw_linkage:
+    - {t: "1460", n: "宏遠", role: peer}
+    - {t: "1445", n: "大宇", role: peer}
+    - {t: "1476", n: "儒鴻", role: peer}
+    - {t: "1464", n: "得力", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-dyeing
+  name_en: Textile — Dyeing & Finishing
+  name_zh: 紡織｜染整
+  cluster: Textile
+  linkage: weak
+  us_tickers: [HUN]
+  tw_linkage:
+    - {t: "1470", n: "大統新創", role: peer}
+    - {t: "1463", n: "強盛新", role: peer}
+    - {t: "1410", n: "南染", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-nonwoven
+  name_en: Textile — Nonwoven
+  name_zh: 紡織｜不織布
+  cluster: Textile
+  linkage: weak
+  us_tickers: [MAGN, AMCR, "3402.T", "3407.T"]
+  tw_linkage:
+    - {t: "9919", n: "康那香", role: peer}
+    - {t: "9944", n: "新麗", role: peer}
+    - {t: "1325", n: "恆大", role: peer}
+    - {t: "6504", n: "南六", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: textile-apparel
+  name_en: Textile — Apparel / Garment
+  name_zh: 紡織｜成衣
+  cluster: Textile
+  linkage: weak
+  us_tickers: [NKE, LULU, "ADS.DE", DECK, VFC, "2313.HK", "2232.HK"]
+  tw_linkage:
+    - {t: "2915", n: "潤泰全", role: peer}
+    - {t: "1417", n: "嘉裕", role: peer}
+    - {t: "8916", n: "光隆", role: peer}
+    - {t: "1477", n: "聚陽", role: peer}
+    - {t: "1476", n: "儒鴻", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Machinery  (財報狗/CSV 機械; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: mach-machine-tools
+  name_en: Machinery — Machine Tools
+  name_zh: 機械｜工具機
+  cluster: Machinery
+  linkage: weak
+  us_tickers: ["6141.T", "6103.T", "6135.T", "6113.T"]
+  tw_linkage:
+    - {t: "4510", n: "高鋒", role: peer}
+    - {t: "4533", n: "協易機", role: peer}
+    - {t: "6606", n: "建德工業", role: peer}
+    - {t: "4526", n: "東台", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-hand-tools
+  name_en: Machinery — Hand Tools
+  name_zh: 機械｜手工具機
+  cluster: Machinery
+  linkage: weak
+  us_tickers: [SWK, "6586.T", "0669.HK", EMR]
+  tw_linkage:
+    - {t: "1539", n: "巨庭", role: peer}
+    - {t: "1527", n: "鑽全", role: peer}
+    - {t: "1570", n: "力肯", role: peer}
+    - {t: "1541", n: "錩泰", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-components
+  name_en: Machinery — Mechanical Components
+  name_zh: 機械｜機械零組件
+  cluster: Machinery
+  linkage: weak
+  us_tickers: ["6481.T", "6471.T", "SKF-B.ST", "SHA0.DE", "6472.T", TKR]
+  tw_linkage:
+    - {t: "1589", n: "永冠-KY", role: peer}
+    - {t: "1560", n: "中砂", role: peer}
+    - {t: "2049", n: "上銀", role: peer}
+    - {t: "4552", n: "力達-KY", role: peer}
+    - {t: "4532", n: "瑞智", role: peer}
+    - {t: "1590", n: "亞德客-KY", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-industrial
+  name_en: Machinery — Industrial Machinery
+  name_zh: 機械｜產業機械
+  cluster: Machinery
+  linkage: weak
+  us_tickers: ["6954.T", "6506.T", "6273.T", "6383.T", "6861.T", "ABBN.SW"]
+  tw_linkage:
+    - {t: "4744", n: "皇將", role: peer}
+    - {t: "1528", n: "恩德", role: peer}
+    - {t: "6603", n: "富強鑫", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-die-stamping
+  name_en: Machinery — Die & Stamping
+  name_zh: 機械｜模具沖壓
+  cluster: Machinery
+  linkage: weak
+  us_tickers: ["6118.T", "6113.T"]
+  tw_linkage:
+    - {t: "5284", n: "jpp-KY", role: peer}
+    - {t: "5243", n: "乙盛-KY", role: peer}
+    - {t: "2476", n: "鉅祥", role: peer}
+    - {t: "1586", n: "和勤", role: peer}
+    - {t: "1569", n: "濱川", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: mach-shipbuilding
+  name_en: Machinery — Shipbuilding
+  name_zh: 機械｜造船
+  cluster: Machinery
+  linkage: weak
+  us_tickers: ["329180.KS", "042660.KS", "010140.KS", "600150.SS", "7012.T"]
+  tw_linkage:
+    - {t: "2208", n: "台船", role: peer}
+    - {t: "6753", n: "龍德造船", role: peer}
+    - {t: "8478", n: "東哥遊艇", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Power & Heavy Electrical  (財報狗/CSV 重電能源; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: power-oil-gas-utility
+  name_en: Power — Oil / Gas / Utility
+  name_zh: 重電能源｜油電燃氣
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: [XOM, CVX, SHEL, TTE, NEE]
+  tw_linkage:
+    - {t: "1434", n: "福懋", role: peer}
+    - {t: "8926", n: "台汽電", role: peer}
+    - {t: "8927", n: "北基", role: peer}
+    - {t: "6505", n: "台塑化", role: peer}
+    - {t: "8931", n: "大汽電", role: peer}
+    - {t: "2904", n: "匯僑", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-heavy-electrical
+  name_en: Power — Heavy Electrical Equipment
+  name_zh: 重電能源｜重電
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "SU.PA", "6501.T"]
+  tw_linkage:
+    - {t: "1519", n: "華城", role: peer}
+    - {t: "1504", n: "東元", role: peer}
+    - {t: "1513", n: "中興電", role: peer}
+    - {t: "1503", n: "士電", role: peer}
+    - {t: "1514", n: "亞力", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-wire-cable
+  name_en: Power — Wire & Cable
+  name_zh: 重電能源｜電線電纜
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: ["PRY.MI", "NEX.PA", "NKT.CO", "600522.SS"]
+  tw_linkage:
+    - {t: "1608", n: "華榮", role: peer}
+    - {t: "1609", n: "大亞", role: peer}
+    - {t: "1605", n: "華新", role: peer}
+    - {t: "1618", n: "合機", role: peer}
+    - {t: "1612", n: "宏泰", role: peer}
+    - {t: "1616", n: "億泰", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-transformer
+  name_en: Power — Transformer
+  name_zh: 重電能源｜變壓器
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: [GEV, ETN, "ABBN.SW", "ENR.DE", "6501.T", "298040.KS"]
+  tw_linkage:
+    - {t: "3207", n: "耀勝", role: peer}
+    - {t: "6821", n: "聯寶", role: peer}
+    - {t: "6109", n: "亞元", role: peer}
+    - {t: "3191", n: "雲嘉南", role: peer}
+    - {t: "6292", n: "迅德", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: power-ups
+  name_en: Power — UPS / Backup Power
+  name_zh: 重電能源｜UPS
+  cluster: Power & Heavy Electrical
+  linkage: weak
+  us_tickers: [VRT, ETN, "SU.PA", "ABBN.SW"]
+  tw_linkage:
+    - {t: "3043", n: "科風", role: peer}
+    - {t: "3617", n: "碩天", role: peer}
+    - {t: "3628", n: "盈正", role: peer}
+    - {t: "6409", n: "旭隼", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Auto & Transport  (財報狗/CSV 汽車運輸; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: auto-vehicles
+  name_en: Auto — Vehicle Assembly
+  name_zh: 汽車運輸｜汽車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: [TM, VWAGY, GM, TSLA, HMC, F]
+  tw_linkage:
+    - {t: "2206", n: "三陽工業", role: peer}
+    - {t: "2201", n: "裕隆", role: peer}
+    - {t: "2204", n: "中華", role: peer}
+    - {t: "6592", n: "和潤企業", role: peer}
+    - {t: "2207", n: "和泰車", role: peer}
+    - {t: "2247", n: "汎德永業", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-parts
+  name_en: Auto — Auto Parts
+  name_zh: 汽車運輸｜汽車零組件
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: ["6902.T", APTV, BWA, MGA, "CON.DE", "FR.PA"]
+  tw_linkage:
+    - {t: "6235", n: "華孚", role: peer}
+    - {t: "4543", n: "萬在", role: peer}
+    - {t: "1319", n: "東陽", role: peer}
+    - {t: "1525", n: "江申", role: peer}
+    - {t: "3162", n: "精確", role: peer}
+    - {t: "2230", n: "泰茂", role: peer}
+    - {t: "1568", n: "倉佑", role: peer}
+    - {t: "1524", n: "耿鼎", role: peer}
+    - {t: "4566", n: "時碩工業", role: peer}
+    - {t: "1522", n: "堤維西", role: peer}
+    - {t: "6605", n: "帝寶", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-tire
+  name_en: Auto — Tire
+  name_zh: 汽車運輸｜輪胎
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: ["5108.T", "ML.PA", GT, "CON.DE", "PIRC.MI", "601058.SS"]
+  tw_linkage:
+    - {t: "2105", n: "正新", role: peer}
+    - {t: "2101", n: "南港", role: peer}
+    - {t: "2102", n: "泰豐", role: peer}
+    - {t: "2106", n: "建大", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-electronics
+  name_en: Auto — Automotive Electronics
+  name_zh: 汽車運輸｜車用電子
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: [NXPI, "IFX.DE", STM, "6723.T", MBLY, ON]
+  tw_linkage:
+    - {t: "2497", n: "怡利電", role: peer}
+    - {t: "1533", n: "車王電", role: peer}
+    - {t: "8255", n: "朋程", role: peer}
+    - {t: "3128", n: "昇銳", role: peer}
+    - {t: "3552", n: "同致", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-china-ev
+  name_en: Auto — China EV Chain
+  name_zh: 汽車運輸｜中國能源車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: ["1211.HK", "300750.SZ", NIO, LI, XPEV]
+  tw_linkage:
+    - {t: "6279", n: "胡連", role: peer}
+    - {t: "3526", n: "凡甲", role: peer}
+    - {t: "3665", n: "貿聯-KY", role: peer}
+    - {t: "3003", n: "健和興", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-aircraft-parts
+  name_en: Auto — Aircraft Parts
+  name_zh: 汽車運輸｜飛機零組件
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: [BA, "AIR.PA", RTX, GE, "SAF.PA", TDG, HEI]
+  tw_linkage:
+    - {t: "2634", n: "漢翔", role: peer}
+    - {t: "8222", n: "寶一", role: peer}
+    - {t: "2630", n: "亞航", role: peer}
+    - {t: "4541", n: "晟田", role: peer}
+    - {t: "3004", n: "豐達科", role: peer}
+    - {t: "4916", n: "事欣科", role: peer}
+    - {t: "6829", n: "千附精密", role: peer}
+    - {t: "2645", n: "長榮航太", role: peer}
+    - {t: "4572", n: "駐龍", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: auto-bicycle
+  name_en: Auto — Bicycle
+  name_zh: 汽車運輸｜自行車
+  cluster: Auto & Transport
+  linkage: weak
+  us_tickers: ["7309.T"]
+  tw_linkage:
+    - {t: "8163", n: "達方", role: peer}
+    - {t: "9914", n: "美利達", role: peer}
+    - {t: "9921", n: "巨大", role: peer}
+    - {t: "8933", n: "愛地雅", role: peer}
+    - {t: "6804", n: "明係", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Healthcare & Biotech  (財報狗/CSV 生技醫療; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: health-api
+  name_en: Healthcare — Active Pharma Ingredient
+  name_zh: 生技醫療｜原料藥
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: ["LONN.SW", "2359.HK", "603259.SS", "SFZN.SW", "DRREDDY.NS"]
+  tw_linkage:
+    - {t: "4746", n: "台耀", role: peer}
+    - {t: "4102", n: "永日", role: peer}
+    - {t: "1762", n: "中化生", role: peer}
+    - {t: "4167", n: "松瑞藥", role: peer}
+    - {t: "1789", n: "神隆", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-generic
+  name_en: Healthcare — Western Pharma
+  name_zh: 生技醫療｜西藥
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [PFE, NVS, TEVA, VTRS, "SUNPHARMA.NS", SNY]
+  tw_linkage:
+    - {t: "1795", n: "美時", role: peer}
+    - {t: "6535", n: "順藥", role: peer}
+    - {t: "4114", n: "健喬", role: peer}
+    - {t: "6472", n: "保瑞", role: peer}
+    - {t: "4130", n: "健亞", role: peer}
+    - {t: "4123", n: "晟德", role: peer}
+    - {t: "1760", n: "寶齡富錦", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-newdrug
+  name_en: Healthcare — New Drug R&D
+  name_zh: 生技醫療｜新藥研發
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [LLY, NVO, MRK, ABBV, REGN, VRTX]
+  tw_linkage:
+    - {t: "6550", n: "北極星藥業-KY", role: peer}
+    - {t: "6535", n: "順藥", role: peer}
+    - {t: "6446", n: "藥華藥", role: peer}
+    - {t: "4743", n: "合一", role: peer}
+    - {t: "4147", n: "中裕", role: peer}
+    - {t: "6712", n: "長聖", role: peer}
+    - {t: "4130", n: "健亞", role: peer}
+    - {t: "4128", n: "中天", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-biologics
+  name_en: Healthcare — Biologics
+  name_zh: 生技醫療｜生物製劑
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [AMGN, RHHBY, "SDZ.SW", SNY, "2359.HK"]
+  tw_linkage:
+    - {t: "6547", n: "高端疫苗", role: peer}
+    - {t: "4142", n: "國光生", role: peer}
+    - {t: "4133", n: "亞諾法", role: peer}
+    - {t: "4174", n: "浩鼎", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-contact-lens
+  name_en: Healthcare — Contact Lens
+  name_zh: 生技醫療｜隱形眼鏡
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [ALC, COO, JNJ, BLCO]
+  tw_linkage:
+    - {t: "6782", n: "視陽", role: peer}
+    - {t: "6491", n: "晶碩", role: peer}
+    - {t: "1565", n: "精華", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-services
+  name_en: Healthcare — Medical Services
+  name_zh: 生技醫療｜醫療服務
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [UNH, HCA, FMS, DVA, CVS]
+  tw_linkage:
+    - {t: "3218", n: "大學光", role: peer}
+    - {t: "4139", n: "馬光-KY", role: peer}
+    - {t: "6662", n: "樂斯科", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-device-distrib
+  name_en: Healthcare — Medical Device Distribution
+  name_zh: 生技醫療｜醫材通路
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [MDT, SYK, BDX, HSIC, BSX]
+  tw_linkage:
+    - {t: "4164", n: "承業醫", role: peer}
+    - {t: "4104", n: "佳醫", role: peer}
+    - {t: "4175", n: "杏一", role: peer}
+    - {t: "1788", n: "杏昌", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-genetic-test
+  name_en: Healthcare — Genetic Testing
+  name_zh: 生技醫療｜基因檢測
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [ILMN, TMO, PACB, NTRA, QGEN]
+  tw_linkage:
+    - {t: "4160", n: "訊聯基因", role: peer}
+    - {t: "6236", n: "中湛", role: peer}
+    - {t: "6615", n: "慧智", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-reagent
+  name_en: Healthcare — Diagnostic Reagent
+  name_zh: 生技醫療｜檢測試劑
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [RHHBY, ABT, DHR, TMO, BIO]
+  tw_linkage:
+    - {t: "4155", n: "訊映", role: peer}
+    - {t: "4171", n: "瑞基", role: peer}
+    - {t: "4736", n: "泰博", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-supplement
+  name_en: Healthcare — Health Supplement
+  name_zh: 生技醫療｜保健品
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [HLN, "NESN.SW", ABT, HLF, USNA]
+  tw_linkage:
+    - {t: "1720", n: "生達", role: peer}
+    - {t: "8436", n: "大江", role: peer}
+    - {t: "3205", n: "佰研", role: peer}
+    - {t: "1734", n: "杏輝", role: peer}
+    - {t: "1707", n: "葡萄王", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: health-pharma-distrib
+  name_en: Healthcare — Pharma Distribution
+  name_zh: 生技醫療｜藥品通路
+  cluster: Healthcare & Biotech
+  linkage: weak
+  us_tickers: [MCK, COR, CAH]
+  tw_linkage:
+    - {t: "4114", n: "健喬", role: peer}
+    - {t: "4173", n: "久裕", role: peer}
+    - {t: "6469", n: "大樹", role: peer}
+    - {t: "8403", n: "盛弘", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Shipping & Logistics  (財報狗/CSV 航運物流; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: ship-air
+  name_en: Shipping — Airlines
+  name_zh: 航運物流｜航空
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: [DAL, UAL, AAL, "LHA.DE", "C6L.SI", "0293.HK"]
+  tw_linkage:
+    - {t: "2610", n: "華航", role: peer}
+    - {t: "2618", n: "長榮航", role: peer}
+    - {t: "6757", n: "台灣虎航(廉航對照)", role: peer}
+  flags: "全球觸發 DAL/UAL/AAL/Lufthansa/國泰/新航. 高端(長榮航) vs 廉航(虎航)分化."
+
+- id: ship-container
+  name_en: Shipping — Container Shipping
+  name_zh: 航運物流｜貨櫃航
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: ["MAERSK-B.CO", "HLAG.DE", ZIM, "601919.SS", "1919.HK", "011200.KS"]
+  tw_linkage:
+    - {t: "2603", n: "長榮", role: peer}
+    - {t: "2609", n: "陽明", role: peer}
+    - {t: "2615", n: "萬海", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: ship-bulk
+  name_en: Shipping — Bulk Shipping
+  name_zh: 航運物流｜散裝航
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: [SBLK, "9101.T", "9104.T", "9107.T", GNK]
+  tw_linkage:
+    - {t: "2637", n: "慧洋-KY", role: peer}
+    - {t: "2606", n: "裕民", role: peer}
+    - {t: "2605", n: "新興", role: peer}
+    - {t: "5608", n: "四維航", role: peer}
+    - {t: "2601", n: "益航", role: peer}
+    - {t: "2641", n: "正德", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: ship-logistics
+  name_en: Shipping — Logistics
+  name_zh: 航運物流｜物流
+  cluster: Shipping & Logistics
+  linkage: weak
+  us_tickers: ["DHL.DE", "DSV.CO", "KNIN.SW", UPS, FDX]
+  tw_linkage:
+    - {t: "2607", n: "榮運", role: peer}
+    - {t: "5607", n: "遠雄港", role: peer}
+    - {t: "2608", n: "嘉里大榮", role: peer}
+    - {t: "2642", n: "宅配通", role: peer}
+    - {t: "5603", n: "陸海", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Consumer & Retail  (財報狗/CSV 消費內需; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: cons-food
+  name_en: Consumer — Food
+  name_zh: 消費內需｜食品
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: ["NESN.SW", KHC, GIS, MDLZ, KO]
+  tw_linkage:
+    - {t: "1201", n: "味全", role: peer}
+    - {t: "1203", n: "味王", role: peer}
+    - {t: "1210", n: "大成", role: peer}
+    - {t: "1215", n: "卜蜂", role: peer}
+    - {t: "1216", n: "統一", role: peer}
+    - {t: "1217", n: "愛之味", role: peer}
+    - {t: "1218", n: "泰山", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-commodity-agri
+  name_en: Consumer — Agri Commodity
+  name_zh: 消費內需｜大宗物資
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [ADM, BG, "F34.SI", INGR]
+  tw_linkage:
+    - {t: "1210", n: "大成", role: peer}
+    - {t: "1215", n: "卜蜂", role: peer}
+    - {t: "1227", n: "佳格", role: peer}
+    - {t: "1218", n: "泰山", role: peer}
+    - {t: "1702", n: "南僑", role: peer}
+    - {t: "4207", n: "環泰", role: peer}
+    - {t: "1229", n: "聯華", role: peer}
+    - {t: "1219", n: "福壽", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-restaurant
+  name_en: Consumer — Restaurant
+  name_zh: 消費內需｜餐飲
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [MCD, SBUX, YUM, YUMC, QSR]
+  tw_linkage:
+    - {t: "2723", n: "美食-KY", role: peer}
+    - {t: "2727", n: "王品", role: peer}
+    - {t: "2732", n: "六角", role: peer}
+    - {t: "2754", n: "亞洲藏壽司", role: peer}
+    - {t: "2729", n: "瓦城", role: peer}
+    - {t: "2753", n: "八方雲集", role: peer}
+    - {t: "1268", n: "漢來美食", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-cosmetics
+  name_en: Consumer — Cosmetics
+  name_zh: 消費內需｜美妝
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: ["OR.PA", EL, "4911.T", "BEI.DE", ULTA]
+  tw_linkage:
+    - {t: "4137", n: "麗豐-KY", role: peer}
+    - {t: "6703", n: "軒郁", role: peer}
+    - {t: "4190", n: "佐登-KY", role: peer}
+    - {t: "6523", n: "達爾膚", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-department-store
+  name_en: Consumer — Department Store
+  name_zh: 消費內需｜百貨
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [WMT, COST, "8267.T", M, TGT]
+  tw_linkage:
+    - {t: "2903", n: "遠百", role: peer}
+    - {t: "2912", n: "統一超", role: peer}
+    - {t: "5904", n: "寶雅", role: peer}
+    - {t: "5903", n: "全家", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-travel
+  name_en: Consumer — Travel Agency
+  name_zh: 消費內需｜旅行社
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [BKNG, EXPE, TCOM, ABNB]
+  tw_linkage:
+    - {t: "5706", n: "鳳凰", role: peer}
+    - {t: "2731", n: "雄獅", role: peer}
+    - {t: "2734", n: "易飛網", role: peer}
+    - {t: "2743", n: "山富", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-hotel
+  name_en: Consumer — Hotel
+  name_zh: 消費內需｜飯店
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [MAR, HLT, IHG, H]
+  tw_linkage:
+    - {t: "2736", n: "富野", role: peer}
+    - {t: "2748", n: "雲品", role: peer}
+    - {t: "2722", n: "夏都", role: peer}
+    - {t: "2705", n: "六福", role: peer}
+    - {t: "2739", n: "寒舍", role: peer}
+    - {t: "2707", n: "晶華", role: peer}
+    - {t: "5704", n: "老爺知", role: peer}
+    - {t: "2704", n: "國賓", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-sportswear
+  name_en: Consumer — Sportswear
+  name_zh: 消費內需｜運動
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [NKE, "ADS.DE", LULU, DECK, ONON]
+  tw_linkage:
+    - {t: "1598", n: "岱宇", role: peer}
+    - {t: "1736", n: "喬山", role: peer}
+    - {t: "1515", n: "力山", role: peer}
+    - {t: "8442", n: "威宏-KY", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-golf
+  name_en: Consumer — Golf
+  name_zh: 消費內需｜高爾夫
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [GOLF]
+  tw_linkage:
+    - {t: "6670", n: "復盛應用", role: peer}
+    - {t: "8924", n: "大田", role: peer}
+    - {t: "8928", n: "鉅明", role: peer}
+    - {t: "8938", n: "明安", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-bottle
+  name_en: Consumer — Bottle / Can
+  name_zh: 消費內需｜瓶罐
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [BALL, CCK, AMCR, OI]
+  tw_linkage:
+    - {t: "9939", n: "宏全", role: peer}
+    - {t: "9907", n: "統一實", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-culture
+  name_en: Consumer — Cultural / Creative
+  name_zh: 消費內需｜文創
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [DIS, NFLX, "7832.T", "9697.T", WBD]
+  tw_linkage:
+    - {t: "6625", n: "必應", role: peer}
+    - {t: "8446", n: "華研", role: peer}
+    - {t: "6101", n: "寬魚國際", role: peer}
+    - {t: "6596", n: "寬宏藝術", role: peer}
+    - {t: "8450", n: "霹靂", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-recycle
+  name_en: Consumer — Recycling
+  name_zh: 消費內需｜回收
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [WM, RSG, WCN, VEOEY]
+  tw_linkage:
+    - {t: "9955", n: "佳龍", role: peer}
+    - {t: "8422", n: "可寧衛*", role: peer}
+    - {t: "8440", n: "綠電", role: peer}
+    - {t: "6581", n: "鋼聯", role: peer}
+    - {t: "8341", n: "日友", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-appliance
+  name_en: Consumer — Home Appliance
+  name_zh: 消費內需｜家電
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [WHR, "ELUX-B.ST", "000333.SZ", "600690.SS", "6758.T"]
+  tw_linkage:
+    - {t: "2371", n: "大同", role: peer}
+    - {t: "1504", n: "東元", role: peer}
+    - {t: "3024", n: "憶聲", role: peer}
+    - {t: "1604", n: "聲寶", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-3c-channel
+  name_en: Consumer — 3C Retail Channel
+  name_zh: 消費內需｜3C通路
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [BBY, JD, "9831.T", "CURY.L"]
+  tw_linkage:
+    - {t: "2347", n: "聯強", role: peer}
+    - {t: "2430", n: "燦坤", role: peer}
+    - {t: "2450", n: "神腦", role: peer}
+    - {t: "6154", n: "順發", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-pc-channel
+  name_en: Consumer — PC Distribution
+  name_zh: 消費內需｜電腦通路
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [SNX, INGM, ARW, AVT]
+  tw_linkage:
+    - {t: "6118", n: "建達", role: peer}
+    - {t: "5386", n: "青雲", role: peer}
+    - {t: "6776", n: "展碁國際", role: peer}
+    - {t: "3213", n: "茂訊", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-ecommerce
+  name_en: Consumer — E-commerce
+  name_zh: 消費內需｜電子商務
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [AMZN, BABA, PDD, SHOP, MELI]
+  tw_linkage:
+    - {t: "6741", n: "91APP*-KY", role: peer}
+    - {t: "5321", n: "美而快", role: peer}
+    - {t: "8044", n: "網家", role: peer}
+    - {t: "8454", n: "富邦媒", role: peer}
+    - {t: "5287", n: "數字", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: cons-epayment
+  name_en: Consumer — E-payment
+  name_zh: 消費內需｜電子支付
+  cluster: Consumer & Retail
+  linkage: weak
+  us_tickers: [V, MA, PYPL, XYZ, "ADYEN.AS"]
+  tw_linkage:
+    - {t: "3687", n: "歐買尬", role: peer}
+    - {t: "5478", n: "智冠", role: peer}
+    - {t: "6763", n: "綠界科技*", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Display  (財報狗/CSV 面板顯示; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: disp-panel
+  name_en: Display — LCD/OLED Panel
+  name_zh: 面板顯示｜面板
+  cluster: Display
+  linkage: weak
+  us_tickers: ["005930.KS", "034220.KS", LPL, "000725.SZ", "000100.SZ", "6753.T"]
+  tw_linkage:
+    - {t: "3481", n: "群創", role: peer}
+    - {t: "2409", n: "友達", role: peer}
+    - {t: "6116", n: "彩晶", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-panel-equip
+  name_en: Display — Panel Equipment
+  name_zh: 面板顯示｜面板設備
+  cluster: Display
+  linkage: weak
+  us_tickers: [AMAT, "8035.T", LRCX, KLAC]
+  tw_linkage:
+    - {t: "5443", n: "均豪", role: peer}
+    - {t: "2467", n: "志聖", role: peer}
+    - {t: "3455", n: "由田", role: peer}
+    - {t: "8064", n: "東捷", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-driver-ic
+  name_en: Display — LCD Driver IC
+  name_zh: 面板顯示｜LCD驅動IC
+  cluster: Display
+  linkage: weak
+  us_tickers: [HIMX, "005930.KS", "000725.SZ"]
+  tw_linkage:
+    - {t: "3545", n: "敦泰", role: peer}
+    - {t: "3034", n: "聯詠", role: peer}
+    - {t: "4961", n: "天鈺", role: peer}
+    - {t: "6129", n: "普誠", role: peer}
+    - {t: "3141", n: "晶宏", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-lcm
+  name_en: Display — LCD Module
+  name_zh: 面板顯示｜LCM
+  cluster: Display
+  linkage: weak
+  us_tickers: ["000725.SZ", "034220.KS", "6753.T"]
+  tw_linkage:
+    - {t: "3038", n: "全台", role: peer}
+    - {t: "6167", n: "久正", role: peer}
+    - {t: "8105", n: "凌巨", role: peer}
+    - {t: "5315", n: "光聯", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-backlight
+  name_en: Display — Backlight
+  name_zh: 面板顯示｜背光板
+  cluster: Display
+  linkage: weak
+  us_tickers: [GLW, "000725.SZ", "6988.T"]
+  tw_linkage:
+    - {t: "8085", n: "福華", role: peer}
+    - {t: "5371", n: "中光電", role: peer}
+    - {t: "6176", n: "瑞儀", role: peer}
+    - {t: "6120", n: "達運", role: peer}
+    - {t: "4935", n: "茂林-KY", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-touch
+  name_en: Display — Touch Panel
+  name_zh: 面板顯示｜觸控面板
+  cluster: Display
+  linkage: weak
+  us_tickers: [GLW, "005930.KS", "034220.KS"]
+  tw_linkage:
+    - {t: "3673", n: "TPK-KY", role: peer}
+    - {t: "6456", n: "GIS-KY", role: peer}
+    - {t: "3049", n: "精金", role: peer}
+    - {t: "3622", n: "洋華", role: peer}
+    - {t: "4729", n: "熒茂", role: peer}
+    - {t: "2429", n: "銘旺科", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-projector
+  name_en: Display — Projector
+  name_zh: 面板顯示｜投影機
+  cluster: Display
+  linkage: weak
+  us_tickers: ["6724.T", "6758.T", "7751.T"]
+  tw_linkage:
+    - {t: "3504", n: "揚明光", role: peer}
+    - {t: "5371", n: "中光電", role: peer}
+    - {t: "6225", n: "天瀚", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: disp-video
+  name_en: Display — Video / STB
+  name_zh: 面板顯示｜視訊
+  cluster: Display
+  linkage: weak
+  us_tickers: [ROKU, "005930.KS"]
+  tw_linkage:
+    - {t: "5474", n: "聰泰", role: peer}
+    - {t: "2485", n: "兆赫", role: peer}
+    - {t: "3466", n: "德晉", role: peer}
+    - {t: "6152", n: "百一", role: peer}
+    - {t: "2417", n: "圓剛", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Electronic Components  (財報狗/CSV 廣義電子零組件; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: comp-led
+  name_en: Components — LED
+  name_zh: 電子零組件｜LED
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: ["AMS.SW", "046890.KS", "6963.T"]
+  tw_linkage:
+    - {t: "2486", n: "一詮", role: peer}
+    - {t: "3714", n: "富采", role: peer}
+    - {t: "2393", n: "億光", role: peer}
+    - {t: "1611", n: "中電", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-usb-ic
+  name_en: Components — USB IC
+  name_zh: 電子零組件｜USB IC
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [DIOD, ON, "IFX.DE"]
+  tw_linkage:
+    - {t: "6104", n: "創惟", role: peer}
+    - {t: "6233", n: "旺玖", role: peer}
+    - {t: "4966", n: "譜瑞-KY", role: peer}
+    - {t: "5269", n: "祥碩", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-discrete
+  name_en: Components — Discrete Devices
+  name_zh: 電子零組件｜分離式元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [ON, "IFX.DE", STM, VSH, "6963.T"]
+  tw_linkage:
+    - {t: "5425", n: "台半", role: peer}
+    - {t: "2481", n: "強茂", role: peer}
+    - {t: "2302", n: "麗正", role: peer}
+    - {t: "3675", n: "德微", role: peer}
+    - {t: "8255", n: "朋程", role: peer}
+    - {t: "8261", n: "富鼎", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-quartz
+  name_en: Components — Quartz / Crystal
+  name_zh: 電子零組件｜石英元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [SITM, "6724.T", "6779.T", "6962.T"]
+  tw_linkage:
+    - {t: "2484", n: "希華", role: peer}
+    - {t: "3042", n: "晶技", role: peer}
+    - {t: "3221", n: "台嘉碩", role: peer}
+    - {t: "8289", n: "泰藝", role: peer}
+    - {t: "8182", n: "加高", role: peer}
+    - {t: "6174", n: "安碁", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-sensor
+  name_en: Components — Sensor
+  name_zh: 電子零組件｜感測元件
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: ["6758.T", "603501.SS", STM, "AMS.SW"]
+  tw_linkage:
+    - {t: "4974", n: "亞泰", role: peer}
+    - {t: "6789", n: "采鈺", role: peer}
+    - {t: "8249", n: "菱光", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-fpc
+  name_en: Components — Flexible PCB
+  name_zh: 電子零組件｜軟板
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: ["5802.T", "6981.T"]
+  tw_linkage:
+    - {t: "2402", n: "毅嘉", role: peer}
+    - {t: "4958", n: "臻鼎-KY", role: peer}
+    - {t: "6269", n: "台郡", role: peer}
+    - {t: "6153", n: "嘉聯益", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-fpc-material
+  name_en: Components — FPC Material
+  name_zh: 電子零組件｜軟板材料
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [DD, "4118.T", "178920.KS", "4208.T"]
+  tw_linkage:
+    - {t: "3354", n: "律勝", role: peer}
+    - {t: "3645", n: "達邁", role: peer}
+    - {t: "4939", n: "亞電", role: peer}
+    - {t: "8039", n: "台虹", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-acoustic
+  name_en: Components — Acoustic
+  name_zh: 電子零組件｜電聲
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [KN, "2018.HK", "002241.SZ"]
+  tw_linkage:
+    - {t: "2439", n: "美律", role: peer}
+    - {t: "3206", n: "志豐", role: peer}
+    - {t: "5457", n: "宣德", role: peer}
+    - {t: "6743", n: "安普新", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-chassis
+  name_en: Components — Chassis / Casing
+  name_zh: 電子零組件｜機殼
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: ["0285.HK", "300433.SZ"]
+  tw_linkage:
+    - {t: "6235", n: "華孚", role: peer}
+    - {t: "3013", n: "晟銘電", role: peer}
+    - {t: "3032", n: "偉訓", role: peer}
+    - {t: "5465", n: "富驊", role: peer}
+    - {t: "3540", n: "曜越", role: peer}
+    - {t: "8210", n: "勤誠", role: peer}
+    - {t: "3325", n: "旭品", role: peer}
+    - {t: "3693", n: "營邦", role: peer}
+    - {t: "3508", n: "位速", role: peer}
+    - {t: "2354", n: "鴻準", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-hinge
+  name_en: Components — Hinge
+  name_zh: 電子零組件｜樞紐
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "1582", n: "信錦", role: peer}
+    - {t: "3376", n: "新日興", role: peer}
+    - {t: "3548", n: "兆利", role: peer}
+    - {t: "4999", n: "鑫禾", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: comp-gps
+  name_en: Components — GPS
+  name_zh: 電子零組件｜GPS
+  cluster: Electronic Components
+  linkage: weak
+  us_tickers: [GRMN, TRMB]
+  tw_linkage:
+    - {t: "3306", n: "鼎天", role: peer}
+    - {t: "3499", n: "環天科", role: peer}
+    - {t: "3632", n: "研勤", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Networking & Digital  (財報狗/CSV 網通資安數位; 純台股(觸發待補))
+# -----------------------------------------------------------------------------
+- id: net-wireless
+  name_en: Networking — Wireless / Networking
+  name_zh: 網通數位｜無線網路
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: [CSCO, ANET, AVGO, QCOM, UI, NTGR]
+  tw_linkage:
+    - {t: "3380", n: "明泰", role: peer}
+    - {t: "6285", n: "啟碁", role: peer}
+    - {t: "2332", n: "友訊", role: peer}
+    - {t: "4906", n: "正文", role: peer}
+    - {t: "3558", n: "神準", role: peer}
+    - {t: "6470", n: "宇智", role: peer}
+    - {t: "5388", n: "中磊", role: peer}
+    - {t: "3596", n: "智易", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-surveillance
+  name_en: Networking — Security Surveillance
+  name_zh: 網通數位｜安全監控
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: ["002415.SZ", "002236.SZ", MSI, AXON]
+  tw_linkage:
+    - {t: "3356", n: "奇偶", role: peer}
+    - {t: "3128", n: "昇銳", role: peer}
+    - {t: "2390", n: "云辰", role: peer}
+    - {t: "8072", n: "陞泰", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-cybersec
+  name_en: Networking — Cybersecurity
+  name_zh: 網通數位｜資安
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: [CRWD, PANW, ZS, FTNT, CHKP]
+  tw_linkage:
+    - {t: "3029", n: "零壹", role: peer}
+    - {t: "6245", n: "立端", role: peer}
+    - {t: "3564", n: "其陽", role: peer}
+    - {t: "3664", n: "安瑞-KY", role: peer}
+    - {t: "6416", n: "瑞祺電通", role: peer}
+    - {t: "6690", n: "安碁資訊", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-gaming
+  name_en: Networking — Gaming
+  name_zh: 網通數位｜遊戲
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: ["0700.HK", NTES, "7974.T", TTWO, EA, RBLX, "259960.KS"]
+  tw_linkage:
+    - {t: "6111", n: "光聚晶電", role: peer}
+    - {t: "6180", n: "橘子", role: peer}
+    - {t: "3293", n: "鈊象", role: peer}
+    - {t: "3546", n: "宇峻", role: peer}
+    - {t: "5478", n: "智冠", role: peer}
+    - {t: "5263", n: "智崴", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-solar
+  name_en: Networking — Solar
+  name_zh: 網通數位｜太陽能
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: [FSLR, ENPH, "601012.SS", "300274.SZ", JKS, CSIQ, SEDG]
+  tw_linkage:
+    - {t: "6443", n: "元晶", role: peer}
+    - {t: "6244", n: "茂迪", role: peer}
+    - {t: "3576", n: "聯合再生", role: peer}
+    - {t: "5483", n: "中美晶", role: peer}
+    - {t: "6477", n: "安集", role: peer}
+    - {t: "3691", n: "碩禾", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-cleanroom
+  name_en: Networking — Cleanroom Engineering
+  name_zh: 網通數位｜無塵室工程
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: []
+  tw_linkage:
+    - {t: "6139", n: "亞翔", role: peer}
+    - {t: "5536", n: "聖暉*", role: peer}
+    - {t: "2404", n: "漢唐", role: peer}
+    - {t: "6196", n: "帆宣", role: peer}
+    - {t: "6691", n: "洋基工程", role: peer}
+    - {t: "6667", n: "信紘科", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-verification
+  name_en: Networking — Electronic Verification
+  name_zh: 網通數位｜電子驗證
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: ["SGSN.SW", "BVI.PA", "ITRK.L", "ERF.PA", ULS]
+  tw_linkage:
+    - {t: "3138", n: "耀登", role: peer}
+    - {t: "3289", n: "宜特", role: peer}
+    - {t: "3587", n: "閎康", role: peer}
+    - {t: "6146", n: "耕興", role: peer}
+    - {t: "6830", n: "汎銓", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+- id: net-ic-distrib
+  name_en: Networking — IC Component Distribution
+  name_zh: 網通數位｜IC零組件通路
+  cluster: Networking & Digital
+  linkage: weak
+  us_tickers: [ARW, AVT]
+  tw_linkage:
+    - {t: "3232", n: "昱捷", role: peer}
+    - {t: "3702", n: "大聯大", role: peer}
+    - {t: "8112", n: "至上", role: peer}
+    - {t: "3028", n: "增你強", role: peer}
+    - {t: "3033", n: "威健", role: peer}
+  flags: "純台股觀察清單; 全球觸發待補."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — TGV  (玻璃穿孔供應鏈; 只收製程段A/B/C:成孔/填孔/設備,下游量測整合不收)
+# -----------------------------------------------------------------------------
+- id: tgv-drilling
+  name_en: TGV — Via Drilling (Laser / Plasma Etch)
+  name_zh: TGV｜成孔(雷射改質/電漿蝕刻)
+  cluster: TGV
+  linkage: strong
+  us_tickers: ["LPK.DE"]
+  tw_linkage:
+    - {t: "1595", n: "川寶", role: peer}
+    - {t: "7730", n: "暉盛-創", role: peer}
+    - {t: "4768", n: "晶呈", role: peer}
+    - {t: "8027", n: "鈦昇", role: peer}
+    - {t: "6207", n: "雷科", role: peer}
+  flags: "製程段A(成孔),物理不可省略. 純台股觀察清單(全球純標的少). 川寶=雷射改質+ALD一站式代工龍頭."
+
+- id: tgv-metallization
+  name_en: TGV — Metallization & Via Fill
+  name_zh: TGV｜金屬化填孔
+  cluster: TGV
+  linkage: medium
+  us_tickers: [LRCX, MKSI]
+  tw_linkage:
+    - {t: "7828", n: "創新服務", role: peer}
+    - {t: "4760", n: "勤凱", role: peer}
+  flags: "製程段B(金屬化填孔). 純台股. 創新服務=銅柱巨量轉移(Technoprobe持股),勤凱=導電漿填膏."
+
+- id: tgv-equipment
+  name_en: TGV — Process Equipment (Wet / Dry / Lamination)
+  name_zh: TGV｜製程設備(壓膜/濕製程/乾燥)
+  cluster: TGV
+  linkage: medium
+  us_tickers: [AMAT, KLAC, ONTO, "0522.HK"]
+  tw_linkage:
+    - {t: "3485", n: "敘豐", role: peer}
+    - {t: "6664", n: "群翊", role: peer}
+    - {t: "4542", n: "科嶠", role: peer}
+  flags: "製程段C(製程設備). 純台股. 敘豐=ABF濕製程龍頭延伸,群翊=乾製程全球龍頭. 與玻璃基板cluster重疊(允許)."
+
+# -----------------------------------------------------------------------------
+# CLUSTER — Drone / UAV  (無人機; 台灣政策驅動 + 美系軍用無人機對照; SPX基準)
+# -----------------------------------------------------------------------------
+- id: drone-uav
+  name_en: Drone / UAV
+  name_zh: 無人機
+  cluster: Drone / UAV
+  linkage: medium
+  us_tickers: [AVAV, KTOS, RCAT]
+  tw_linkage:
+    - {t: "8033", n: "雷虎", role: peer}
+    - {t: "2634", n: "漢翔", role: peer}
+    - {t: "2645", n: "長榮航太", role: peer}
+  flags: "台灣無人機政策驅動(防禦性). 美對照 AVAV(AeroVironment)/KTOS(Kratos)/RCAT(Red Cat). 漢翔/長榮航太與飛機零組件重疊(允許)."

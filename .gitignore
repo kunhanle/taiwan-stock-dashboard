@@ -28,3 +28,13 @@ Thumbs.db
 secrets.json
 config.js
 *.bak
+
+# Linkage runtime cache (resolved TW .TW/.TWO symbols; self-heals, pre-warm on deploy)
+linkage-service/seed/tw_symbol_map.json
+# B-layer caches (SEC EDGAR US revenue + CIK map; refresh from source, go stale each earnings)
+linkage-service/seed/us_revenue_cache.json
+linkage-service/seed/sec_cik_map.json
+# Nightly pre-computed two-layer snapshot (rebuilt by refresh_linkage.py)
+linkage-service/seed/linkage_snapshot.json
+# Legacy taxonomy backup (pre-StatementDog rebuild; reference only, also in git history)
+linkage-service/seed/_legacy_us_categories.yaml

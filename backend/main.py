@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from financials import router as financials_router
+from linkage_api import router as linkage_router
 from finlab import data, login
 import pandas as pd
 import datetime
@@ -64,6 +65,30 @@ def on_startup():
     from database import create_db_and_tables
     create_db_and_tables()
 
+
+def _linkage_refresh_loop():
+    """In-process scheduler (Step 6): rebuild the linkage snapshot when it's
+    stale, re-checking hourly. Self-contained so the snapshot lives on the web
+    service's own filesystem (a separate Render cron wouldn't share it)."""
+    import refresh_linkage
+    snap = os.path.join(os.path.dirname(__file__), "..", "linkage-service", "seed", "linkage_snapshot.json")
+    while True:
+        try:
+            age = (time.time() - os.path.getmtime(snap)) if os.path.exists(snap) else 1e9
+            if age > 20 * 3600:  # ~daily
+                print("[linkage] snapshot stale, refreshing...")
+                refresh_linkage.main()
+        except Exception as e:  # noqa: BLE001
+            print(f"[linkage] refresh failed: {e}")
+        time.sleep(3600)
+
+
+@app.on_event("startup")
+def _start_linkage_refresh():
+    if os.getenv("LINKAGE_REFRESH", "1") != "0":
+        import threading
+        threading.Thread(target=_linkage_refresh_loop, daemon=True).start()
+
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
@@ -81,8 +106,13 @@ app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 async def read_index():
     return FileResponse(os.path.join(frontend_dir, 'index.html'))
 
-# FinLab Login
+# FinLab Login — env var first, then ~/.finlab_token file (local dev convenience)
 API_TOKEN = os.getenv("FINLAB_API_TOKEN")
+if not API_TOKEN:
+    _tok_file = os.path.join(os.path.expanduser("~"), ".finlab_token")
+    if os.path.exists(_tok_file):
+        with open(_tok_file, encoding="utf-8") as _f:
+            API_TOKEN = _f.read().strip()
 if API_TOKEN:
     login(api_token=API_TOKEN)
 else:
@@ -1159,6 +1189,7 @@ def fetch_stock_news(req: FetchNewsRequest):
 
 
 app.include_router(financials_router, prefix="/api/financials", tags=["financials"])
+app.include_router(linkage_router, prefix="/api/linkage", tags=["linkage"])
 
 if __name__ == "__main__":
     import uvicorn
