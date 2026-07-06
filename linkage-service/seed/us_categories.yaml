@@ -1425,7 +1425,7 @@
   name_zh: 汽車運輸｜車用電子
   cluster: Auto & Transport
   linkage: weak
-  us_tickers: [NXPI, "IFX.DE", STM, "6723.T", MBLY, ON]
+  us_tickers: [NXPI, "IFX.DE", STM, "6723.T", MBLY, "ON"]
   tw_linkage:
     - {t: "2497", n: "怡利電", role: peer}
     - {t: "1533", n: "車王電", role: peer}
@@ -2055,7 +2055,7 @@
   name_zh: 電子零組件｜USB IC
   cluster: Electronic Components
   linkage: weak
-  us_tickers: [DIOD, ON, "IFX.DE"]
+  us_tickers: [DIOD, "ON", "IFX.DE"]
   tw_linkage:
     - {t: "6104", n: "創惟", role: peer}
     - {t: "6233", n: "旺玖", role: peer}
@@ -2068,7 +2068,7 @@
   name_zh: 電子零組件｜分離式元件
   cluster: Electronic Components
   linkage: weak
-  us_tickers: [ON, "IFX.DE", STM, VSH, "6963.T"]
+  us_tickers: ["ON", "IFX.DE", STM, VSH, "6963.T"]
   tw_linkage:
     - {t: "5425", n: "台半", role: peer}
     - {t: "2481", n: "強茂", role: peer}
