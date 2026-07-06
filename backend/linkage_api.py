@@ -33,6 +33,12 @@ HEAVY_TTL = 1800  # 30 min — revenue/price data changes slowly
 # Nightly snapshot (refresh_linkage.py). Served instantly when fresh; falls back
 # to live compute if absent or stale (so a missed job degrades, not breaks).
 SNAPSHOT = Path(__file__).resolve().parent.parent / "linkage-service" / "seed" / "linkage_snapshot.json"
+# Committed fallback shipped in the Docker image: when the live (gitignored)
+# snapshot is absent or stale — e.g. on the 256 MB cloud container that can't
+# recompute the whole taxonomy live — serve this pre-built seed so the deployed
+# site still has data. Refresh it by committing a newer seed (a copy of a fresh
+# local linkage_snapshot.json) and redeploying.
+SEED_SNAPSHOT = SNAPSHOT.with_name("linkage_snapshot.seed.json")
 SNAPSHOT_MAX_AGE = 36 * 3600  # 36h
 _snap = {"data": None, "mtime": 0.0}
 
@@ -50,15 +56,25 @@ def _clean_nan(o):
     return o
 
 
+def _snapshot_path():
+    """Prefer the fresh live snapshot; fall back to the committed seed when the
+    live one is missing or stale. The seed is served with no age gate — it is
+    intentionally the best-available data on a box that can't recompute."""
+    if SNAPSHOT.exists() and time.time() - SNAPSHOT.stat().st_mtime <= SNAPSHOT_MAX_AGE:
+        return SNAPSHOT
+    if SEED_SNAPSHOT.exists():
+        return SEED_SNAPSHOT
+    return None
+
+
 def _snapshot():
-    if not SNAPSHOT.exists():
+    path = _snapshot_path()
+    if path is None:
         return None
-    mtime = SNAPSHOT.stat().st_mtime
-    if time.time() - mtime > SNAPSHOT_MAX_AGE:
-        return None
+    mtime = path.stat().st_mtime
     if _snap["mtime"] != mtime:
         try:
-            _snap["data"] = _clean_nan(json.loads(SNAPSHOT.read_text(encoding="utf-8")))
+            _snap["data"] = _clean_nan(json.loads(path.read_text(encoding="utf-8")))
             _snap["mtime"] = mtime
         except Exception:
             _snap["data"] = None
