@@ -2110,6 +2110,7 @@
                                         {data.us_members.map(m => (
                                             <div key={m.ticker} className="px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-sm">
                                                 <span className="text-slate-200 font-medium">{m.ticker}</span>
+                                                {m.name && <span className="ml-1.5 text-xs text-slate-400">{m.name}</span>}
                                                 <span className={`ml-2 ${(m.move || 0) >= 0 ? "text-red-400" : "text-green-400"}`}>{lkPct(m.move)}</span>
                                                 <span className="text-xs text-slate-500">(5日)</span>
                                                 {m.move_1d != null && <><span className="text-slate-600 mx-0.5">/</span><span className={`text-xs ${(m.move_1d || 0) >= 0 ? "text-red-400" : "text-green-400"}`}>{lkPct(m.move_1d)}</span><span className="text-xs text-slate-500">(今)</span></>}

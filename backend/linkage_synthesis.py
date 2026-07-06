@@ -18,8 +18,26 @@ from sqlmodel import Session
 BACKEND_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BACKEND_DIR))
 
+import yaml
+
 import linkage_engine as le
 import revenue_linkage as rl
+
+# US/foreign ticker -> display name (Chinese preferred, English fallback). Built
+# once from the committed map (linkage-service/seed/us_ticker_names.yaml) so the
+# UI can show company names next to bare tickers like "4063.T".
+_NAMES_PATH = BACKEND_DIR.parent / "linkage-service" / "seed" / "us_ticker_names.yaml"
+_names_cache: dict | None = None
+
+
+def _ticker_name(ticker: str):
+    global _names_cache
+    if _names_cache is None:
+        try:
+            _names_cache = yaml.safe_load(_NAMES_PATH.read_text(encoding="utf-8")) or {}
+        except Exception:
+            _names_cache = {}
+    return _names_cache.get(ticker)
 from database import engine
 from models import UsCategory
 
@@ -82,7 +100,8 @@ def category_two_layer(session: Session, slug: str, price_period: str = "3mo",
     # US basket members: window move (A) + latest revenue YoY (B), so the UI
     # shows the US side too, not just the TW read-through.
     rev_map = b.get("us_members_rev", {})
-    us_members = [{"ticker": m["ticker"], "move": m["move"], "move_1d": m.get("move_1d"),
+    us_members = [{"ticker": m["ticker"], "name": _ticker_name(m["ticker"]),
+                   "move": m["move"], "move_1d": m.get("move_1d"),
                    "rev_yoy": rev_map.get(m["ticker"])}
                   for m in a.get("us_members", [])]
 
