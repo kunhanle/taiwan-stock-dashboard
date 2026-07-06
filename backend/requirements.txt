@@ -11,3 +11,4 @@ yfinance
 sqlmodel
 GoogleNews
 dateparser
+PyYAML
