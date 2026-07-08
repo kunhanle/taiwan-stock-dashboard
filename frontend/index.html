@@ -2094,7 +2094,7 @@
                         <section className="glass-panel rounded-2xl p-6 space-y-4">
                             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
                                 <h3 className="text-lg font-semibold text-white">{data.name_zh} <span className="text-slate-500 text-sm">[{data.cluster}]</span></h3>
-                                <span className="text-sm text-slate-300">族群 5日: <b className={data.a_move >= 0 ? "text-red-400" : "text-green-400"}>{lkPct(data.a_move)}</b> (z {lkFmt(data.a_z)})</span>
+                                <span className="text-sm text-slate-300">族群 5日: <b className={data.a_move >= 0 ? "text-red-400" : "text-green-400"}>{lkPct(data.a_move)}</b>{data.a_move_1d != null && <><span className="text-slate-600 mx-1">/</span><b className={data.a_move_1d >= 0 ? "text-red-400" : "text-green-400"}>{lkPct(data.a_move_1d)}</b><span className="text-xs text-slate-500">(今)</span></>} (z {lkFmt(data.a_z)})</span>
                                 {data.excess !== null && data.excess !== undefined && (
                                     <span className="text-sm text-slate-300">相對{data.benchmark === '^SOX' ? '費半' : (data.benchmark === 'QQQ' ? '科技(QQQ)' : '大盤')}: <b className={data.excess >= 0.03 ? "text-amber-300" : (data.excess >= 0 ? "text-slate-200" : "text-green-400")}>超額 {lkPct(data.excess)}</b></span>
                                 )}

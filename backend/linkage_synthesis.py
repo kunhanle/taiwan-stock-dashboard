@@ -107,7 +107,7 @@ def category_two_layer(session: Session, slug: str, price_period: str = "3mo",
 
     return {
         "slug": slug, "cluster": cat.cluster, "name_zh": cat.name_zh,
-        "a_move": a["move"], "a_z": a["z"],
+        "a_move": a["move"], "a_move_1d": a.get("move_1d"), "a_z": a["z"],
         "benchmark": a.get("benchmark"), "benchmark_move": a.get("benchmark_move"),
         "excess": a.get("excess"),
         "us_members": us_members,

@@ -342,6 +342,7 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
 
     if has_trigger:
         move, z = _move_and_z(basket, window)
+        move_1d = _move_and_z(basket, 1)[0]  # group's last completed session
         # Relative strength vs benchmark (semi->SOX, tech->QQQ, else S&P 500).
         bench_sym = _benchmark_for(cat.cluster)
         bench_move = (_move_and_z(returns[bench_sym], window)[0]
@@ -350,7 +351,7 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     else:
         # No US/JP trigger (e.g. TW-only material/equipment groups): a watchlist,
         # not a read-through — no basket move, no alert.
-        move = z = excess = None
+        move = z = excess = move_1d = None
         bench_sym = bench_move = None
 
     # Per-US-member moves over the window (so the UI can show the US side too).
@@ -406,7 +407,7 @@ def score_category(session: Session, slug: str, returns: pd.DataFrame,
     return {
         "slug": slug, "name_zh": cat.name_zh, "name_en": cat.name_en,
         "cluster": cat.cluster, "linkage": cat.linkage,
-        "move": move, "z": z, "low_signal": low_signal,
+        "move": move, "move_1d": move_1d, "z": z, "low_signal": low_signal,
         "benchmark": bench_sym, "benchmark_move": bench_move, "excess": excess,
         "us_tickers": us_syms, "us_members": us_members, "nodes": nodes,
     }
