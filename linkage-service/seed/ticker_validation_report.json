@@ -1,13 +1,7 @@
 {
-  "us_total": 424,
+  "us_total": 423,
   "tw_total": 596,
-  "us_invalid": {
-    "True": [
-      "auto-electronics",
-      "comp-usb-ic",
-      "comp-discrete"
-    ]
-  },
+  "us_invalid": {},
   "tw_invalid": {
     "6930": [
       "sic-substrate-wafer"
