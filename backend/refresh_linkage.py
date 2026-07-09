@@ -99,8 +99,17 @@ def build_snapshot(stamp: str) -> dict:
     except Exception as e:  # noqa: BLE001
         print(f"      ETF monitor FAILED: {e}")
         etf_mon = None
+    print("[+] computing commodity monitor...")
+    try:
+        import commodity_monitor as cm
+        commod = cm.compute_commodity_monitor()
+        print(f"      commodity monitor: {len(commod['commodities'])} commodities")
+    except Exception as e:  # noqa: BLE001
+        print(f"      commodity monitor FAILED: {e}")
+        commod = None
     return {"generated_at": stamp, "categories": cats_out, "movers": movers,
-            "suspect_delisted": missing_price, "etf_monitor": etf_mon}
+            "suspect_delisted": missing_price, "etf_monitor": etf_mon,
+            "commodity_monitor": commod}
 
 
 def main() -> int:

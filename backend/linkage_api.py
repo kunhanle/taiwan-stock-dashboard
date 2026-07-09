@@ -205,6 +205,19 @@ def etf_monitor():
     return {"ready": True, "generated_at": snap.get("generated_at"), **_clean_nan(em)}
 
 
+@router.get("/commodity-monitor")
+def commodity_monitor():
+    """Key commodity futures (energy / metals / agri) price moves across horizons.
+    Served from the snapshot (pre-computed nightly)."""
+    snap = _snapshot()
+    if not snap:
+        return {"ready": False, "detail": "snapshot not built yet; try again shortly"}
+    cm = snap.get("commodity_monitor")
+    if not cm:
+        return {"ready": False, "detail": "commodity monitor not in snapshot yet; rebuild"}
+    return {"ready": True, "generated_at": snap.get("generated_at"), **_clean_nan(cm)}
+
+
 @router.get("/stock/{tw_id}")
 def stock_readthrough(tw_id: str, refresh: bool = Query(False),
                       session: Session = Depends(get_session)):

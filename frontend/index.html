@@ -1935,6 +1935,73 @@
             );
         };
 
+        const CommodityMonitorView = () => {
+            const [data, setData] = useState(null);
+            const [cat, setCat] = useState('全部');
+            const [sortKey, setSortKey] = useState('move_20d');
+            useEffect(() => { axios.get('/api/linkage/commodity-monitor').then(r => setData(r.data)).catch(() => setData({ ready: false })); }, []);
+
+            const cats = useMemo(() => (data && data.commodities) ? ['全部', ...new Set(data.commodities.map(c => c.category))] : ['全部'], [data]);
+            const rows = useMemo(() => {
+                if (!data || !data.commodities) return [];
+                const r = data.commodities.filter(c => cat === '全部' || c.category === cat);
+                return [...r].sort((a, b) => ((b[sortKey] ?? -9) - (a[sortKey] ?? -9)));
+            }, [data, cat, sortKey]);
+
+            if (!data) return <div className="text-center text-slate-400 py-8 text-sm">載入中…</div>;
+            if (!data.ready) return <div className="text-center text-slate-500 py-8 text-sm">大宗商品監控尚未就緒（快照需含 commodity_monitor，請重建快照）。</div>;
+
+            const pctCls = v => v == null ? 'text-slate-600' : (v >= 0 ? 'text-red-400' : 'text-green-400');
+            const hdr = (k, lbl) => <th onClick={() => setSortKey(k)} className={`text-right font-medium cursor-pointer hover:text-amber-300 ${sortKey === k ? 'text-amber-300' : ''}`}>{lbl}{sortKey === k ? ' ▾' : ''}</th>;
+
+            return (
+                <div className="space-y-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-white border-l-4 border-amber-500 pl-4">大宗商品監控</h2>
+                        <p className="text-sm text-slate-400 pl-5 mt-1">重要商品期貨(能源/金屬/農產)跨時間窗漲跌——看原物料成本與資金流向。預設依「1月」排序，點欄位標題可換。紅漲綠跌。</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 pl-5">
+                        {data.generated_at && <span className="text-xs text-slate-600" title="收盤快照，非即時盤中價">資料: {new Date(data.generated_at).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}（收盤快照）</span>}
+                    </div>
+                    <div className="flex flex-wrap gap-1 pl-5">
+                        {cats.map(t => (
+                            <button key={t} onClick={() => setCat(t)} className={`text-xs px-2 py-0.5 rounded border ${cat === t ? 'bg-amber-600/20 border-amber-500 text-amber-200' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}>{t}</button>
+                        ))}
+                    </div>
+                    <section className="glass-panel rounded-2xl p-4">
+                        <div className="overflow-x-auto max-h-[36rem] overflow-y-auto">
+                            <table className="w-full text-sm">
+                                <thead className="sticky top-0 bg-slate-900/95"><tr className="text-slate-400 border-b border-slate-700">
+                                    <th className="text-left py-1.5 font-medium">#</th>
+                                    <th className="text-left font-medium">商品</th>
+                                    <th className="text-left font-medium">類別</th>
+                                    {hdr('move_1d', '1日')}
+                                    {hdr('move_5d', '1週')}
+                                    {hdr('move_20d', '1月')}
+                                    {hdr('move_60d', '3月')}
+                                    {hdr('move_252d', '1年')}
+                                </tr></thead>
+                                <tbody>
+                                    {rows.map((e, i) => (
+                                        <tr key={e.ticker} className="border-b border-slate-800/60 hover:bg-slate-800/40">
+                                            <td className="py-1.5 text-slate-600 text-xs">{i + 1}</td>
+                                            <td className="text-slate-200"><span className="font-medium">{e.name}</span> <span className="text-slate-500 text-xs">{e.ticker}</span></td>
+                                            <td className="text-slate-500 text-xs">{e.category}</td>
+                                            <td className={`text-right tabular-nums ${pctCls(e.move_1d)}`}>{e.move_1d == null ? '—' : lkPct(e.move_1d)}</td>
+                                            <td className={`text-right tabular-nums ${pctCls(e.move_5d)}`}>{e.move_5d == null ? '—' : lkPct(e.move_5d)}</td>
+                                            <td className={`text-right tabular-nums ${pctCls(e.move_20d)}`}>{e.move_20d == null ? '—' : lkPct(e.move_20d)}</td>
+                                            <td className={`text-right tabular-nums ${pctCls(e.move_60d)}`}>{e.move_60d == null ? '—' : lkPct(e.move_60d)}</td>
+                                            <td className={`text-right tabular-nums ${pctCls(e.move_252d)}`}>{e.move_252d == null ? '—' : lkPct(e.move_252d)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
         const LinkageView = () => {
             const [cats, setCats] = useState([]);
             const [slug, setSlug] = useState(null);
@@ -2267,6 +2334,12 @@
                                         ETF監控
                                     </button>
                                     <button
+                                        onClick={() => setActiveTab("commodity")}
+                                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "commodity" ? "bg-slate-700 text-amber-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
+                                    >
+                                        大宗商品
+                                    </button>
+                                    <button
                                         onClick={() => setActiveTab("financials")}
                                         className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "financials" ? "bg-slate-700 text-yellow-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
                                     >
@@ -2300,6 +2373,11 @@
                                 {/* ETF sector-rotation monitor */}
                                 <div className={activeTab === 'etf' ? 'block' : 'hidden'}>
                                     <EtfMonitorView />
+                                </div>
+
+                                {/* Commodity futures monitor */}
+                                <div className={activeTab === 'commodity' ? 'block' : 'hidden'}>
+                                    <CommodityMonitorView />
                                 </div>
 
                                 {/* Market Breadth Section */}
