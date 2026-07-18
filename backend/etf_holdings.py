@@ -1,24 +1,29 @@
-"""TW active-ETF daily holdings collector (phase 1: 統一投信).
+"""TW active-ETF daily holdings collector.
 
-Taiwan's active ETFs disclose their FULL holdings every day, but the issuer sites
-only ever show the CURRENT day — there is no history endpoint anywhere (checked:
-TWSE OpenAPI, SITCA, FinLab, and the PCF 申購買回清單, which for cash-creation
-ETFs carries no stock basket at all). So we snapshot daily into EtfHolding; the
-day-over-day share delta is what reveals what the managers actually bought and
-sold. Every day not collected is a diff that cannot be recovered later.
+Taiwan's active ETFs disclose their FULL holdings every day, but there is no
+central history anywhere (checked: TWSE OpenAPI, TWSE ETFortune, SITCA, FinLab,
+and the PCF 申購買回清單 — cash-creation ETFs' PCF carries no stock basket at
+all; MoneyDJ has daily shares but only the top 10). So we snapshot per issuer
+into EtfHolding: the day-over-day SHARE delta is the signal (weights move with
+price, shares only move when the manager trades).
 
-Source shape (統一投信 / ezmoney): the fund page embeds its portfolio as
-HTML-escaped JSON. The object with AssetName == "股票" holds Details[] with
-DetailCode / DetailName / Share / NavRate / Amount / TranDate. A bare GET gets
-302-looped, so we reuse one client and let it pick up the session cookie.
+Each issuer needs its own adapter:
+  pcsit   統一投信 — fund page embeds portfolio as HTML-escaped JSON. Current
+          day only; a bare GET is 302-looped so the client must keep cookies.
+  fhtrust 復華投信 — dated XLSX endpoint /api/assetsExcel/{id}/{YYYYMMDD}. No
+          cookie needed, and past dates work, so this one can be backfilled.
 
 Run daily after the TW close:  python backend/etf_holdings.py
+Backfill (issuers that support it): python backend/etf_holdings.py --backfill 30
 """
 from __future__ import annotations
 
 import html as _html
 import json
+import re
 import sys
+from datetime import date as _date, timedelta
+from io import BytesIO
 from pathlib import Path
 from typing import Optional
 
@@ -33,18 +38,23 @@ sys.path.insert(0, str(BACKEND_DIR))
 # import would leave etfholding missing on a fresh DB.
 from models import EtfHolding  # noqa: E402
 
-BASE = "https://www.ezmoney.com.tw"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+PCSIT_BASE = "https://www.ezmoney.com.tw"
+FH_BASE = "https://www.fhtrust.com.tw"
 
-# (etf_code, name, issuer-internal fundCode). Phase 1 = 統一投信 actives.
-ACTIVE_ETFS: list[tuple[str, str, str]] = [
-    ("00981A", "主動統一台股增長", "49YTW"),
-    ("00403A", "主動統一升級50", "63YTW"),
-    ("00988A", "主動統一全球創新", "61YTW"),
+# code, name, issuer, adapter, issuer-internal ref
+ACTIVE_ETFS: list[dict] = [
+    {"code": "00981A", "name": "主動統一台股增長", "issuer": "統一", "adapter": "pcsit", "ref": "49YTW"},
+    {"code": "00403A", "name": "主動統一升級50", "issuer": "統一", "adapter": "pcsit", "ref": "63YTW"},
+    {"code": "00988A", "name": "主動統一全球創新", "issuer": "統一", "adapter": "pcsit", "ref": "61YTW"},
+    {"code": "00991A", "name": "主動復華未來50", "issuer": "復華", "adapter": "fhtrust", "ref": "ETF23"},
 ]
 
 
+# --------------------------------------------------------------------------
+# 統一投信 (pcsit)
+# --------------------------------------------------------------------------
 def _extract_stock_block(page: str) -> Optional[dict]:
     """Pull the AssetName=="股票" object out of the page's embedded JSON."""
     u = _html.unescape(page)
@@ -68,17 +78,16 @@ def _extract_stock_block(page: str) -> Optional[dict]:
     return None
 
 
-def fetch_holdings(fund_code: str) -> tuple[Optional[str], list[dict]]:
-    """Return (trade_date, holdings[]) for one fund. Empty list if unavailable."""
+def fetch_pcsit(ref: str, on: Optional[str] = None) -> tuple[Optional[str], list[dict]]:
+    """統一投信: current day only (`on` is ignored — the site has no history)."""
     with httpx.Client(follow_redirects=True, timeout=30.0,
                       headers={"User-Agent": UA}) as c:
-        r = c.get(f"{BASE}/ETF/Fund/Info", params={"fundCode": fund_code})
+        r = c.get(f"{PCSIT_BASE}/ETF/Fund/Info", params={"fundCode": ref})
         r.raise_for_status()
         block = _extract_stock_block(r.text)
     if not block:
         return None, []
-    out: list[dict] = []
-    trade_date = None
+    out, trade_date = [], None
     for d in block.get("Details", []):
         code = str(d.get("DetailCode") or "").strip()
         if not code:
@@ -95,6 +104,71 @@ def fetch_holdings(fund_code: str) -> tuple[Optional[str], list[dict]]:
     return trade_date, out
 
 
+# --------------------------------------------------------------------------
+# 復華投信 (fhtrust) — dated XLSX, supports backfill
+# --------------------------------------------------------------------------
+def _fh_latest_date(client: httpx.Client, ref: str) -> Optional[str]:
+    """The fund page embeds its own latest export URL — read the date off it
+    instead of guessing around holidays."""
+    r = client.get(f"{FH_BASE}/ETF/etf_detail/{ref}")
+    r.raise_for_status()
+    m = re.search(rf"/api/assetsExcel/{re.escape(ref)}/(\d{{8}})", r.text)
+    return m.group(1) if m else None
+
+
+def _num(x) -> float:
+    s = str(x).replace(",", "").replace("%", "").strip()
+    try:
+        return float(s)
+    except ValueError:
+        return 0.0
+
+
+def fetch_fhtrust(ref: str, on: Optional[str] = None) -> tuple[Optional[str], list[dict]]:
+    """復華投信: `on` = 'YYYYMMDD' to backfill a past session."""
+    import pandas as pd
+    with httpx.Client(follow_redirects=True, timeout=60.0,
+                      headers={"User-Agent": UA,
+                               "Referer": f"{FH_BASE}/ETF/etf_detail/{ref}"}) as c:
+        ymd = on or _fh_latest_date(c, ref)
+        if not ymd:
+            return None, []
+        r = c.get(f"{FH_BASE}/api/assetsExcel/{ref}/{ymd}")
+        if r.status_code != 200 or len(r.content) < 200:
+            return None, []          # non-trading day returns an empty body
+        df = pd.read_excel(BytesIO(r.content), header=None)
+
+    # Locate the holdings header row (證券代號 / 證券名稱 / 股數 / 金額 / 權重)
+    hdr = None
+    for i in range(len(df)):
+        if str(df.iloc[i, 0]).strip() == "證券代號":
+            hdr = i
+            break
+    if hdr is None:
+        return None, []
+    trade_date = f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:]}"
+    out = []
+    for i in range(hdr + 1, len(df)):
+        code = str(df.iloc[i, 0]).strip()
+        if not code or code.lower() == "nan":
+            continue
+        out.append({
+            "stock_code": code,
+            "stock_name": str(df.iloc[i, 1]).strip(),
+            "shares": _num(df.iloc[i, 2]),
+            "weight": _num(df.iloc[i, 4]),
+            "amount": _num(df.iloc[i, 3]),
+        })
+    return trade_date, out
+
+
+ADAPTERS = {"pcsit": fetch_pcsit, "fhtrust": fetch_fhtrust}
+BACKFILLABLE = {"fhtrust"}
+
+
+# --------------------------------------------------------------------------
+# storage + diff
+# --------------------------------------------------------------------------
 def store(session: Session, etf_code: str, etf_name: str,
           trade_date: str, holdings: list[dict]) -> int:
     """Idempotent: re-running for the same day replaces that day's rows."""
@@ -116,7 +190,6 @@ def previous_date(session: Session, etf_code: str, before: str) -> Optional[str]
 
 def diff(session: Session, etf_code: str, new_date: str, old_date: str) -> list[dict]:
     """Share deltas between two snapshots — what the manager bought/sold."""
-
     def snap(d: str) -> dict:
         rows = session.exec(select(EtfHolding).where(
             EtfHolding.etf_code == etf_code, EtfHolding.trade_date == d)).all()
@@ -142,32 +215,60 @@ def diff(session: Session, etf_code: str, new_date: str, old_date: str) -> list[
     return out
 
 
-def main() -> int:
+def collect_one(session: Session, etf: dict, on: Optional[str] = None,
+                quiet: bool = False) -> bool:
+    fn = ADAPTERS[etf["adapter"]]
+    try:
+        trade_date, hold = fn(etf["ref"], on)
+    except Exception as e:  # noqa: BLE001
+        print(f"  {etf['code']} {etf['name']}: FAILED {type(e).__name__} {e}")
+        return False
+    if not trade_date or not hold:
+        if not quiet:
+            print(f"  {etf['code']} {etf['name']}: no data"
+                  + (f" for {on}" if on else " (site changed?)"))
+        return False
+    prev = previous_date(session, etf["code"], trade_date)
+    n = store(session, etf["code"], etf["name"], trade_date, hold)
+    line = f"  {etf['code']} {etf['name']} [{etf['issuer']}]: {trade_date} — {n} holdings"
+    if prev:
+        d = diff(session, etf["code"], trade_date, prev)
+        line += f" | vs {prev}: {len(d)} changed"
+        for x in d[:5]:
+            line += (f"\n      {x['action']} {x['stock_code']} "
+                     f"{x['stock_name']} {x['delta_shares']:+,.0f}股")
+    else:
+        line += " | first snapshot (no diff yet)"
+    print(line)
+    return True
+
+
+def main(argv: Optional[list[str]] = None) -> int:
     from database import engine, create_db_and_tables
+    argv = argv if argv is not None else sys.argv[1:]
+    days = 0
+    if "--backfill" in argv:
+        i = argv.index("--backfill")
+        days = int(argv[i + 1]) if len(argv) > i + 1 else 30
+
     create_db_and_tables()
-    print(f"[etf-holdings] collecting {len(ACTIVE_ETFS)} active ETFs...")
     with Session(engine) as s:
-        for etf_code, name, fund_code in ACTIVE_ETFS:
-            try:
-                date, hold = fetch_holdings(fund_code)
-            except Exception as e:  # noqa: BLE001
-                print(f"  {etf_code} {name}: FAILED {type(e).__name__} {e}")
-                continue
-            if not date or not hold:
-                print(f"  {etf_code} {name}: no holdings found (site changed?)")
-                continue
-            prev = previous_date(s, etf_code, date)
-            n = store(s, etf_code, name, date, hold)
-            line = f"  {etf_code} {name}: {date} — {n} holdings"
-            if prev:
-                d = diff(s, etf_code, date, prev)
-                line += f" | vs {prev}: {len(d)} changed"
-                for x in d[:5]:
-                    line += (f"\n      {x['action']} {x['stock_code']} "
-                             f"{x['stock_name']} {x['delta_shares']:+,.0f}股")
-            else:
-                line += " | first snapshot (no diff yet)"
-            print(line)
+        if days:
+            targets = [e for e in ACTIVE_ETFS if e["adapter"] in BACKFILLABLE]
+            print(f"[etf-holdings] backfilling {days}d for "
+                  f"{len(targets)} backfillable ETF(s)...")
+            for etf in targets:
+                got = 0
+                for k in range(days, -1, -1):
+                    d = (_date.today() - timedelta(days=k)).strftime("%Y%m%d")
+                    if collect_one(s, etf, on=d, quiet=True):
+                        got += 1
+                print(f"  {etf['code']}: {got} sessions stored")
+            return 0
+
+        print(f"[etf-holdings] collecting {len(ACTIVE_ETFS)} active ETFs...")
+        for etf in ACTIVE_ETFS:
+            collect_one(s, etf)
     return 0
 
 

@@ -12,3 +12,4 @@ sqlmodel
 GoogleNews
 dateparser
 PyYAML
+openpyxl
