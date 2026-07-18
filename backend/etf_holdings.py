@@ -28,6 +28,11 @@ from sqlmodel import Session, delete, select
 BACKEND_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BACKEND_DIR))
 
+# Must be imported at module level: create_db_and_tables() only creates tables
+# for models already registered in SQLModel.metadata, so a lazy in-function
+# import would leave etfholding missing on a fresh DB.
+from models import EtfHolding  # noqa: E402
+
 BASE = "https://www.ezmoney.com.tw"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
@@ -93,7 +98,6 @@ def fetch_holdings(fund_code: str) -> tuple[Optional[str], list[dict]]:
 def store(session: Session, etf_code: str, etf_name: str,
           trade_date: str, holdings: list[dict]) -> int:
     """Idempotent: re-running for the same day replaces that day's rows."""
-    from models import EtfHolding
     session.exec(delete(EtfHolding).where(
         EtfHolding.trade_date == trade_date, EtfHolding.etf_code == etf_code))
     for h in holdings:
@@ -104,7 +108,6 @@ def store(session: Session, etf_code: str, etf_name: str,
 
 
 def previous_date(session: Session, etf_code: str, before: str) -> Optional[str]:
-    from models import EtfHolding
     return session.exec(
         select(EtfHolding.trade_date)
         .where(EtfHolding.etf_code == etf_code, EtfHolding.trade_date < before)
@@ -113,7 +116,6 @@ def previous_date(session: Session, etf_code: str, before: str) -> Optional[str]
 
 def diff(session: Session, etf_code: str, new_date: str, old_date: str) -> list[dict]:
     """Share deltas between two snapshots — what the manager bought/sold."""
-    from models import EtfHolding
 
     def snap(d: str) -> dict:
         rows = session.exec(select(EtfHolding).where(
