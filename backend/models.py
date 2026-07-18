@@ -52,6 +52,25 @@ class TwLinkageNode(SQLModel, table=True):
     category: Optional[UsCategory] = Relationship(back_populates="tw_nodes")
 
 
+# ---------------------------------------------------------------------------
+# TW active-ETF daily holdings snapshots (collected by etf_holdings.py).
+# The issuer sites publish only the CURRENT day's holdings — there is no history
+# endpoint — so every day we miss is a day of buy/sell diffs we can never get
+# back. One row per (trade_date, etf, stock); the day-over-day share delta is
+# the actual signal.
+# ---------------------------------------------------------------------------
+class EtfHolding(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    trade_date: str = Field(index=True)          # "2026-07-17"
+    etf_code: str = Field(index=True)            # "00981A"
+    etf_name: str
+    stock_code: str = Field(index=True)          # "2330"
+    stock_name: str
+    shares: float                                # 股數
+    weight: float                                # 佔基金淨值權重 %
+    amount: float                                # 市值
+
+
 class StockAnnotation(SQLModel, table=True):
     stock_id: str = Field(primary_key=True)
     
