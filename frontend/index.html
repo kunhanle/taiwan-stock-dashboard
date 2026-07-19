@@ -1989,8 +1989,27 @@
                         </div>
                     </div>
 
+                    {data && data.ready && (
+                        <div className="pl-5 space-y-1">
+                            {data.covered.map(c => (
+                                <div key={c.code} className="text-xs text-slate-500">
+                                    <span className="text-slate-300">{c.code}</span> 比對 <span className="text-slate-300">{c.old} → {c.new}</span>
+                                    <span className="text-slate-600">（相隔 {c.span} 個交易日，已跳過週末與休市）</span>
+                                </div>
+                            ))}
+                            {data.skipped && data.skipped.length > 0 && (
+                                <div className="text-xs text-amber-400/70">
+                                    尚無法比對：{data.skipped.map(s => `${s.code} ${s.name}（${s.reason}）`).join('、')}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {!data ? <div className="text-center text-slate-400 py-8 text-sm">載入中…</div>
-                        : !data.ready ? <div className="text-center text-slate-500 py-8 text-sm">尚無足夠資料（需要至少兩天的持股快照才能比對買賣）。</div>
+                        : !data.ready ? <div className="text-center text-slate-500 py-8 text-sm">
+                            尚無任何ETF累積到兩天快照，還無法比對買賣。<br />
+                            <span className="text-xs text-slate-600">每日排程會持續累積（台北 20:00 / 23:00），明天起就會有單日異動。</span>
+                        </div>
                             : (
                                 <section className="glass-panel rounded-2xl p-4">
                                     <div className="overflow-x-auto max-h-[36rem] overflow-y-auto">
@@ -2022,15 +2041,17 @@
                                                         </td>
                                                     </tr>
                                                 ))}
-                                                {rows.length === 0 && <tr><td colSpan="6" className="text-center text-slate-500 py-6 text-sm">此區間無異動</td></tr>}
+                                                {rows.length === 0 && <tr><td colSpan="6" className="text-center text-slate-500 py-6 text-sm">
+                                                    {(data.flows || []).length === 0
+                                                        ? '這些ETF在此區間內完全沒有調整持股（不是沒資料）——可試 5日 或 20日 視窗。'
+                                                        : '此篩選條件下無資料'}
+                                                </td></tr>}
                                             </tbody>
                                         </table>
                                     </div>
-                                    {data.covered && data.covered.length > 0 && (
-                                        <div className="mt-2 text-xs text-slate-600">
-                                            比對區間：{data.covered.map(c => `${c.code} ${c.old}→${c.new}`).join('　')}
-                                        </div>
-                                    )}
+                                    <div className="mt-2 text-xs text-slate-600">
+                                        異動以「股數」計；1張=1,000股。視窗以實際交易日計算，非日曆天。
+                                    </div>
                                 </section>
                             )}
                 </div>

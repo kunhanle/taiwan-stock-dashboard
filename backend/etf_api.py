@@ -57,15 +57,22 @@ def flows(days: int = Query(1, ge=1, le=60),
     earlier, aggregated per stock. Positive = the managers net bought."""
     with Session(engine) as s:
         agg: dict[str, dict] = {}
-        covered = []
+        covered, skipped = [], []
         for etf in eh.ACTIVE_ETFS:
             ds = _sessions(s, etf["code"])
             if len(ds) < 2:
+                # A blank board must not look like a bug: say which ETFs could
+                # not be compared and why (issuers without history need two
+                # collected days before any diff exists).
+                skipped.append({"code": etf["code"], "name": etf["name"],
+                                "sessions": len(ds),
+                                "reason": f"僅 {len(ds)} 天快照，需累積 2 天才能比對"})
                 continue
             new = ds[0]
             old = ds[min(days, len(ds) - 1)]
             covered.append({"code": etf["code"], "name": etf["name"],
-                            "new": new, "old": old})
+                            "new": new, "old": old,
+                            "span": min(days, len(ds) - 1)})
             for d in eh.diff(s, etf["code"], new, old):
                 a = agg.setdefault(d["stock_code"], {
                     "stock_code": d["stock_code"],
@@ -80,7 +87,7 @@ def flows(days: int = Query(1, ge=1, le=60),
         for r in rows:
             r["etf_count"] = len(r["etfs"])
         return {"ready": bool(covered), "days": days,
-                "covered": covered, "flows": rows}
+                "covered": covered, "skipped": skipped, "flows": rows}
 
 
 @router.get("/holdings/{etf_code}")
