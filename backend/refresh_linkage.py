@@ -91,14 +91,6 @@ def build_snapshot(stamp: str) -> dict:
                     missing_price.append(f"{slug}:{n['ticker']}")
             print(f"  [{i}/{len(slugs)}] {slug}: {len(r['nodes'])} nodes")
     movers.sort(key=lambda x: abs(x["a_z"] or 0), reverse=True)
-    print("[+] computing ETF sector-rotation monitor...")
-    try:
-        import etf_monitor as em
-        etf_mon = em.compute_etf_monitor()
-        print(f"      ETF monitor: {len(etf_mon['etfs'])} ETFs ranked by RS")
-    except Exception as e:  # noqa: BLE001
-        print(f"      ETF monitor FAILED: {e}")
-        etf_mon = None
     print("[+] computing commodity monitor...")
     try:
         import commodity_monitor as cm
@@ -108,8 +100,7 @@ def build_snapshot(stamp: str) -> dict:
         print(f"      commodity monitor FAILED: {e}")
         commod = None
     return {"generated_at": stamp, "categories": cats_out, "movers": movers,
-            "suspect_delisted": missing_price, "etf_monitor": etf_mon,
-            "commodity_monitor": commod}
+            "suspect_delisted": missing_price, "commodity_monitor": commod}
 
 
 def main() -> int:

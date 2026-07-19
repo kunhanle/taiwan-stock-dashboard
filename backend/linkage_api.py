@@ -192,19 +192,6 @@ def overview():
     return {"ready": True, "generated_at": snap.get("generated_at"), "categories": out}
 
 
-@router.get("/etf-monitor")
-def etf_monitor():
-    """US sector/thematic ETF rotation board — each ETF's move + relative strength
-    vs SPY, ranked. Served from the snapshot (pre-computed nightly)."""
-    snap = _snapshot()
-    if not snap:
-        return {"ready": False, "detail": "snapshot not built yet; try again shortly"}
-    em = snap.get("etf_monitor")
-    if not em:
-        return {"ready": False, "detail": "ETF monitor not in snapshot yet; rebuild"}
-    return {"ready": True, "generated_at": snap.get("generated_at"), **_clean_nan(em)}
-
-
 @router.get("/commodity-monitor")
 def commodity_monitor():
     """Key commodity futures (energy / metals / agri) price moves across horizons.
