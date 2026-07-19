@@ -1935,6 +1935,108 @@
             );
         };
 
+        const ActiveEtfFlowsView = () => {
+            const [sum, setSum] = useState(null);
+            const [data, setData] = useState(null);
+            const [days, setDays] = useState(1);
+            const [side, setSide] = useState('全部');
+            useEffect(() => { axios.get('/api/etf/summary').then(r => setSum(r.data)).catch(() => setSum({ ready: false })); }, []);
+            useEffect(() => { setData(null); axios.get(`/api/etf/flows?days=${days}`).then(r => setData(r.data)).catch(() => setData({ ready: false })); }, [days]);
+
+            const rows = useMemo(() => {
+                if (!data || !data.flows) return [];
+                return data.flows.filter(f => side === '全部' || (side === '買超' ? f.delta_shares > 0 : f.delta_shares < 0));
+            }, [data, side]);
+
+            const shr = v => (v >= 0 ? '+' : '') + Math.round(v).toLocaleString();
+            const cls = v => v > 0 ? 'text-red-400' : (v < 0 ? 'text-green-400' : 'text-slate-500');
+            const lot = v => (v >= 0 ? '+' : '') + (v / 1000).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+            return (
+                <div className="space-y-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-white border-l-4 border-emerald-500 pl-4">主動式ETF籌碼</h2>
+                        <p className="text-sm text-slate-400 pl-5 mt-1">
+                            台灣主動式ETF每天公布完整持股，我們每日存檔並比對<b className="text-emerald-300">股數</b>變化 —— 這才是經理人真正的買賣
+                            （權重會被股價漲跌影響，股數不會）。正=買超、負=賣超。
+                        </p>
+                    </div>
+
+                    {sum && sum.etfs && (
+                        <div className="flex flex-wrap gap-2 pl-5">
+                            {sum.etfs.map(e => (
+                                <div key={e.code} className="px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-xs">
+                                    <span className="text-slate-200 font-medium">{e.code}</span>
+                                    <span className="ml-1.5 text-slate-400">{e.name}</span>
+                                    <span className="ml-2 text-slate-500">{(e.market_value / 1e8).toFixed(0)}億 · {e.holdings}檔</span>
+                                    <span className="ml-2 text-slate-600">{e.sessions}日 · {e.latest}</span>
+                                    {e.backfillable && <span className="ml-1 text-emerald-500/70" title="此投信可回補歷史">✓史</span>}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-3 pl-5">
+                        <div className="flex gap-1">
+                            {[[1, '單日'], [5, '5日'], [20, '20日']].map(([d, lbl]) => (
+                                <button key={d} onClick={() => setDays(d)} className={`text-xs px-2 py-0.5 rounded border ${days === d ? 'bg-emerald-600/20 border-emerald-500 text-emerald-200' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}>{lbl}</button>
+                            ))}
+                        </div>
+                        <div className="flex gap-1">
+                            {['全部', '買超', '賣超'].map(t => (
+                                <button key={t} onClick={() => setSide(t)} className={`text-xs px-2 py-0.5 rounded border ${side === t ? 'bg-slate-700 border-slate-500 text-slate-100' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}>{t}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {!data ? <div className="text-center text-slate-400 py-8 text-sm">載入中…</div>
+                        : !data.ready ? <div className="text-center text-slate-500 py-8 text-sm">尚無足夠資料（需要至少兩天的持股快照才能比對買賣）。</div>
+                            : (
+                                <section className="glass-panel rounded-2xl p-4">
+                                    <div className="overflow-x-auto max-h-[36rem] overflow-y-auto">
+                                        <table className="w-full text-sm">
+                                            <thead className="sticky top-0 bg-slate-900/95"><tr className="text-slate-400 border-b border-slate-700">
+                                                <th className="text-left py-1.5 font-medium">#</th>
+                                                <th className="text-left font-medium">個股</th>
+                                                <th className="text-right font-medium">合計異動(張)</th>
+                                                <th className="text-right font-medium">股數</th>
+                                                <th className="text-center font-medium">檔數</th>
+                                                <th className="text-left font-medium">各ETF動作</th>
+                                            </tr></thead>
+                                            <tbody>
+                                                {rows.map((f, i) => (
+                                                    <tr key={f.stock_code} className="border-b border-slate-800/60 hover:bg-slate-800/40">
+                                                        <td className="py-1.5 text-slate-600 text-xs">{i + 1}</td>
+                                                        <td className="text-slate-200"><span className="font-medium">{f.stock_code}</span> <span className="text-slate-400 text-xs">{f.stock_name}</span></td>
+                                                        <td className={`text-right tabular-nums font-semibold ${cls(f.delta_shares)}`}>{lot(f.delta_shares)}</td>
+                                                        <td className={`text-right tabular-nums text-xs ${cls(f.delta_shares)}`}>{shr(f.delta_shares)}</td>
+                                                        <td className="text-center text-slate-500 text-xs">{f.etf_count}</td>
+                                                        <td className="text-xs">
+                                                            {f.etfs.map(e => (
+                                                                <span key={e.etf} className="inline-block mr-1.5 mb-0.5 px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">
+                                                                    <span className="text-slate-300">{e.etf}</span>
+                                                                    <span className={`ml-1 ${cls(e.delta)}`}>{lot(e.delta)}</span>
+                                                                    {(e.action === '新進' || e.action === '清空') && <span className="ml-1 text-amber-300">{e.action}</span>}
+                                                                </span>
+                                                            ))}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {rows.length === 0 && <tr><td colSpan="6" className="text-center text-slate-500 py-6 text-sm">此區間無異動</td></tr>}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {data.covered && data.covered.length > 0 && (
+                                        <div className="mt-2 text-xs text-slate-600">
+                                            比對區間：{data.covered.map(c => `${c.code} ${c.old}→${c.new}`).join('　')}
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+                </div>
+            );
+        };
+
         const CommodityMonitorView = () => {
             const [data, setData] = useState(null);
             const [cat, setCat] = useState('全部');
@@ -2331,7 +2433,7 @@
                                         onClick={() => setActiveTab("etf")}
                                         className={`px-4 py-2 rounded-lg transition-colors ${activeTab === "etf" ? "bg-slate-700 text-teal-400 font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
                                     >
-                                        ETF監控
+                                        ETF籌碼
                                     </button>
                                     <button
                                         onClick={() => setActiveTab("commodity")}
@@ -2370,9 +2472,9 @@
                                     <LinkageView />
                                 </div>
 
-                                {/* ETF sector-rotation monitor */}
+                                {/* TW active-ETF holdings flows (what managers bought/sold) */}
                                 <div className={activeTab === 'etf' ? 'block' : 'hidden'}>
-                                    <EtfMonitorView />
+                                    <ActiveEtfFlowsView />
                                 </div>
 
                                 {/* Commodity futures monitor */}

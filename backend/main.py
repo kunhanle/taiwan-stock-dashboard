@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from financials import router as financials_router
 from linkage_api import router as linkage_router
+from etf_api import router as etf_router
 from finlab import data, login
 import pandas as pd
 import datetime
@@ -1190,6 +1191,7 @@ def fetch_stock_news(req: FetchNewsRequest):
 
 app.include_router(financials_router, prefix="/api/financials", tags=["financials"])
 app.include_router(linkage_router, prefix="/api/linkage", tags=["linkage"])
+app.include_router(etf_router, prefix="/api/etf", tags=["etf"])
 
 if __name__ == "__main__":
     import uvicorn
