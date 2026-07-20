@@ -27,6 +27,24 @@ def _sessions(s: Session, etf_code: str) -> list[str]:
         .distinct().order_by(EtfHolding.trade_date.desc())).all())
 
 
+def _fund_nav(rows) -> tuple[float | None, bool]:
+    """Fund NAV in TWD, plus whether the fund is multi-currency.
+
+    Issuers report each holding's amount in ITS OWN currency — a global fund
+    mixes TWD, USD, JPY and KRW rows — so summing `amount` is meaningless (it
+    inflated 00988A to 2,056億 against a real ~578億). Weights are currency
+    neutral (% of NAV), so derive NAV from the TWD rows alone:
+    NAV = twd_amount / twd_weight. Cross-checked on 00981A: 2,381.6億 / 94.02%
+    = 2,533億, matching the issuer's published 253,299,770,879.
+    """
+    twd = [r for r in rows if " " not in r.stock_code.strip()]
+    multi = len(twd) != len(rows)
+    w = sum(r.weight for r in twd)
+    if not twd or w <= 0:
+        return None, multi
+    return sum(r.amount for r in twd) / (w / 100.0), multi
+
+
 @router.get("/summary")
 def summary():
     """Coverage board: which ETFs we track, how much history each one has."""
@@ -39,14 +57,15 @@ def summary():
             rows = s.exec(select(EtfHolding).where(
                 EtfHolding.etf_code == etf["code"],
                 EtfHolding.trade_date == ds[0])).all()
+            nav, multi = _fund_nav(rows)
             out.append({
                 "code": etf["code"], "name": etf["name"], "issuer": etf["issuer"],
                 "latest": ds[0], "earliest": ds[-1], "sessions": len(ds),
                 "holdings": len(rows),
-                "market_value": sum(r.amount for r in rows),
+                "nav": nav, "multi_currency": multi,
                 "backfillable": etf["adapter"] in eh.BACKFILLABLE,
             })
-        out.sort(key=lambda x: x["market_value"], reverse=True)
+        out.sort(key=lambda x: x["nav"] or 0, reverse=True)
         return {"ready": bool(out), "etfs": out}
 
 
@@ -92,7 +111,11 @@ def flows(days: int = Query(1, ge=1, le=60),
 
 @router.get("/holdings/{etf_code}")
 def holdings(etf_code: str):
-    """One ETF's latest holdings, with the share delta vs its prior session."""
+    """One ETF's latest holdings, with the share delta vs its prior session.
+
+    NOTE: `amount` is in each holding's OWN currency (a global fund mixes TWD,
+    USD, JPY, KRW) — do not sum it across rows. `weight` and `shares` are safe.
+    """
     with Session(engine) as s:
         ds = _sessions(s, etf_code)
         if not ds:

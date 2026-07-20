@@ -1901,7 +1901,8 @@
                                 <div key={e.code} className="px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-xs">
                                     <span className="text-slate-200 font-medium">{e.code}</span>
                                     <span className="ml-1.5 text-slate-400">{e.name}</span>
-                                    <span className="ml-2 text-slate-500">{(e.market_value / 1e8).toFixed(0)}億 · {e.holdings}檔</span>
+                                    <span className="ml-2 text-slate-500">{e.nav ? (e.nav / 1e8).toFixed(0) + '億' : '—'} · {e.holdings}檔</span>
+                                    {e.multi_currency && <span className="ml-1 text-sky-400/70" title="海外基金：各持股以自身幣別計價，規模由台股持股的權重反推">跨幣</span>}
                                     <span className="ml-2 text-slate-600">{e.sessions}日 · {e.latest}</span>
                                     {e.backfillable && <span className="ml-1 text-emerald-500/70" title="此投信可回補歷史">✓史</span>}
                                 </div>
